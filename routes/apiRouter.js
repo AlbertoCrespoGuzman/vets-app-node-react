@@ -12,7 +12,7 @@ router.route('/')
 
   router.route('/alive')
   .get(function (req, res, next){
-    res.send("I'm alive funciona 2")
+    res.send("I'm alive")
   })
 
 
