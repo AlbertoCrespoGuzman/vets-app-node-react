@@ -75,3 +75,5 @@ app.listen(`${process.env.PORT}`, function(){
 });
 //app.listen(`${process.env.PORT}`, `${process.env.HOST}`)
 //console.log(`Running on http://${process.env.HOST}:${process.env.PORT}`)
+
+module.exports = app

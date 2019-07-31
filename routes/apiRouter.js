@@ -8,6 +8,14 @@ router.route('/')
     res.render('index', {  })
   })
 
+
+  
+  router.route('/alive')
+  .get(function (req, res, next){
+    res.send("I'm alive")
+  })
+
+
   router.route('/error')
   .get(function (req, res, next){
 
