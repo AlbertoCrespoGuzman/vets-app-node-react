@@ -9,10 +9,10 @@ router.route('/')
   })
 
 
-  
+
   router.route('/alive')
   .get(function (req, res, next){
-    res.send("I'm alive")
+    res.send("I'm alive funciona")
   })
 
 
