@@ -11,9 +11,22 @@ const cookieParser = require('cookie-parser')
 const shell = require('shelljs')
 const apiRouter = require('./routes/apiRouter')
 const reactRouter = require('./routes/reactRouter')
+const usersRouter = require('./routes/usersRouter')
 const app = express()
 require('dotenv').config()
+const i18n = require("i18n")
 
+
+const User = require('./models/user')
+
+i18n.configure({
+    locales:['en', 'es', 'pt'],
+    fallback: 'pt',
+    logDebugFn: function (msg) {
+        console.log('debug', msg);
+    },
+    directory: path.join(__dirname + '/locales')
+});
 
 
 
@@ -23,11 +36,56 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
     { useNewUrlParser: true })
     .then((response)=>{
         console.log('DB Connected Successfully')
+        User.findOne({username: process.env.ADMIN_USER})
+          .exec( function(err, user){
+              if(err) console.log(err);
+              
+              if(user) {
+                  console.log("admin master OK " + JSON.stringify(user))
+              } else {
+                  console.log("admin master doesn't exist");
+                  User.register(new User({ username : process.env.ADMIN_USER, password: process.env.ADMIN_PASS }),
+                      process.env.ADMIN_PASS, function(err, user) {
+                          if(err) console.log(err)
+                            user.firstname = 'admin'
+                            user.lastname = 'admin'
+                            user.admin = true
+                            user.verified = true
+                            user.save(function(err,user) {
+                                console.log('admin created successfully')
+                            });
+                    });
+              }
+           });
     }).catch(err => {
       console.error(err)
     })
 
-
+    app.use(passport.initialize());
+    //passport.use(new LocalStrategy(User.authenticate()));
+    passport.use(new LocalStrategy(function(username, password, done) {
+        User.findOne({ username: username }, function(err, user) {
+          if (err) return done(err);
+          if (!user) return done(null, false, { msg: i18n.__("USERNAME_WRONG") })
+          user.comparePassword(password, function(err, isMatch) {
+            if (isMatch) {
+              return done(null, user)
+            } else {
+              i18n.setLocale(user.lang)
+              return done(null, false, { msg: i18n.__("PASSWORD_WRONG") })
+            }
+          })
+        })
+    }))
+    passport.serializeUser(function(user, done) {
+      done(null, user.id);
+    });
+    
+    passport.deserializeUser(function(id, done) {
+      User.findById(id, function(err, user) {
+        done(err, user);
+      });
+    });
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
@@ -35,14 +93,14 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.json({limit: '100mb'}))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
-
+app.use(i18n.init)
 
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/api/users', usersRouter)
 app.use('/api', apiRouter)
 app.use('/', reactRouter)
-
 
 
 app.use(function(req, res, next) {
@@ -69,6 +127,22 @@ app.use(function(err, req, res, next) {
     error: JSON.stringify(err)
   });
 });
+
+app.all('*', function(req, res, next){
+  var responseSettings = {
+      "AccessControlAllowOrigin": req.headers.origin,
+      "AccessControlAllowHeaders": "Content-Type,X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5,  Date, X-Api-Version, X-File-Name",
+      "AccessControlAllowMethods": "POST, GET, PUT, DELETE, OPTIONS",
+      "AccessControlAllowCredentials": true
+  }
+  res.header("Access-Control-Allow-Credentials", responseSettings.AccessControlAllowCredentials);
+  res.header("Access-Control-Allow-Origin",  /*responseSettings.AccessControlAllowOrigin */ '*');
+  //res.header("Access-Control-Allow-Headers", /*(req.headers['access-control-request-headers']) ? req.headers['access-control-request-headers'] : "x-requested-with" */ );
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+  res.header("Access-Control-Allow-Methods", (req.headers['access-control-request-method']) ? req.headers['access-control-request-method'] : responseSettings.AccessControlAllowMethods);
+
+  return next()
+})
 
 app.listen(`${process.env.PORT}`, function(){
   console.info('Server listening on port ' + this.address().port);
