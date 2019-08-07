@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { registerUser } from '../actions/authentication'
 import { makeStyles } from '@material-ui/core/styles'
-
+import { withStyles } from '@material-ui/styles'
 import MenuItem   from '@material-ui/core/MenuItem'
 import Select   from '@material-ui/core/Select'
 import FormControl   from '@material-ui/core/FormControl'
@@ -29,8 +29,8 @@ class Register extends Component {
             completename: '',
             cpf: '',
             address: '',
-            password: '',
-            confirmPassword: '',
+    //        password: '',
+    //        confirmPassword: '',
             errors: {},
             isFetching: false
         }
@@ -113,7 +113,7 @@ class Register extends Component {
         
         
         const { errors } = this.state
-
+        const classes = styles()
   //      React.useEffect(() => {
   //          setLabelWidth(labelRef.current.offsetWidth)
   //        }, [])
@@ -156,7 +156,7 @@ class Register extends Component {
                         </Select>
                         {errors.type && (<FormHelperText id="type-text">{errors.type}</FormHelperText>)}
                     </FormControl>
-                        <FormControl className={classes.formControl} fullWidth={true} >
+                        <FormControl className={classes.formControl} fullWidth={true} margin={PropTypes.margin}>
                             <InputLabel htmlFor="username">E-mail</InputLabel>
                             <Input
                             type="text"
@@ -212,35 +212,7 @@ class Register extends Component {
                             />
                             {errors.address && (<FormHelperText id="address-text">{errors.address}</FormHelperText>)}
                         </FormControl>
-                        <FormControl  fullWidth={true} className={classes.formControl} >
-                            <InputLabel htmlFor="password">Senha</InputLabel>
-                            <Input
-                            type="password"
-                            id="password"
-                            value={ this.state.password }
-                            name="password"
-                            onChange={this.handleInputChange}
-                            aria-describedby="password-text"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.password }
-                            />
-                            {errors.password && (<FormHelperText id="password-text">{errors.password}</FormHelperText>)}
-                        </FormControl>
-                        <FormControl  fullWidth={true} className={classes.formControl} >
-                            <InputLabel htmlFor="confirmPassword">Confirmar Senha</InputLabel>
-                            <Input
-                            type="password"
-                            id="confirmPassword"
-                            value={ this.state.confirmPassword }
-                            name="confirmPassword"
-                            onChange={this.handleInputChange}
-                            aria-describedby="confirmPassword-text"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.confirmPassword }
-                            />
-                            {errors.confirmPassword && (<FormHelperText id="confirmPassword-text">{errors.confirmPassword}</FormHelperText>)}
-                        </FormControl>
-                        
+                       
                     <CardActions>
                         {!this.state.isFetching && (<Button fullWidth={true} variant="contained" color="primary" type="submit" >
                             Cadastrar
@@ -267,20 +239,21 @@ class Register extends Component {
     }
 }
 
-const classes = makeStyles(theme => ({
+const styles = theme => ({
     button: {
-      margin: theme.spacing(1),
+    //  margin: theme.spacing(1),
     },
     input: {
       display: 'none',
     },
     formControl:{
-        marginTop:20
+        marginTop:200
     }
-  }))
+  })
 Register.propTypes = {
     registerUser: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -288,4 +261,4 @@ const mapStateToProps = state => ({
     errors: state.errors
 });
 
-export default connect(mapStateToProps,{ registerUser })(withRouter(Register))
+export default connect(mapStateToProps,{ registerUser })(withRouter(Register), withStyles(styles))

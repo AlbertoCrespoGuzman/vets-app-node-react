@@ -12,10 +12,8 @@
 	"LOGIN_EMAIL_VERIFICATION_REQUIRED": "Para poder entrar en tu cuenta, primero debes confirmar tu cuenta de e-mail. Por favor, revisa tu e-mail.",
 	"LOGIN_ERROR_NOT_LOGIN": "No conseguiste entrar en la cuenta, intenta más tarde",
 	"LOGIN_SUCCESSFULL": "Log in con éxito",
-	"EMAIL_RESET_PASSWORD": "Estás recibiendo este e-mail porque tú (o alguien) ha solicitado un reinicio de contraseña de tu cuenta.\n\n Por favor, haga click en el link o cópielo en tu navegador para completar el proceso:\n\nhttp://{{host}}/users/reset/{{token}} \n\n Si no has sido tu quién ha solicitado esto, por favor ignora este email y tu contraseña continuará siendo la misma.\n",
 	"USERNAME_EMPTY": "Por favor, escriba su e-mail",
 	"PASSWORD_RESET_TOKEN_INVALID": "El token de reinicio de contraseña inválido o ha expirado.",
-	"EMAIL_RESET_PASSWORD_SUBJECT": "Dr Go Pet - Reseteo de contraseña",
 	"EMAIL_RESET_PASSWORD_TEXT": "Hola,\n\n Confirmamos que tu contraseña de tu cuenta {{email}} has sido cambiada con éxito",
 	"EMAIL_PASSWORD_RESET_SENT": "Se ha enviado un e-mail de para cambio de contraseña a %s",
 	"PASSWORD_CHANGED_SUCCESSFULLY": "Su contraseña se ha cambiado con éxito",
@@ -26,5 +24,9 @@
 	"LAST_CONNECTION": " Conexión",
 	"YOU_DOESNT_HAVE_PERMISSIONS": "No tienes permisos para realizar esa acción",
 	"NOT_ENOUGH_CREDITS": "Créditos insuficientes",
-	"USER_TYPE_ERROR": "Por favor seleccione una tipo de usuário válido"
+	"USER_TYPE_ERROR": "Por favor seleccione una tipo de usuário válido",
+	"EMAIL_CREATED_ACCOUNT_SUBJECT": "Bienvenido a {{applicationName}}, {{userName}}",
+	"EMAIL_CREATED_ACCOUNT_TEXT": "Hola {{userName}}, \n Has sido registrado con éxito en {{applicationName}}. \n\nPuede acceder a tu cuenta haciendo login en <a href='{{host}}'> aquí </a> usando tu e-mail como nombre de usuario. \n Tu contraseña temporal es {{password}} . \n Te recomendamos que la cambies accediendo a tu perfil \n\n Saludos,\n {{applicationName}} ",
+	"EMAIL_RESET_PASSWORD_SUBJECT": "{{applicationName}} - Recuperação de Senha",
+	"EMAIL_RESET_PASSWORD": "<p> Olà, </p> <p> Você recebeu este e-mail para recuperar sua senha de acesso a {{applicationName}} </p> <p> Para continuar com o processo por favor clique no seguinte <a href='{{host}}/retrieve_password?token={{token}}' >link</a> </p> <p> Caso contrário, desconsidere este e-mail,</p> <p> Obrigado </p>"
 }

@@ -36,10 +36,7 @@ var User = new Schema({
         type: Boolean,
         default: false
     },
-    verified:   {
-        type: Boolean,
-        default: false
-    },
+    
     lastActivity:{
       type:Date,
       default:Date.now

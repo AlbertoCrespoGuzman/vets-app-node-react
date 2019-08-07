@@ -12,13 +12,10 @@
 	"LOGIN_EMAIL_VERIFICATION_REQUIRED": "Para poder entrar na sua conta, primeiro deve confirmar sua conta de e-mail. Por favor, confira seu e-mail.",
 	"LOGIN_ERROR_NOT_LOGIN": "Não conseguiu entrar na sua conta, tente mais tarde",
 	"LOGIN_SUCCESSFULL": "Log in com sucesso",
-	"EMAIL_RESET_PASSWORD": "Está recevendo este e-mail porque você (ou alguém) tem solicitado um reinicio de senha da sua conta.\n\n Por favor, faça click no link o copie ele no seu navegador para completar o processo:\n\nhttp://{{host}}/users/reset/{{token}} \n\n Se não foi você quem tem solicitado o reinicio de senha, por favor ignore este email e sua senha continuará send a mesma.\n",
 	"USERNAME_EMPTY": "Por favor, escreva seu e-mail",
 	"PASSWORD_RESET_TOKEN_INVALID": "O token de reinicio de senha é inválido o tem expirado.",
-	"EMAIL_RESET_PASSWORD_SUBJECT": "Dr Go Pet - Reseteio de senha",
-	"EMAIL_RESET_PASSWORD_TEXT": "Olá,\n\n Confirmamos que sua senha de sau conta {{email}} has sido modificada com sucesso",
 	"EMAIL_PASSWORD_RESET_SENT": "Tem se enviado um e-mail para mudar  de senha a %s",
-	"PASSWORD_CHANGED_SUCCESSFULLY": "Sua senha se tem sido modaficada com sucesso",
+	"PASSWORD_CHANGED_SUCCESSFULLY": "Sua senha se tem sido modificada com sucesso. Já pode fazer login",
 	"USERNAME_WRONG": "E-mail inválido",
 	"PASSWORD_WRONG": "Senha inválida",
 	"Invalid e-mail": "E-mail inválido",
@@ -26,5 +23,11 @@
 	"LAST_CONNECTION": " Conexão",
 	"YOU_DOESNT_HAVE_PERMISSIONS": "No tem permissos para realizar essa ação",
 	"NOT_ENOUGH_CREDITS": "Créditos insuficientes",
-	"USER_TYPE_ERROR": "Por favor, escolha um tipo de usuário válido"
+	"USER_TYPE_ERROR": "Por favor, escolha um tipo de usuário válido",
+	"EMAIL_CREATED_ACCOUNT_SUBJECT": "Bemvindo a {{applicationName}}, {{userName}}",
+	"EMAIL_CREATED_ACCOUNT_TEXT": "<p>   Olà {{userName}},</p> \n Você foi cadastrado com sucesso em {{applicationName}}. \n \n Pode acessar a sua conta fazendo login  <a href='{{host}}'> aqui </a> usando seu e-mail como nome de usuario. \n Sua senha temporária é {{password}} . \n Lhe aconselhamos troca-la acessando ao seu perfil \n\n Saludos,\n {{applicationName}} ",
+	"EMAIL_RESET_PASSWORD_SUBJECT": "{{applicationName}} - Recuperação de Senha",
+	"EMAIL_RESET_PASSWORD": "<p> Olà, </p> <p> Você recebeu este e-mail para recuperar sua senha de acesso a {{applicationName}} </p> <p> Para continuar com o processo por favor clique no seguinte <a href='{{host}}/reset_password?token={{token}}' >link</a> </p> <p> Caso contrário, desconsidere este e-mail,</p> <p> Obrigado </p>",
+	"EMAIL_RESET_PASSWORD_TEXT": "<p> Olà {{userName}},</p> <p> Sua senha tem se redefinido com sucesso,</p> <p> Já pode acessar à sua conta <a href='{{host}}/login'> aqui </a> </p> <p>Obrigado,</p> <p>{{applicationName}}",
+	"Senha inválida": "Senha inválida"
 }

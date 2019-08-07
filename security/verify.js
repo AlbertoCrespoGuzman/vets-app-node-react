@@ -7,7 +7,40 @@ exports.getToken = function (user) {
     //expiresIn: '7d'
   });
 };
-
+exports.getUsernameFromToken = function (token){
+  return new Promise((resolve, reject) => {
+    
+        jwt.verify(token, process.env.SECURITY_SECRETKEY, function (err, decoded){
+          if (err){
+            console.log('err!', err)
+            var err = new Error('You are not authenticated! verifyOrdinaryUser')
+            err.status = 401
+            reject(err)
+          }
+          else{
+            console.log(JSON.stringify(decoded))
+            resolve(decoded.username)
+          }
+        })
+            
+          })
+  var userName = ''
+      if (token){
+        console.log(' yes token', token)
+        jwt.verify(token, process.env.SECURITY_SECRETKEY, function (err, decoded){
+              if (err){
+                console.log('err!', err)
+                var err = new Error('You are not authenticated! verifyOrdinaryUser')
+                err.status = 401
+                return userName
+              }
+              else{
+                console.log(JSON.stringify(decoded))
+                return decoded.username
+              }
+            })
+      }
+}
 exports.verifyOrdinaryUser = function (req, res, next){
   var token = req.body.token || req.query.token || req.headers['authorization'];
   

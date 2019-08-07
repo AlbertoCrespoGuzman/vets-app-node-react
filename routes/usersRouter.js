@@ -11,9 +11,10 @@ var i18n = require("i18n")
 var async = require('async')
 var crypto = require("crypto")
 require('dotenv').config()
+var generator = require('generate-password')
 
 i18n.configure({
-    locales:['en', 'es', 'pt'],
+    locales:[ 'pt'],
     fallback: 'pt',
     logDebugFn: function (msg) {
         console.log('debug', msg);
@@ -40,10 +41,120 @@ router.route('/')
     User.find({}, function (err, user){
       if (err) throw err
       res.json(user)
-    });
+    })
+  })
+  router.route('/:userId')
+  .patch(Verify.verifyOrdinaryUser, function (req, res, next) {
+      User.findById(req.params.userId)
+          .exec(function (err, user) {
+          if (err) next(err)
+            
+          
+           user.type = req.body.type
+           user.username = req.body.username
+           user.address = req.body.address
+           user.cpf = req.body.cpf
+           user.completename = req.body.completename
+           req.setLocale(user.lang)
+  
+          user.save(function (err) {
+              if (err) { return res.status(500).send({ msg: err.message }); }
+              res.status(200).json(user)
+              //res.redirect('/#/login/' + req.__("EMAIL_ACCOUNT_VERIFIED_SUCCESSFULLY"))
+          })
+      })
+  })
+
+
+  router.route('/me')
+    .get(Verify.verifyOrdinaryUser, function (req, res, next) {
+        Verify.getUsernameFromToken(req.headers['authorization'])
+        .then(username =>{
+          User.findOne( {username})
+              .exec(function (err, user) {
+                  if (err) next(err)
+                  res.status(200).json(user)
+              
+          })
+        })
+        
+    })
+    .post(Verify.verifyOrdinaryUser, function (req, res, next) {
+      Verify.getUsernameFromToken(req.headers['authorization'])
+        .then(username =>{
+            User.findOne( {username})
+                .exec(function (err, user) {
+                if (err) next(err)
+                //user.type = req.body.type
+                //user.username = req.body.username
+                console.log('user', user)
+                console.log('req.body',req.body)
+                user.address = req.body.address
+                user.cpf = req.body.cpf
+                user.completename = req.body.completename
+              //  req.setLocale(user.lang)
+
+                user.save(function (err) {
+                    if (err) { console.log('errr') 
+                        return res.status(500).send({ msg: err.message }); }
+                        console.log('okk....')
+                        res.status(200).json(user)
+                    //res.redirect('/#/login/' + req.__("EMAIL_ACCOUNT_VERIFIED_SUCCESSFULLY"))
+                })
+            })
+        })
+  })
+
+  router.post('/login', function (req, res, next) {
+    
+    passport.authenticate('local', function (err, user, info) {
+          if (err) {
+            return next(err);
+          }
+          if (!user) {
+              var json
+              if(i18n.__("USERNAME_WRONG") === req.__(info.msg)){
+                  json = { username: req.__(info.msg) }
+              }else{
+                  json = { password: req.__(info.msg) }
+              }
+             return res.status(401).json(json);
+          }
+  
+          req.setLocale(user.lang)
+   /*       if(!user.verified){
+            return res.status(400).json({
+              username: req.__("LOGIN_EMAIL_VERIFICATION_REQUIRED")
+            });
+          } */
+          req.logIn(user, function (err) {
+                if (err) {
+                  return res.status(500).json({
+                    username: req.__("LOGIN_ERROR_NOT_LOGIN")
+                  });
+                }
+  
+                var token = Verify.getToken({"username":user.username, "_id":user._id ,
+                                               "admin":user.admin,"vet":user.vet, "client":user.client,"clinic":user.clinic});
+              
+  
+                var iduser = user._id;
+                
+                res.status(200).json({
+                  status: req.__("LOGIN_SUCCESSFULL"),
+                  success: true,
+                  token: token,
+                  iduser: iduser,
+                  admin: user.admin,
+                  vet: user.vet,
+                  client: user.client,
+                  clinic: user.clinic,
+                  lang: user.lang
+                });
+          });
+    })(req, res, next);
   });
-
-
+  
 router.route('/register')
 
     .post(Verify.verifyAdmin, [
@@ -60,13 +171,13 @@ router.route('/register')
                                           }).withMessage((value, { req, location, path }) => {
                                               return req.__("EMAIL_ALREADY_IN_USE")
                                             }),
-            check('password').isLength({min : 4}).withMessage((value, { req, location, path }) => {
+       /*     check('password').isLength({min : 4}).withMessage((value, { req, location, path }) => {
               return req.__("PASSWORD_SHORT")
             }),
             check('password').custom((value,{req, loc, path}) => {
                 if (value !== req.body.confirmPassword) { throw new Error(req.__("PASSWORDS_NOT_MATCH")) } 
                 else { return value }
-            }),
+            }), */
             check('type').custom((value,{req, loc, path}) => {
               if (value === 0) { throw new Error(req.__("USER_TYPE_ERROR")) } 
               else { return value }
@@ -78,11 +189,15 @@ router.route('/register')
                   if (!errors.isEmpty()) {
                     return res.status(422).json({ errors: errors.array() });
                   }
-                  console.log(JSON.stringify(req.body))
+
+                  var generatedPassword = generator.generate({
+                      length: 10,
+                      numbers: true
+                  });
 
                   User.register(new User({ username : req.body.username, 
                                             type: req.body.type, 
-                                            password: req.body.password, 
+                                            password: generatedPassword, 
                                             admin: false, 
                                             clinic: false, 
                                             client: false, 
@@ -91,27 +206,19 @@ router.route('/register')
                                             completename : req.body.completename,
                                             address: req.body.address
                                             }),
-                                    req.body.password, function(err, user) {
+                                            generatedPassword, function(err, user) {
 
                               if(err) return res.status(422).json({ err })
-                              console.log('ANTES user saved first time and modified type ->', user)
-                              /*if(req.body.type === 1){
-                                  user.client = true
-                              }else if(req.body.type === 2){
-                                  user.clinic = true
-                              }else if(req.body.type === 3){
-                                user.vet = true
-                              }else if(req.body.type === 4){
-                                  user.admin = true
-                              }
-                              */
                            //   user.lang = req.getLocale()
-                              console.log('user saved first time and modified type ->', user)
-                              console.log('req.body', req.body)
+                           
                               user.save(function(err,user) {
                                   if (err) { return res.status(500).send({ msg: err.message }); }
                                       
-                                      var mailOptions = { from: process.env.MAIL_USER, to: user.username, subject: req.__("EMAIL_VERIFICATION_SUBJECT"), text: req.__("EMAIL_VERFICATION_TEXT", {host: req.headers.host, userId: user._id}) };
+                                      var mailOptions = { from: process.env.MAIL_USER, 
+                                                          to: user.username, 
+                                                          subject: req.__("EMAIL_CREATED_ACCOUNT_SUBJECT", {applicationName: process.env.APPLICATION_NAME, userName: user.completename }), 
+                                                          html: req.__("EMAIL_CREATED_ACCOUNT_TEXT", {host: process.env.DOMAIN, userName: user.completename, applicationName: process.env.APPLICATION_NAME, password: generatedPassword})
+                                              } 
 
                                       transporter.sendMail(mailOptions, function (err) {
                                           if (err) { return res.status(500).send({ msg: 'error sendMail->' + err.message }); }
@@ -142,7 +249,7 @@ router.route('/confirmation/resend')
       .post(
             [
               check('username').isEmail().custom((value, { req }) => {
-                                console.log('username:' , value)
+                
                                return new Promise((resolve, reject) => {
                                   User.findOne({ 'username': value }, (err, user) => {
                                      if(user === null) {
@@ -218,8 +325,8 @@ router.route('/forgot')
               function(token, user, done) {
                 var mailOptions = { from: process.env.MAIL_USER, 
                                     to: user.username, 
-                                    subject: req.__("EMAIL_RESET_PASSWORD_SUBJECT"), 
-                                    text: req.__("EMAIL_RESET_PASSWORD", {host: req.headers.host, token: token}) };
+                                    subject: req.__("EMAIL_RESET_PASSWORD_SUBJECT", {applicationName: process.env.APPLICATION_NAME}), 
+                                    html: req.__("EMAIL_RESET_PASSWORD", {host: process.env.DOMAIN, token: token, applicationName: process.env.APPLICATION_NAME}) };
 
                 transporter.sendMail(mailOptions, function (err) {
                     if (err) { return res.status(500).send({ msg: 'error sendMail->' + err.message }); }
@@ -248,55 +355,114 @@ router.route('/reset/:token')
 
         });
 });
-router.route('/reset/:token')
+router.route('/reset_password/token/:token')
       .post([
             check('password').custom((value,{req, loc, path}) => {
                 if (value !== req.body.confirmPassword) { throw new Error(req.__("PASSWORDS_NOT_MATCH")) } 
                 else { return value }
             })
         ], function(req, res) {
-            const errors = validationResult(req);
-                  if (!errors.isEmpty()) {
-                    return res.status(422).json({ errors: errors.array() });
-                  }
-            async.waterfall([
-              function(done) {
-                User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-                  if (!user) {
-                    return res.status(422).send({ msg: req.__("PASSWORD_RESET_TOKEN_INVALID") });
-                  }
+          
+                const errors = validationResult(req);
+                      if (!errors.isEmpty()) {
+                        return res.status(422).json({ errors: errors.array() });
+                      }
 
-                  req.setLocale(user.lang)
+                async.waterfall([
+                  function(done) {
+                    User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+                      if (!user) {
+                        return res.status(422).send({ msg: req.__("PASSWORD_RESET_TOKEN_INVALID") });
+                      }
+                      
+                      req.setLocale(user.lang)
 
-                  user.password = req.body.password;
-                  user.resetPasswordToken = undefined;
-                  user.resetPasswordExpires = undefined;
+                      user.password = req.body.password;
+                      user.resetPasswordToken = undefined;
+                      user.resetPasswordExpires = undefined;
 
-                  user.save(function(err) {
-                    req.logIn(user, function(err) {
-                      done(err, user);
+                      user.save(function(err) {
+                        
+                        req.logIn(user, function(err) {
+                          done(err, user);
+                        });
+                      });
                     });
-                  });
-                });
-              },
-              function(user, done) {
-                 var mailOptions = { from: process.env.MAIL_USER, 
-                                     to: user.username, 
-                                     subject: req.__("EMAIL_RESET_PASSWORD_SUBJECT"), 
-                                     text: req.__("EMAIL_RESET_PASSWORD_TEXT", {email: user.username}) 
-                                  }
+                  },
+                  function(user, done) {
+                    var mailOptions = { from: process.env.MAIL_USER, 
+                                        to: user.username, 
+                                        subject: req.__("EMAIL_RESET_PASSWORD_SUBJECT", {applicationName: process.env.APPLICATION_NAME}), 
+                                        html: req.__("EMAIL_RESET_PASSWORD_TEXT", {userName: user.completename, host: process.env.DOMAIN, applicationName: process.env.APPLICATION_NAME}) 
+                                      }
 
-                transporter.sendMail(mailOptions, function (err) {
-                    if (err) { return res.status(500).send({ msg: 'error sendMail->' + err.message }); }
-                    res.status(200).send({ msg: req.__("PASSWORD_CHANGED_SUCCESSFULLY", user.username)});
+                    transporter.sendMail(mailOptions, function (err) {
+                        if (err) { return res.status(500).send({ msg: 'error sendMail->' + err.message }); }
+                        res.status(200).send({ msg: req.__("PASSWORD_CHANGED_SUCCESSFULLY", user.username)});
+                    });
+                      
+                    
+                  }
+                ], function(err) {
+                  res.status(422).send({ msg: err });
                 });
-                   
-                
-              }
-            ], function(err) {
-              res.redirect('/');
-            });
-});
+})
+router.route(Verify.verifyOrdinaryUser, '/reset_password/')
+      .post([
+            check('password').custom((value,{req, loc, path}) => {
+                if (value !== req.body.confirmPassword) { throw new Error(req.__("PASSWORDS_NOT_MATCH")) } 
+                else { return value }
+            })
+        ], function(req, res) {
+
+                const errors = validationResult(req);
+                      if (!errors.isEmpty()) {
+                        return res.status(422).json({ errors: errors.array() });
+                      }
+                async.waterfall([
+                  function(done) {
+                    Verify.getUsernameFromToken(req.headers['authorization'])
+                    .then(username => {
+                        User.findOne({ username }, function(err, user) {
+                          if (!user) {
+                            return res.status(422).send({ msg: req.__("PASSWORD_RESET_TOKEN_INVALID") });
+                          }
+
+                          req.setLocale(user.lang)
+
+                          user.password = req.body.password;
+                          user.resetPasswordToken = undefined;
+                          user.resetPasswordExpires = undefined;
+
+                          user.save(function(err) {
+                            req.logIn(user, function(err) {
+                              done(err, user);
+                            });
+                          });
+                        })
+                  })
+                  .catch(err => {
+                      return res.status(422).send({ msg: 'Contatar com equipe tecnica' });
+                  })
+                  },
+                  function(user, done) {
+                    var mailOptions = { from: process.env.MAIL_USER, 
+                                        to: user.username, 
+                                        subject: req.__("EMAIL_RESET_PASSWORD_SUBJECT", {applicationName: process.env.APPLICATION_NAME}), 
+                                        html: req.__("EMAIL_RESET_PASSWORD_TEXT", {userName: user.completename, host: process.env.DOMAIN, applicationName: process.env.APPLICATION_NAME}) 
+                                      }
+
+                    transporter.sendMail(mailOptions, function (err) {
+                        if (err) { return res.status(500).send({ msg: 'error sendMail->' + err.message }); }
+                        res.status(200).send({ msg: req.__("PASSWORD_CHANGED_SUCCESSFULLY", user.username)});
+                    });
+                      
+                    
+                  }
+                ], function(err) {
+                  res.status(422).send({ msg: err });
+                })
+})
 // CLIENT VET REGISTRATION
 router.route('/register-vet')
     .post(Verify.verifyAdmin, [
@@ -328,7 +494,7 @@ router.route('/register-vet')
                   if (!errors.isEmpty()) {
                     return res.status(422).json({ errors: errors.array() });
                   }
-                  console.log(JSON.stringify(req.body))
+                  
 
                   User.register(new User({ username : req.body.username }),
                                     req.body.password, function(err, user) {
@@ -384,7 +550,7 @@ router.route('/register-admin')
                   if (!errors.isEmpty()) {
                     return res.status(422).json({ errors: errors.array() });
                   }
-                  console.log(JSON.stringify(req.body))
+                  
 
                   User.register(new User({ username : req.body.username, password: req.body.password, vet: req.body.vet, admin: req.body.admin  }),
                                     req.body.password, function(err, user) {
@@ -406,54 +572,6 @@ router.route('/register-admin')
                
       });
 
-router.post('/login', function (req, res, next) {
-  passport.authenticate('local', function (err, user, info) {
-        if (err) {
-          return next(err);
-        }
-        if (!user) {
-            var json
-            if(i18n.__("USERNAME_WRONG") === req.__(info.msg)){
-                json = { username: req.__(info.msg) }
-            }else{
-                json = { password: req.__(info.msg) }
-            }
-           return res.status(401).json(json);
-        }
-
-        req.setLocale(user.lang)
-        if(!user.verified){
-          return res.status(400).json({
-            username: req.__("LOGIN_EMAIL_VERIFICATION_REQUIRED")
-          });
-        }
-        req.logIn(user, function (err) {
-              if (err) {
-                return res.status(500).json({
-                  username: req.__("LOGIN_ERROR_NOT_LOGIN")
-                });
-              }
-
-              var token = Verify.getToken({"username":user.username, "_id":user._id ,
-                                             "admin":user.admin,"vet":user.vet, "client":user.client,"clinic":user.clinic});
-            
-
-              var iduser = user._id;
-              console.log('userRouter login ok....')
-              res.status(200).json({
-                status: req.__("LOGIN_SUCCESSFULL"),
-                success: true,
-                token: token,
-                iduser: iduser,
-                admin: user.admin,
-                vet: user.vet,
-                client: user.client,
-                clinic: user.clinic,
-                lang: user.lang
-              });
-        });
-  })(req, res, next);
-});
 
 router.get('/logout', function (req, res) {
   req.logout();
@@ -497,7 +615,6 @@ router.route('/search/:userName')
         .select('-password')
         .exec(function (err, taskgroup) {
         if (err) next(err);
-        console.log(taskgroup)
         res.json(taskgroup);
     });
 
@@ -512,7 +629,7 @@ router.route('/:user_type')
                   res.json(user)
               })
             }else if(req.params.user_type ==  2){
-              console.log('vets')
+              
                 User.find({ vet: true} ,function (err, user) {
                   if (err) res.status(500).json({ error: "save failed", err: err})
                   res.json(user)
@@ -598,7 +715,7 @@ router.route('/details/:userId')
                 UserDetails.findByIdAndUpdate(user.details ? user.details : {},  req.body, options2)
                     .exec(function (err, userDetails){
                       if(err) res.status(500).json(err)
-                        console.log(userDetails)
+                      
                         User.findByIdAndUpdate(userDetails.user, { details: userDetails._id }, options2)
                             .populate('details')
                             .exec(function (err, userfinal){

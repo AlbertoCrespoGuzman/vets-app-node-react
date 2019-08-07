@@ -10,3 +10,15 @@ export const loadUsersSuccess = (data) => {
         data
     }   
 }
+
+export const loadProfileRequest = () => {
+    return {
+        type : 'LOAD_PROFILE_REQUEST'
+    }
+}
+export const loadProfileSuccess = (data) => {
+    return {
+        type : 'LOAD_PROFILE_SUCCESS',
+        data
+    }   
+}

@@ -16,6 +16,8 @@ import Exams from './components/Exams'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { makeStyles,createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
+import ForgotPassword from './components/ForgotPassword'
+import ResetPassword from './components/ResetPassword'
 
 if(localStorage.jwtToken) {
   setAuthToken(localStorage.jwtToken);
@@ -59,6 +61,8 @@ function App() {
                 <Route exact path="/" component={ Home } />
                 <div className="">
                   <Route exact path="/login" component={ Login } />
+                  <Route exact path="/forgot_password" component={ ForgotPassword } />
+                  <Route exact path="/reset_password" component={ ResetPassword } />
                 </div>
             </div>
           </Router>

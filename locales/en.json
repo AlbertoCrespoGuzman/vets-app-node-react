@@ -12,10 +12,8 @@
 	"LOGIN_EMAIL_VERIFICATION_REQUIRED": "In order to loggin, first you have to verify your e-mail account. Please, check your e-mail.",
 	"LOGIN_ERROR_NOT_LOGIN": "Could not log in user",
 	"LOGIN_SUCCESSFULL": "Log in successfully",
-	"EMAIL_RESET_PASSWORD": "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n Please click on the following link, or paste this into your browser to complete the process:\n\nhttp://{{host}}/users/reset/{{token}} \n\n If you did not request this, please ignore this email and your password will remain unchanged.\n",
 	"USERNAME_EMPTY": "Please, type your email",
 	"PASSWORD_RESET_TOKEN_INVALID": "Password reset token is invalid or has expired.",
-	"EMAIL_RESET_PASSWORD_SUBJECT": "Dr Go Pet - Password reset",
 	"EMAIL_RESET_PASSWORD_TEXT": "Hello,\n\n This is a confirmation that the password for your account {{email}} has just been changed.\n",
 	"EMAIL_PASSWORD_RESET_SENT": "Password reset e-mail has been sent to %s",
 	"PASSWORD_CHANGED_SUCCESSFULLY": "Your password has been changed successfully",
@@ -28,5 +26,9 @@
 	"NOT_ENOUGH_CREDITS": "Not enough credits",
 	"Senha inválida": "Senha inválida",
 	"E-mail inválido": "E-mail inválido",
-	"USER_TYPE_ERROR": "Please select a valid user type"
+	"USER_TYPE_ERROR": "Please select a valid user type",
+	"EMAIL_CREATED_ACCOUNT_SUBJECT": "Welcome to {{applicationName}}, {{userName}}",
+	"EMAIL_CREATED_ACCOUNT_TEXT": "  Hi {{userName}}, \n You have been registered in {{applicationName}}. \n \n You can access to your account logging <a href='{{host}}'> here </a> with your email. \n Your temporary password is {{password}} . \n We recomend change your password in your Profile \n\n Best regards,\n {{applicationName}} ",
+	"EMAIL_RESET_PASSWORD_SUBJECT": "{{applicationName}} - Recuperação de Senha",
+	"EMAIL_RESET_PASSWORD": "<p> Olà, </p> <p> Você recebeu este e-mail para recuperar sua senha de acesso a {{applicationName}} </p> <p> Para continuar com o processo por favor clique no seguinte <a href='{{host}}/retrieve_password?token={{token}}' >link</a> </p> <p> Caso contrário, desconsidere este e-mail,</p> <p> Obrigado </p>"
 }

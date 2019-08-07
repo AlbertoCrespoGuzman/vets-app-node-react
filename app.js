@@ -20,7 +20,7 @@ const i18n = require("i18n")
 const User = require('./models/user')
 
 i18n.configure({
-    locales:['en', 'es', 'pt'],
+    locales:['pt'],
     fallback: 'pt',
     logDebugFn: function (msg) {
         console.log('debug', msg);

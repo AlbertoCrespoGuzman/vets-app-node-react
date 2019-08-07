@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/Grid'
 import MaterialTable from 'material-table'
 import Moment from 'moment'
 import Tooltip from '@material-ui/core/Tooltip'
+import axios from 'axios'
 
 class Users extends Component {
     
@@ -22,7 +23,7 @@ class Users extends Component {
 
     render() {
         return (
-            <div style={{marginLeft:10, marginTop: 50}}>
+            <div style={{marginLeft:10, marginTop: 40}}>
                
                <Grid
                     container
@@ -42,12 +43,14 @@ class Users extends Component {
 
                             onRowUpdate: (newData, oldData) =>
                                 new Promise((resolve, reject) => {
-                                    setTimeout(() => {
-                                        {
-                                            
-                                        }
-                                        resolve();
-                                    }, 1000);
+                                    axios.patch('api/users/' + oldData._id, newData)
+                                        .then(res => {
+                                            this.props.loadUsers()
+                                            resolve()
+                                        })
+                                       .catch(err => {
+                                            reject()
+                                       })
                                 }),
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
@@ -64,7 +67,33 @@ class Users extends Component {
                             exportButton: true,
                             exportFileName: 'Usuarios'
                           }}
-                          
+                          localization={{
+                            header: {
+                                actions: 'Ações'
+                            },
+                            body: {
+                              emptyDataSourceMessage: 'Sem dados para mostrar',
+                              editRow: {
+                                deleteText: 'Tem certeza que quer deletar o usuário?'
+                              }
+                            },
+                            toolbar: {
+                              searchTooltip: 'Procurar',
+                              searchPlaceholder: 'Procurar',
+                              exportTitle: 'Exportar CSV',
+                              exportAriaLabel: 'Exportar CSV',
+                              exportName: 'Exportar CSV'
+
+                            },
+                            pagination: {
+                              labelRowsSelect: 'Filas',
+                              labelDisplayedRows: '{count} de {from}-{to} ',
+                              firstTooltip: 'Primeira',
+                              previousTooltip: 'Anterior',
+                              nextTooltip: 'Seguinte',
+                              lastTooltip: 'Última Página'
+                            }
+                          }}
                         />
                     </Grid>
              </Grid>
@@ -73,25 +102,27 @@ class Users extends Component {
         );
     }
 }
-function convertDate(date){
+function convertDateMin(date){
+    return  Moment(date).format('DD/MM/YY')
+ }
+ function convertDateMax(date){
     return  Moment(date).format('DD/MM/YYYY hh:mm A')
  }
 const columns = [
 { title: 'E-mail', field: 'username' },
-{ title: 'Verificado', field: 'verified', type: 'boolean' },
-{ title: 'Nome Completo', field: 'completename' },
+{ title: 'Nome', field: 'completename' },
 { title: 'CPF/CNPJ', field: 'cpf' },
 { title: 'Endereço',
   field: 'address',
   render: rowData => <Tooltip title={rowData.address ? rowData.address : 'Sem Endereço definido'} placement="top"><div> {( rowData.address && rowData.address.length > 5) ? (rowData.address.substring(0,5) + '...') : rowData.address} </div></Tooltip>  },
-{ title: 'Última atividade', 
+{ title: 'Atividade', 
   field: 'lastActivity',
   type: 'datetime', 
-  render: rowData => <div> {convertDate(rowData.lastActivity) }</div> },
+  render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMin(rowData.lastActivity) }</div></Tooltip> },
 {
-  title: 'Tipo Usuário',
+  title: 'Tipo',
   field: 'type',
-  lookup: { 1: 'Client', 2: 'Clínica', 3: 'Veterinário', 4: 'Admin' },
+  lookup: { 1: 'Cliente', 2: 'Clínica', 3: 'Veterinário', 4: 'Admin' },
 },]
 const mapStateToProps = (state) => {
     return {

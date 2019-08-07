@@ -13,7 +13,10 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
-
+import Link from '@material-ui/core/Link'
+import { Link as RouterLink } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import ResetPassword from './ForgotPassword'
 
 class Login extends Component {
 
@@ -71,70 +74,79 @@ class Login extends Component {
     //      }, [])
 
         return(
-            <Grid
-            container
-            spacing={0}
-            direction="column"
-            alignItems="center"
-            justify="center"
-            style={{ minHeight: '100vh' }}
-           >
-          
-            <Grid item xs={3}>
-                    <Card className={classes.card}>
-                    <CardContent>
-                    <Typography 
-                            className={classes.title} color="textSecondary" gutterBottom>
-                        Vets
-                    </Typography>
-                    <Typography 
-                            variant="h5" component="h2">
-                        Login
-                    </Typography>
-                    <form onSubmit={ this.handleSubmit }>
-                        <FormControl className={classes.formControl} fullWidth={true} error>
-                            <InputLabel htmlFor="username">E-mail</InputLabel>
-                            <Input
-                            type="username"
-                            id="username"
-                            value={ this.state.username }
-                            name="username"
-                            onChange={this.handleInputChange}
-                            aria-describedby="username-text"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.username }
-                            />
-                            {errors.username && (<FormHelperText id="username-text">{errors.username}</FormHelperText>)}
-                        </FormControl>
-                        <FormControl  fullWidth={true} className={classes.formControl} error>
-                            <InputLabel htmlFor="password">Senha</InputLabel>
-                            <Input
-                            type="password"
-                            id="password"
-                            value={ this.state.password }
-                            name="password"
-                            onChange={this.handleInputChange}
-                            aria-describedby="password-text"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.password }
-                            />
-                            {errors.password && (<FormHelperText id="password-text">{errors.password}</FormHelperText>)}
-                        </FormControl>
-                        
-                        
-                    <CardActions>
-                        <Button fullWidth={true} variant="contained" color="primary" type="submit" >
+            
+                <Grid
+                container
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                justify="center"
+                style={{ minHeight: '100vh' }}
+            >
+            
+                <Grid item xs={6}>
+                        <Card className={classes.card}>
+                        <CardContent>
+                        <Typography 
+                                className={classes.title} color="textSecondary" gutterBottom>
+                            Vets
+                        </Typography>
+                        <Typography 
+                                variant="h5" component="h2">
                             Login
-                        </Button>
-                    </CardActions>
-                    </form>
-                    </CardContent>
-                </Card>
-            </Grid>      
-          </Grid>
+                        </Typography>
+                        <form onSubmit={ this.handleSubmit }>
+                            <FormControl className={classes.formControl} fullWidth={true} >
+                                <InputLabel htmlFor="username">E-mail</InputLabel>
+                                <Input
+                                type="username"
+                                id="username"
+                                value={ this.state.username }
+                                name="username"
+                                onChange={this.handleInputChange}
+                                aria-describedby="username-text"
+                                onChange={ this.handleInputChange }
+                                value={ this.state.username }
+                                />
+                                {errors.username && (<FormHelperText id="username-text" style={{color: 'red'}}>{errors.username}</FormHelperText>)}
+                            </FormControl>
+                            <FormControl  fullWidth={true} className={classes.formControl} >
+                                <InputLabel htmlFor="password">Senha</InputLabel>
+                                <Input
+                                type="password"
+                                id="password"
+                                value={ this.state.password }
+                                name="password"
+                                onChange={this.handleInputChange}
+                                aria-describedby="password-text"
+                                onChange={ this.handleInputChange }
+                                value={ this.state.password }
+                                />
+                                {errors.password && (<FormHelperText id="password-text" style={{color: 'red'}}>{errors.password}</FormHelperText>)}
+                            </FormControl>
+                            
+                            
+                        <CardActions>
+                            <Button fullWidth={true} variant="contained" color="primary" type="submit" >
+                                Login
+                            </Button>
+                        </CardActions>
+                        </form>
+                        </CardContent>
+                        <CardActions>
+                                <Link component={ AdapterLink } to="/forgot_password">
+                                    Esqueceu sua senha?
+                                </Link>
+                        </CardActions>
+
+                    </Card>
+                </Grid>      
+            </Grid>
         )
     }
 }
+const AdapterLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} {...props} />);
+
 const classes = makeStyles(theme => ({
     container: {
         display: 'flex',
