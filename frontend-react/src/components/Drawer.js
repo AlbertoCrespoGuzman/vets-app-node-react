@@ -26,7 +26,10 @@ import Register from './Register'
 import Users from './Users'
 import Profile from './Profile'
 import Exams from './Exams'
+import AdminExams from './AdminExams'
+import AddAdminExams from './AddAdminExams'
 import { Link } from 'react-router-dom';
+import AddNoteIcon from '@material-ui/icons/NoteAdd'
 
 const drawerWidth = 240;
 
@@ -162,13 +165,25 @@ export default function MiniDrawer(props) {
         {props.user.admin && ( 
             <div>
                 <List>
+                    <ListItem button component={ Link } color="inherit" to="/register" >
+                        <ListItemIcon><PersonAddIcon /></ListItemIcon>
+                        <ListItemText primary='Adicionar Usuário'/>
+                    </ListItem>
                     <ListItem button component={ Link } color="inherit" to="/users" >
                         <ListItemIcon><GroupIcon /></ListItemIcon>
                         <ListItemText primary='Usuários'/>
                     </ListItem>
-                    <ListItem button component={ Link } color="inherit" to="/register" >
-                        <ListItemIcon><PersonAddIcon /></ListItemIcon>
-                        <ListItemText primary='Add Usuário'/>
+                    
+                </List>
+                <Divider />
+                <List>
+                    <ListItem button component={ Link } color="inherit" to="/add_admin_exams" >
+                        <ListItemIcon><AddNoteIcon /></ListItemIcon>
+                        <ListItemText primary='Adicionar Exame'/>
+                    </ListItem>
+                    <ListItem button component={ Link } color="inherit" to="/admin_exams" >
+                        <ListItemIcon><PictureAsPdfIcon /></ListItemIcon>
+                        <ListItemText primary='Exames'/>
                     </ListItem>
                 </List>
                 <Divider />
@@ -215,6 +230,8 @@ export default function MiniDrawer(props) {
       <Route exact path="/users" component={ Users } />
       <Route exact path="/profile" component={ Profile } />
       <Route exact path="/exams" component={ Exams } />
+      <Route exact path="/add_admin_exams" component = { AddAdminExams } />
+      <Route exact path="/admin_exams" component={ AdminExams } />
       <Route exact path="/register" component={ Register } />
     </Router>
       </div>

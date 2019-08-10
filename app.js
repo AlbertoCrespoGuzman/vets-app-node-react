@@ -10,12 +10,13 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const shell = require('shelljs')
 const apiRouter = require('./routes/apiRouter')
+const filesRouter = require('./routes/filesRouter')
 const reactRouter = require('./routes/reactRouter')
 const usersRouter = require('./routes/usersRouter')
 const app = express()
 require('dotenv').config()
 const i18n = require("i18n")
-
+var cors = require('cors')
 
 const User = require('./models/user')
 
@@ -28,8 +29,12 @@ i18n.configure({
     directory: path.join(__dirname + '/locales')
 });
 
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200,
+}
 
-
+app.use(cors(corsOptions))
 app.use(compression())
 
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-1dxy7.mongodb.net/vets_db?retryWrites=true&w=majority`,
@@ -99,6 +104,7 @@ app.use(i18n.init)
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/users', usersRouter)
+app.use('/api/files', filesRouter)
 app.use('/api', apiRouter)
 app.use('/', reactRouter)
 

@@ -22,3 +22,15 @@ export const loadProfileSuccess = (data) => {
         data
     }   
 }
+
+export const loadAdminExamsRequest = () => {
+    return {
+        type : 'LOAD_ADMIN_EXAMS_REQUEST'
+    }
+}
+export const loadAdminExamsSuccess = (data) => {
+    return {
+        type : 'LOAD_ADMIN_EXAMS_SUCCESS',
+        data
+    }   
+}
