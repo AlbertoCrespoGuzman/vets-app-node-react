@@ -24,22 +24,22 @@ exports.getUsernameFromToken = function (token){
         })
             
           })
-  var userName = ''
-      if (token){
-        console.log(' yes token', token)
+}
+exports.getIfAdminFromToken = function (token){
+  return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.SECURITY_SECRETKEY, function (err, decoded){
-              if (err){
-                console.log('err!', err)
-                var err = new Error('You are not authenticated! verifyOrdinaryUser')
-                err.status = 401
-                return userName
-              }
-              else{
-                console.log(JSON.stringify(decoded))
-                return decoded.username
-              }
-            })
-      }
+          if (err){
+            console.log('err!', err)
+            var err = new Error('You are not authenticated! verifyOrdinaryUser')
+            err.status = 401
+            reject(err)
+          }
+          else{
+            resolve(decoded.admin)
+          }
+        })
+            
+          })
 }
 exports.verifyOrdinaryUser = function (req, res, next){
   var token = req.body.token || req.query.token || req.headers['authorization'];

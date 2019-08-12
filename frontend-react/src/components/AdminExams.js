@@ -39,27 +39,44 @@ class AdminExams extends Component {
                         title="Exames"
                         columns={columns}
                         data={this.props.adminExams}
+                        actions={[
+                            {
+                              icon: 'remove_red_eye',
+                              tooltip: 'Visualizar Arquivo',
+                              onClick: (event, rowData) => {
+                               axios('/api/files/' + rowData._id, {
+                                    method: 'GET',
+                                    responseType: 'blob' //Force to receive data in a Blob Format
+                                })
+                                .then(response => {
+                                //Create a Blob from the PDF Stream
+                                console.log('response!', response.data)
+                                    const file = new Blob(
+                                      [response.data], 
+                                      {type: 'application/pdf'});
+                                //Build a URL from the file
+                                    const fileURL = URL.createObjectURL(file);
+                                //Open the URL on new Window
+                                    window.open(fileURL);
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                              }
+                            }
+                          ]}
                         editable={{
 
-                            onRowUpdate: (newData, oldData) =>
-                                new Promise((resolve, reject) => {
-                                    axios.patch('api/files/' + oldData._id, newData)
-                                        .then(res => {
-                                            this.props.loadAdminExams()
-                                            resolve()
-                                        })
-                                       .catch(err => {
-                                            reject()
-                                       })
-                                }),
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
-                                    setTimeout(() => {
-                                        {
-                                            
-                                        }
-                                        resolve();
-                                    }, 1000);
+                                    axios.delete('/api/files/' + oldData._id)
+                                        .then(res => {
+                                            this.props.loadAdminExams()
+                                            resolve(res)
+                                        })
+                                        .catch(err => {
+                                            reject(err)
+                                        })
                                 })
                         }}
                         options={{
@@ -110,12 +127,13 @@ function convertDateMin(date){
  }
 const columns = [
 { title: 'Nome', field: 'displayName' },
+{ title: 'Tipo', field: 'type' },
 { title: 'Usuário', field: 'user.completename' },
 { title: 'Lido', field: 'read', type: 'boolean' },
 { title: 'Data subida', 
   field: 'lastActivity',
   type: 'datetime', 
-  render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMin(rowData.lastActivity) }</div></Tooltip> },
+  render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMax(rowData.lastActivity) }</div></Tooltip> },
 ]
 const mapStateToProps = (state) => {
     return {

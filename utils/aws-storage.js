@@ -1,14 +1,15 @@
-
-
+require('dotenv').config()
 
 
 exports.saveFileInAWS = function (file){
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            console.log('simulating AWS transfer...')
-            console.log('OK from AWS')
-            resolve(true)
-        }, 2000)
+        if(process.env.AWS_ENABLED === true){
+            console.log('process.env.AWS_ENABLED',process.env.AWS_ENABLED)
+            resolve('aws')
+        }else{
+            console.log('!process.env.AWS_ENABLED',process.env.AWS_ENABLED)
+            resolve('/tmp/')
+        }
     })
 }
 

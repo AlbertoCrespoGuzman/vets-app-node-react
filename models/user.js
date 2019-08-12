@@ -50,6 +50,10 @@ var User = new Schema({
     address: { 
         type:String
     },
+    files: [{
+        type : mongoose.Schema.ObjectId,
+        ref: 'File'
+    }],
     resetPasswordToken: String,
     resetPasswordExpires: Date
 })

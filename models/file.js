@@ -1,13 +1,10 @@
 var mongoose = require('mongoose')
-var Schema = mongoose.Schema;
-var passportLocalMongoose = require('passport-local-mongoose');
-var bcrypt = require('bcrypt-nodejs')
+var Schema = mongoose.Schema
 
 
 var File = new Schema({
     originalName: {
-      type:String,
-      unique: true
+      type:String
     },
     displayName: { 
         type:String
@@ -44,7 +41,5 @@ var File = new Schema({
         type:Date
       },
 });
-
-File.plugin(passportLocalMongoose)
 
 module.exports = mongoose.model('File', File);

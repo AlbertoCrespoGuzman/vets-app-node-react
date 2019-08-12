@@ -52,10 +52,8 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
                   User.register(new User({ username : process.env.ADMIN_USER, password: process.env.ADMIN_PASS }),
                       process.env.ADMIN_PASS, function(err, user) {
                           if(err) console.log(err)
-                            user.firstname = 'admin'
-                            user.lastname = 'admin'
+                            user.completename = 'admin'
                             user.admin = true
-                            user.verified = true
                             user.save(function(err,user) {
                                 console.log('admin created successfully')
                             });
@@ -151,8 +149,8 @@ app.all('*', function(req, res, next){
 })
 
 app.listen(`${process.env.PORT}`, function(){
-  console.info('Server listening on port ' + this.address().port);
-});
+  console.info('Server listening on port ' + this.address().port)
+})
 //app.listen(`${process.env.PORT}`, `${process.env.HOST}`)
 //console.log(`Running on http://${process.env.HOST}:${process.env.PORT}`)
 
