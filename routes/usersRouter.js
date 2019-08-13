@@ -134,7 +134,7 @@ router.route('/')
                   });
                 }
   
-                var token = Verify.getToken({"username":user.username, "_id":user._id ,
+                var token = Verify.getToken({"completename": user.completename, "username":user.username, "_id":user._id ,
                                                "admin":user.admin,"vet":user.vet, "client":user.client,"clinic":user.clinic});
               
   

@@ -136,10 +136,12 @@ export default function MiniDrawer(props) {
           <Typography variant="h6" noWrap>
             Vets
           </Typography>
-          <div className={classes.sectionDesktop} style={{ position: 'absolute', right: '0', marginRight:50}}>
+          <div className={classes.sectionDesktop} style={{ position: 'absolute', right: '0', top: 15, marginRight:50}}>
+            {props.user.completename}
+            </div>
+            <div className={classes.sectionDesktop} style={{ fontSize: 10, position: 'absolute', right: '0',top:38, marginRight:50}}>
             {props.user.username}
             </div>
-            
         </Toolbar>
       </AppBar>
       <Drawer

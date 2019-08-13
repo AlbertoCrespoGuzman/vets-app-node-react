@@ -34,3 +34,14 @@ export const loadAdminExamsSuccess = (data) => {
         data
     }   
 }
+export const loadExamsRequest = () => {
+    return {
+        type : 'LOAD_EXAMS_REQUEST'
+    }
+}
+export const loadExamsSuccess = (data) => {
+    return {
+        type : 'LOAD_EXAMS_SUCCESS',
+        data
+    }   
+}

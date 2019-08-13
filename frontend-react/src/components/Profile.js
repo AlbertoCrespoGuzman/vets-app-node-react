@@ -140,12 +140,12 @@ class Profile extends Component {
     }
     render() {
         return (
-            <div style={{marginTop: 80, marginLeft: 30}}>
+            <div style={{marginTop: 80, marginLeft: 30, width: '100%', height: '100%', flex: 1, justifyContent: 'center', alignContent:'center'}}>
                <Typography>
                    Meu Perfil
                </Typography>
                
-               <Paper style={{marginTop:10}}>
+               <Paper style={{marginTop:10, width: '70%'}}>
                     <Tabs 
                     value={this.state.tab} onChange={this.handleTabsChange} aria-label="Meu Perfil">
                     <Tab label="Detalhes Conta" {...a11yProps(0)} />

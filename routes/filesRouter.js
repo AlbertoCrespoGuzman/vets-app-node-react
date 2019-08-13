@@ -21,13 +21,41 @@ options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
 
 router.route('/')
-  .get(Verify.verifyAdmin, function (req, res, next){
-        File.find({})
-            .populate('user')
-            .exec(function(err, files){
-            if (err) throw err
-            res.json(files)
-        })
+  .get(Verify.verifyOrdinaryUser, function (req, res, next){
+      Verify.getIfAdminFromToken(req.headers['authorization'])
+      .then(isAdmin => {
+        if(isAdmin){
+            File.find({})
+                .populate('user')
+                .exec(function(err, files){
+                    if (err) throw err
+                    res.json(files)
+            })
+        }else{
+                Verify.getUsernameFromToken(req.headers['authorization'])
+                .then(username => {
+                    User.findOne({ username })
+                    .exec(function(err, user){
+                        if (err) throw err
+                        File.find({user: user._id})
+                            .populate('user')
+                            .exec(function(err, files){
+                                if (err) throw err
+                                res.json(files)
+                            })
+                    })
+                    
+                })
+                .catch(err => {
+                    return res.status(500).json(err)
+                })
+            }
+        
+      })
+      .catch(err => {
+        return res.status(500).json(err)
+      })
+        
   })
   
   .post(Verify.verifyAdmin, function (req, res, next){
@@ -74,6 +102,7 @@ router.route('/')
                         displayName: allFields.displayName && allFields.displayName.length > 0 ? allFields.displayName : allFields.file.originalname,
                         url: AwsRes, // !!!,
                         type: allFields.type,
+                        lastRead: null,
                 //        size: allFields.size,
                         user: allFields.userId,
         
@@ -137,6 +166,12 @@ router.route('/:fileId')
                                 }
                                 res.contentType('application/' + file.type)
                                 res.send(data)
+                                if(!user.admin){
+                                    File.findOneAndUpdate( { _id: file._id }, {read: true, lastRead: new Date()}, options)
+                                    .exec( function(err, file){
+                                        
+                                    })
+                                }
                             }catch(err){
                                 console.log('err', JSON.stringify(err))
                                 return res.status(500).json(err)

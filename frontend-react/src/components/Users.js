@@ -9,6 +9,8 @@ import MaterialTable from 'material-table'
 import Moment from 'moment'
 import Tooltip from '@material-ui/core/Tooltip'
 import axios from 'axios'
+import Grow from '@material-ui/core/Grow'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 class Users extends Component {
     
@@ -23,8 +25,25 @@ class Users extends Component {
 
     render() {
         return (
-            <div style={{marginLeft:10, marginTop: 40}}>
-               
+            <div style={{marginLeft:10, marginTop: 40, width:'100%', height:'100%'}}>
+            {this.props.isFetching && (
+                            <Grid
+                            container
+                            spacing={0}
+                            direction="column"
+                            alignItems="center"
+                            justify="center"
+                            style={{flex:1, marginTop:100,justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}
+                          >
+                                <CircularProgress />
+                            </Grid>
+                        )}
+               {!this.props.isFetching && (
+               <Grow
+                in={!this.props.isFetching}
+                style={{ transformOrigin: '0 0 0' }}
+                {...(!this.props.isFetching ? { timeout: 1000 } : {})}
+                >
                <Grid
                     container
                     spacing={0}
@@ -56,7 +75,7 @@ class Users extends Component {
                                 new Promise((resolve, reject) => {
                                     setTimeout(() => {
                                         {
-                                            
+                                            alert('opção não habilitada')
                                         }
                                         resolve();
                                     }, 1000);
@@ -97,6 +116,8 @@ class Users extends Component {
                         />
                     </Grid>
              </Grid>
+             </Grow>
+             )}
             
             </div>
         );
