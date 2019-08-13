@@ -6,11 +6,13 @@ ssh ubuntu@localhost <<EOF
     nvm install v12.7.0
     npm install
     npm install -g nodemon pm2
-    pm2 restart ecosystem.config.js
     cd frontend-react
     npm install
     npm run build
     npm install -g serve
     pm2 restart ecosystem.config.js
+    cd ..
+    pm2 restart ecosystem.config.js
+    
     exit
 EOF
