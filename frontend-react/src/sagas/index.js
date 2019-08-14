@@ -1,8 +1,9 @@
 import { takeLatest } from 'redux-saga/effects'
 import getUsers from './usersSagas'
 import getProfile from './profileSagas'
-import getAdminExams from './adminExamsSagas'
 import getExams from './examsSagas'
+import getAdminExams from './adminExamsSagas'
+
 import axios from 'axios'
 
 function *index(){
