@@ -91,7 +91,7 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
     });
 
 app.set('views', path.join(__dirname, 'frontend-react/build'))
-//app.set('view engine', 'ejs')
+app.set('view engine', 'ejs')
 
 app.use(bodyParser.json({limit: '100mb'}))
 app.use(bodyParser.urlencoded({ extended: true }))
