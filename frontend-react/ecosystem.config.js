@@ -4,7 +4,7 @@ module.exports = {
       name      : "frontend-react",
       script    : "npx",
       interpreter: "none",
-      args: "serve -p 3000" 
+      args: "serve  -s build -l 3000" 
     }
   ]
 }
