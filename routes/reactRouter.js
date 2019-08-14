@@ -5,22 +5,15 @@ router.use(bodyParser.json());
 
 router.route('/')
   .get(function (req, res, next){
-    res.send('index.html')
+
+    res.send('index2.html')
   })
   router.route('/reset_password')
   .get(function (req, res, next){
     res.send('index.html')
   })
   
-  router.route('/error')
-  .get(function (req, res, next){
-
-    setTimeout(()=> {
-        console.error('forcing error')
-        hoalquetal
-    }, 5000)
-    res.send('forced error this never has to be seen')
-  })
+  
 
 
   module.exports = router
