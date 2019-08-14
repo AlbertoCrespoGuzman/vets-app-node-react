@@ -25,7 +25,7 @@ export const registerUser = (user, history) => dispatch => {
 
 export const loginUser = (user) => dispatch => {
     
-    axios.post('localhost:4444/api/users/login', user)
+    axios.post('http://52.14.229.191:4444/api/users/login', user)
             .then(res => {
                 console.log('res', res.data)
                 const { token } = res.data;
