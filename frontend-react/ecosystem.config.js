@@ -1,7 +1,10 @@
-module.exports = { 
-    apps: [{
-      name    : "vets-app-node-react-frontend",
-      script  : "npm",
-      args    : "start"
-    }]
-  }
+module.exports = {
+  apps : [
+    {
+      name      : "frontend-react",
+      script    : "npx",
+      interpreter: "none",
+      args: "serve -p 3000 -T"
+    }
+  ]
+}
