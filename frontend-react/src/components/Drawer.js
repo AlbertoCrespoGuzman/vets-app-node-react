@@ -221,7 +221,7 @@ export default function MiniDrawer(props) {
                 </List>
                 <Divider />
                 <List>
-                    <ListItem button component={ Link } color="inherit" onClick={onLogout}  >
+                    <ListItem button color="inherit" onClick={onLogout}  >
                         <ListItemIcon><ExistToAppIcon /></ListItemIcon>
                         <ListItemText primary='Sair'/>
                     </ListItem>

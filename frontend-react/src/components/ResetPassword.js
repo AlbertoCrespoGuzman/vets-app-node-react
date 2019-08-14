@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import axios from  'axios'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export default class ResetPassword extends Component {
     constructor(props){
@@ -41,7 +43,7 @@ export default class ResetPassword extends Component {
                 this.setState({
                     isFetching: true
                 })
-                var url = '/api/users/reset_password/'
+                var url = process.env.REACT_APP_API_HOST + '/api/users/reset_password/'
                 if(this.props.location.search.split('=').length == 2){
                     url += 'token/' + this.props.location.search.split('=')[1]
                 }

@@ -11,6 +11,8 @@ import Tooltip from '@material-ui/core/Tooltip'
 import axios from 'axios'
 import Grow from '@material-ui/core/Grow'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import dotenv from 'dotenv'
+dotenv.config()
 
 class Users extends Component {
     
@@ -62,7 +64,7 @@ class Users extends Component {
 
                             onRowUpdate: (newData, oldData) =>
                                 new Promise((resolve, reject) => {
-                                    axios.patch('api/users/' + oldData._id, newData)
+                                    axios.patch(process.env.REACT_APP_API_HOST + '/api/users/' + oldData._id, newData)
                                         .then(res => {
                                             this.props.loadUsers()
                                             resolve()

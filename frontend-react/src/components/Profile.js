@@ -23,6 +23,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import AppBar from  '@material-ui/core/AppBar' 
 import { minWidth } from '@material-ui/system';
 import axios from 'axios'
+import dotenv from 'dotenv'
+dotenv.config()
 
 class Profile extends Component {
     
@@ -67,7 +69,7 @@ class Profile extends Component {
             this.setState({
                 isSaving: true
             })
-            axios.post('/api/users/reset_password', {password: this.state.password,
+            axios.post(process.env.REACT_APP_API_HOST + '/api/users/reset_password', {password: this.state.password,
                                                      confirmPassword: this.state.confirmPassword})
                   .then(res => {
                         this.setState({
@@ -92,7 +94,7 @@ class Profile extends Component {
         this.setState({
             isSaving: true
         })
-        axios.post('/api/users/me', this.props.profile)
+        axios.post(process.env.REACT_APP_API_HOST + '/api/users/me', this.props.profile)
             .then(res => {
                 
                 this.props.profile.address = res.data.address

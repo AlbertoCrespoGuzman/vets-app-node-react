@@ -11,6 +11,8 @@ import Tooltip from '@material-ui/core/Tooltip'
 import axios from 'axios'
 import Grow from '@material-ui/core/Grow'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import dotenv from 'dotenv'
+dotenv.config()
 
 class AdminExams extends Component {
     
@@ -63,7 +65,7 @@ class AdminExams extends Component {
                               icon: 'remove_red_eye',
                               tooltip: 'Visualizar Arquivo',
                               onClick: (event, rowData) => {
-                               axios('/api/files/' + rowData._id, {
+                               axios(process.env.REACT_APP_API_HOST + '/api/files/' + rowData._id, {
                                     method: 'GET',
                                     responseType: 'blob' //Force to receive data in a Blob Format
                                 })
@@ -88,7 +90,7 @@ class AdminExams extends Component {
 
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
-                                    axios.delete('/api/files/' + oldData._id)
+                                    axios.delete(process.env.REACT_APP_API_HOST + '/api/files/' + oldData._id)
                                         .then(res => {
                                             this.props.loadAdminExams()
                                             resolve(res)

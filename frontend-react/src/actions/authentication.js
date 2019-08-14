@@ -2,13 +2,15 @@ import axios from 'axios';
 import { GET_ERRORS, SET_CURRENT_USER } from './types';
 import setAuthToken from '../setAuthToken';
 import jwt_decode from 'jwt-decode'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export const registerUser = (user, history) => dispatch => {
     
     if(localStorage.getItem('jwtToken')){
         axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken')
         console.log(axios.defaults.headers.common['Authorization'])
-        axios.post('/api/users/register', user)
+        axios.post(process.env.REACT_APP_API_HOST + '/api/users/register', user)
                 .then(res => history.push('/users?registrationSucessfull=true'))
                 .catch(err => {
                     console.log(JSON.stringify(err.response))
@@ -25,7 +27,7 @@ export const registerUser = (user, history) => dispatch => {
 
 export const loginUser = (user) => dispatch => {
     
-    axios.post('http://52.14.229.191:4444/api/users/login', user)
+    axios.post(process.env.REACT_APP_API_HOST + '/api/users/login', user)
             .then(res => {
                 console.log('res', res.data)
                 const { token } = res.data;

@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import axios from  'axios'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export default class ForgotPassword extends Component {
     constructor(props){
@@ -33,7 +35,7 @@ export default class ForgotPassword extends Component {
                 this.setState({
                     isFetching: true
                 })
-                axios.post('/api/users/forgot', {username: this.state.username })
+                axios.post(process.env.REACT_APP_API_HOST + '/api/users/forgot', {username: this.state.username })
                         .then(res => {
                             this.setState({
                                 message: res.data.msg,

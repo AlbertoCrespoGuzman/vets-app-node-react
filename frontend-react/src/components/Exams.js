@@ -11,6 +11,8 @@ import Tooltip from '@material-ui/core/Tooltip'
 import axios from 'axios'
 import Grow from '@material-ui/core/Grow'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import dotenv from 'dotenv'
+dotenv.config()
 
 class Exams extends Component {
     
@@ -63,7 +65,7 @@ class Exams extends Component {
                                     icon: 'remove_red_eye',
                                     tooltip: 'Visualizar Arquivo',
                                     onClick: (event, rowData) => {
-                                    axios('/api/files/' + rowData._id, {
+                                    axios(process.env.REACT_APP_API_HOST + '/api/files/' + rowData._id, {
                                             method: 'GET',
                                             responseType: 'blob' //Force to receive data in a Blob Format
                                         })

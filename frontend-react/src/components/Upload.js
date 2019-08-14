@@ -10,6 +10,8 @@ import PersonIcon from '@material-ui/icons/Person'
 import PdfIcon from '@material-ui/icons/PictureAsPdf'
 import EditIcon from '@material-ui/icons/Edit'
 import { ListItem, List } from '@material-ui/core';
+import dotenv from 'dotenv'
+dotenv.config()
 
 class Upload extends Component {
     constructor(props) {
@@ -68,7 +70,7 @@ class Upload extends Component {
         const ttthis = this
         axios({
             method: 'post',
-            url: '/api/files',
+            url: process.env.REACT_APP_API_HOST + '/api/files',
             data: data,
             config: { headers: {'Content-Type': 'multipart/form-data' }},
             onUploadProgress: ProgressEvent => {

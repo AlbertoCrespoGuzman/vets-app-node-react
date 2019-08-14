@@ -1,5 +1,7 @@
 import { loadDataSuccess } from "../actions"
 import { put } from  'redux-saga/effects'
+import dotenv from 'dotenv'
+dotenv.config()
 
 import axios from 'axios'
 
