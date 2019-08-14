@@ -8,7 +8,6 @@ ssh ubuntu@localhost <<EOF
     npm install -g nodemon pm2
     cd frontend-react
     npm install
-    npm run build
     npm install -g serve
     pm2 restart ecosystem.config.js
     cd ..

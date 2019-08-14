@@ -2,5 +2,4 @@
 node_modules/*
 package-lock.json
 frontend-react/node_modules/*
-frontend-react/build/*
 tmp/*
