@@ -5,7 +5,7 @@ router.use(bodyParser.json());
 
 router.route('/')
   .get(function (req, res, next){
-    res.render('index', {  })
+    res.send('index.html')
   })
 
   router.route('/error')
