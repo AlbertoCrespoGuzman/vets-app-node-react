@@ -7,7 +7,11 @@ router.route('/')
   .get(function (req, res, next){
     res.send('index.html')
   })
-
+  router.route('/reset_password')
+  .get(function (req, res, next){
+    res.send('index.html')
+  })
+  
   router.route('/error')
   .get(function (req, res, next){
 
