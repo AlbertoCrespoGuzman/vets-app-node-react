@@ -90,7 +90,7 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
       });
     });
 
-app.set('views', path.join(__dirname, 'frontend-react/build'))
+app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 app.use(bodyParser.json({limit: '100mb'}))
@@ -99,7 +99,7 @@ app.use(cookieParser())
 app.use(i18n.init)
 
 
-app.use(express.static(path.join(__dirname, 'frontend-react/build')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/users', usersRouter)
 app.use('/api/files', filesRouter)
