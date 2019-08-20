@@ -31,6 +31,9 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography'
 import FormHelperText from '@material-ui/core/FormHelperText'
+import axios from 'axios'
+import dotenv from 'dotenv'
+dotenv.config()
 
 class AddAdminExams extends Component {
     constructor(props){
@@ -39,6 +42,7 @@ class AddAdminExams extends Component {
             user: false,
             displayName : '',
             userId: 0,
+            commentsEnabled: false,
             activeStep: 0,
             skipped: new Set(),
             steps : this.getSteps(),
@@ -53,6 +57,7 @@ class AddAdminExams extends Component {
         this.getStepContent = this.getStepContent.bind(this)
         this.handledisplayName = this.handledisplayName.bind(this)
         this.triggerUploadedFinished = this.triggerUploadedFinished.bind(this)
+        this.handleSelectedCommentsEnabled = this.handleSelectedCommentsEnabled.bind(this)
     }
     componentDidMount(){
         this.props.loadUsers()
@@ -82,7 +87,11 @@ class AddAdminExams extends Component {
         }
         
     }
-    
+    handleSelectedCommentsEnabled(e){
+        this.setState({
+            commentsEnabled: e.target.value
+        })
+    }
     getSteps() {
         return ['Seleciona Usuário', 'Nome para o arquivo', 'Upload arquivo'];
       }
@@ -139,7 +148,7 @@ class AddAdminExams extends Component {
     renderdisplayName(){
         return (
             <Card style={{minHeight: 300}}>
-            <FormControl fullWidth={true} style={{padding: 50}}>
+                <FormControl fullWidth={true} style={{padding: 50}}>
                         <TextField
                             label="Nome para o Arquivo"
                             placeholder="Nome para o Arquivo"
@@ -150,7 +159,19 @@ class AddAdminExams extends Component {
                             onChange={this.handledisplayName}
                         />
                         {this.state.errors && (<FormHelperText id="username-text" style={{color: 'red'}}>{this.state.errors}</FormHelperText>)}
-                    </FormControl>
+                </FormControl>
+                <FormControl  style={{padding: 50}}>
+                    <InputLabel  style={{marginLeft:50, minWidth: 150}}>Habilitar Bate Papo</InputLabel>
+                    <Select
+                    style={{marginTop: -27, minWidth: 150}}
+                    value={this.state.commentsEnabled}
+                    onChange={this.handleSelectedCommentsEnabled}
+                    >
+                        <MenuItem value={false} >Não</MenuItem>
+                        <MenuItem value={true} >Sim</MenuItem>
+                        
+                    </Select>
+                </FormControl>
             </Card>
         )
     }
@@ -183,6 +204,21 @@ class AddAdminExams extends Component {
             this.setState({
                 errors: 'Por favor, se quiser manter o nome original clique em Pular'    
             })
+        }else if(this.state.activeStep === 1 && this.state.displayName.length > 0){
+            axios.get(process.env.REACT_APP_API_HOST + '/api/files/' + this.state.displayName + '/user/' + this.state.userId)
+                .then(res => {
+                    this.setState({
+                        activeStep: this.state.activeStep + 1,
+                        errors: false,
+                        newSkipped
+                    })
+                })
+                .catch(err => {
+                    
+                    this.setState({
+                        errors: err.response.data.err
+                    })
+                })
         }
         else{
             this.setState({

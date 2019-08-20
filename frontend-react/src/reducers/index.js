@@ -5,6 +5,7 @@ import usersReducer from './usersReducer'
 import profileReducer from './profileReducer'
 import adminExamsReducer from  './adminExamsReducer'
 import examsReducer from  './examsReducer'
+import chatDialogReducer from './chatDialogReducer'
 
 export default combineReducers({
     errors: errorReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
     users: usersReducer,
     profile: profileReducer,
     adminExams: adminExamsReducer,
-    exams: examsReducer
+    exams: examsReducer,
+    chatDialog: chatDialogReducer,
 });

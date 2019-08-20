@@ -45,3 +45,16 @@ export const loadExamsSuccess = (data) => {
         data
     }   
 }
+export const loadChatDialogRequest = (file_id) => {
+    return {
+        type : 'LOAD_CHATDIALOG_REQUEST',
+        file_id
+    }
+}
+export const loadChatDialogSuccess = (data, file_id) => {
+    return {
+        type : 'LOAD_CHATDIALOG_SUCCESS',
+        data,
+        file_id
+    }   
+}

@@ -13,6 +13,7 @@ const apiRouter = require('./routes/apiRouter')
 const filesRouter = require('./routes/filesRouter')
 const reactRouter = require('./routes/reactRouter')
 const usersRouter = require('./routes/usersRouter')
+const commentsRouter = require('./routes/commentsRouter')
 const app = express()
 require('dotenv').config()
 const i18n = require("i18n")
@@ -101,6 +102,7 @@ app.use(i18n.init)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/api/comments', commentsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/files', filesRouter)
 app.use('/api', apiRouter)

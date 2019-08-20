@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { loadAdminExamsRequest } from '../actions/actions'
 import { connect } from 'react-redux'
+import ChatDialog from './ChatDialog'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Grid'
@@ -10,8 +11,12 @@ import Moment from 'moment'
 import Tooltip from '@material-ui/core/Tooltip'
 import axios from 'axios'
 import Grow from '@material-ui/core/Grow'
+import Button from '@material-ui/core/Button'
+import Badge from '@material-ui/core/Badge'
+import MailIcon from '@material-ui/icons/Mail'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import dotenv from 'dotenv'
+import ReactDOM from "react-dom"
 dotenv.config()
 
 class AdminExams extends Component {
@@ -70,24 +75,66 @@ class AdminExams extends Component {
                                     responseType: 'blob' //Force to receive data in a Blob Format
                                 })
                                 .then(response => {
-                                //Create a Blob from the PDF Stream
-                                console.log('response!', response.data)
                                     const file = new Blob(
                                       [response.data], 
-                                      {type: 'application/pdf'});
-                                //Build a URL from the file
-                                    const fileURL = URL.createObjectURL(file);
-                                //Open the URL on new Window
-                                    window.open(fileURL);
+                                      {type: 'application/pdf'})
+                                      
+                                const fileURL = URL.createObjectURL(file)
+                                var anchor = document.createElement("a");
+                                anchor.download = rowData.displayName + '.' + rowData.type;
+                                anchor.href = fileURL;
+                                anchor.click()
+                                //    window.open(fileURL);
                                 })
                                 .catch(error => {
                                     console.log(error);
                                 });
                               }
-                            }
+                            },
+                            rowData => ({
+                                icon: rowData.commentsEnabled ?  (rowData.adminNoReadCommentsCount === 0 || !rowData.adminNoReadCommentsCount ? badgeEmailNoMessages : (rowData.adminNoReadCommentsCount === 1 ? badgeEmail1Messages : (rowData.adminNoReadCommentsCount === 2 ? badgeEmail2Messages : (rowData.adminNoReadCommentsCount === 3 ? badgeEmail3Messages : badgeEmailMoreThan3Messages)))) : '',
+                                tooltip: rowData.commentsEnabled ? 'Mensagens' : '',
+                                onClick: (event, rowData) => {
+                                    console.log('onclick')
+                                    const container = document.createElement("div");
+                                        document.body.appendChild(container);
+                                        ReactDOM.render(<ChatDialog file={rowData} />, container)
+                                    
+                                    this.setState({})
+                                },
+                                disabled: !rowData.commentsEnabled ,
+                                
+                              })
                           ]}
+                          components={[
+                                  {
+                                    Action: props => (
+                                    <Button
+                                        onClick={(event) => props.action.onClick(event, props.data)}
+                                        color="primary"
+                                        variant="contained"
+                                        style={{textTransform: 'none'}}
+                                        size="small"
+                                    >
+                                        Olhar
+                                    </Button>
+                                    ),
+                                },
+                                {
+                                    Action: props => (
+                                    <Button
+                                        onClick={(event) => props.action.onClick(event, props.data)}
+                                        color="primary"
+                                        variant="contained"
+                                        style={{textTransform: 'none'}}
+                                        size="small"
+                                    >
+                                        Deletar
+                                    </Button>
+                                    ),
+                                }
+                        ]}
                         editable={{
-
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
                                     axios.delete(process.env.REACT_APP_API_HOST + '/api/files/' + oldData._id)
@@ -141,17 +188,54 @@ class AdminExams extends Component {
         );
     }
 }
+const badgeEmailNoMessages = () => 
+ (
+    <Badge  color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmail1Messages = () => (
+    <Badge  badgeContent={1} color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmail2Messages = () => (
+    <Badge  badgeContent={2} color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmail3Messages = () => (
+    <Badge  badgeContent={3} color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmailMoreThan3Messages = () => (
+    <Badge  badgeContent="+3" color="primary">
+          <MailIcon />
+        </Badge>
+  )
 function convertDateMin(date){
-    return  Moment(date).format('DD/MM/YY')
+    if(date != null){
+        return  Moment(date).format('DD/MM/YY')
+    }else{
+        return '-'
+    }
  }
  function convertDateMax(date){
-    return  Moment(date).format('DD/MM/YYYY hh:mm A')
+    if(date != null){
+        return  Moment(date).format('DD/MM/YYYY hh:mm A')
+    }else{
+        return '-'
+    }
  }
 const columns = [
 { title: 'Nome', field: 'displayName' },
+{ title: 'Usuário', field: 'user.completename' },
 { title: 'Tipo', field: 'type' },
 { title: 'Lido', field: 'read', type: 'boolean' },
-{ title: 'Última vez lida', 
+{ title: 'Pate-papo ativo', field: 'commentsEnabled', type: 'boolean' },
+{ title: 'Mensagens Não lidas', field: 'adminNoReadCommentsCount'},
+{ title: 'Arquivo lido', 
   field: 'lastRead',
   type: 'datetime', 
   render: rowData => <Tooltip title={convertDateMax(rowData.lastRead)}><div> {convertDateMin(rowData.lastRead) }</div></Tooltip> },

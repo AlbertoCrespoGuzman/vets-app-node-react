@@ -70,27 +70,51 @@ class Exams extends Component {
                                             responseType: 'blob' //Force to receive data in a Blob Format
                                         })
                                         .then(response => {
-                                        //Create a Blob from the PDF Stream
-                                        console.log('response!', response.data)
+                                            
                                             const file = new Blob(
                                             [response.data], 
                                             {type: 'application/pdf'});
-                                        //Build a URL from the file
                                             const fileURL = URL.createObjectURL(file);
-                                        //Open the URL on new Window
-                                            window.open(fileURL);
+                                            var anchor = document.createElement("a");
+                                            anchor.download = rowData.displayName + '.' + rowData.type;
+                                            anchor.href = fileURL;
+                                            anchor.click()
+                                        //    window.open(fileURL);
                                         })
                                         .catch(error => {
                                             console.log(error);
                                         });
                                     }
+                                    },
+                                    {
+                                        icon: 'remove_red_eye',
+                                        tooltip: 'BatePapo',
+                                        onClick: (event, rowData) => {
+                                        axios(process.env.REACT_APP_API_HOST + '/api/comments/' + rowData._id, {
+                                                method: 'GET'
+                                            })
+                                            .then(response => {
+                                                console.log('response comments', response)
+                                            })
+                                            .catch(error => {
+                                                console.log(error);
+                                            });
+                                        } 
                                     }
                                 ]}
                                 
                                 options={{
                                     actionsColumnIndex: -1,
                                     exportButton: true,
-                                    exportFileName: 'Lista de Exames'
+                                    exportFileName: 'Lista de Exames',
+                                    rowStyle: rowData => {
+                                        if(rowData.read) {
+                                          return {backgroundColor: '#EEE'};
+                                        }else{
+                                           return { backgroundColor: 'white' }
+                                        }
+                                      },
+                                      
                                 }}
                                 localization={{
                                     header: {
@@ -137,7 +161,6 @@ function convertDateMin(date){
 const columns = [
 { title: 'Nome', field: 'displayName' },
 { title: 'Tipo', field: 'type' },
-{ title: 'Usuário', field: 'user.completename' },
 { title: 'Lido', field: 'read', type: 'boolean' },
 { title: 'Data subida', 
   field: 'lastActivity',

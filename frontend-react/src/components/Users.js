@@ -18,7 +18,6 @@ class Users extends Component {
     
     constructor(props){
         super(props)
-    
     }
     
     componentDidMount(){
@@ -83,6 +82,108 @@ class Users extends Component {
                                     }, 1000);
                                 })
                         }}
+                        detailPanel={[
+                            {
+                              tooltip: 'Ver Exames',
+                              render: rowData => {
+                                return (
+                                    <Grow
+                                        in={!this.props.isFetching}
+                                        style={{ transformOrigin: '0 0 0' }}
+                                        {...(!this.props.isFetching ? { timeout: 1000 } : {})}
+                                        >
+                                  <div
+                                    style={{
+                                      fontSize: 100,
+                                      textAlign: 'center',
+                                      color: 'white',
+                                      backgroundColor: '#43A047',
+                                      padding: 20
+                                    }}
+                                  >
+                                    <MaterialTable
+                                            title="Exames"
+                                            columns={columnsFiles}
+                                            data={rowData.files}
+                                            actions={[
+                                                {
+                                                icon: 'remove_red_eye',
+                                                tooltip: 'Visualizar Arquivo',
+                                                onClick: (event, rowData) => {
+                                                axios(process.env.REACT_APP_API_HOST + '/api/files/' + rowData._id, {
+                                                        method: 'GET',
+                                                        responseType: 'blob' //Force to receive data in a Blob Format
+                                                    })
+                                                    .then(response => {
+                                                        const file = new Blob(
+                                                        [response.data], 
+                                                        {type: 'application/pdf'})
+                                                        
+                                                        const fileURL = URL.createObjectURL(file)
+                                                    var anchor = document.createElement("a");
+                                                    anchor.download = rowData.displayName + '.' + rowData.type;
+                                                    anchor.href = fileURL;
+                                                    anchor.click()
+                                                    //    window.open(fileURL);
+                                                    })
+                                                    .catch(error => {
+                                                        console.log(error);
+                                                    });
+                                                }
+                                                }
+                                            ]}
+                                            editable={{
+
+                                                onRowDelete: oldData =>
+                                                    new Promise((resolve, reject) => {
+                                                        axios.delete(process.env.REACT_APP_API_HOST + '/api/files/' + oldData._id)
+                                                            .then(res => {
+                                                                this.props.loadAdminExams()
+                                                                resolve(res)
+                                                            })
+                                                            .catch(err => {
+                                                                reject(err)
+                                                            })
+                                                    })
+                                            }}
+                                    options={{
+                                        actionsColumnIndex: -1,
+                                        exportButton: true,
+                                        exportFileName: 'Lista de Exames'
+                                    }}
+                                    localization={{
+                                        header: {
+                                            actions: 'Ações'
+                                        },
+                                        body: {
+                                        emptyDataSourceMessage: 'Sem dados para mostrar',
+                                        editRow: {
+                                            deleteText: 'Tem certeza que quer deletar o exame?'
+                                        }
+                                        },
+                                        toolbar: {
+                                        searchTooltip: 'Procurar',
+                                        searchPlaceholder: 'Procurar',
+                                        exportTitle: 'Exportar CSV',
+                                        exportAriaLabel: 'Exportar CSV',
+                                        exportName: 'Exportar CSV'
+
+                                        },
+                                        pagination: {
+                                        labelRowsSelect: 'Filas',
+                                        labelDisplayedRows: '{count} de {from}-{to} ',
+                                        firstTooltip: 'Primeira',
+                                        previousTooltip: 'Anterior',
+                                        nextTooltip: 'Seguinte',
+                                        lastTooltip: 'Última Página'
+                                        }
+                                    }}
+                                    />
+                                  </div>
+                                 </Grow>
+                                )
+                              },
+                            },]}
                         options={{
                             actionsColumnIndex: -1,
                             exportButton: true,
@@ -147,6 +248,20 @@ const columns = [
   field: 'type',
   lookup: { 1: 'Cliente', 2: 'Clínica', 3: 'Veterinário', 4: 'Admin' },
 },]
+
+
+const columnsFiles = [
+    { title: 'Nome', field: 'displayName' },
+    { title: 'Tipo', field: 'type' },
+    { title: 'Lido', field: 'read', type: 'boolean' },
+    { title: 'Data subida', 
+      field: 'lastActivity',
+      type: 'datetime', 
+      render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMax(rowData.lastActivity) }</div></Tooltip> },
+    ]
+
+
+
 const mapStateToProps = (state) => {
     return {
         isFetching: state.users.isFetching,

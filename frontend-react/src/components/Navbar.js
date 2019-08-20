@@ -106,7 +106,7 @@ class Navbar extends Component {
         )
       const guestLinks = (
         <div className={classes.sectionDesktop}  style={{ position: 'absolute', right: '0'}}>
-            <Button component={ Link } color="inherit" to="/login" style={{ marginRight:30}}>Login</Button>
+            <Button component={ Link } color="inherit" to="/login" style={{ marginRight:30}}>Consulte seu exame</Button>
         </div>
       )
       

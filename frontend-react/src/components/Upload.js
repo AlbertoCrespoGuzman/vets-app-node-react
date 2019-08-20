@@ -61,6 +61,7 @@ class Upload extends Component {
         const data = new FormData()
         data.append('userId', this.props.data.userId)
         data.append('displayName', this.props.data.displayName)
+        data.append('commentsEnabled', this.props.data.commentsEnabled)
         data.append('file', file)
    //     data.append('size', file.size)
    console.log('fileee', JSON.stringify(file))

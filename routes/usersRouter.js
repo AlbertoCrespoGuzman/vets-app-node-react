@@ -38,7 +38,9 @@ router.use(i18n.init)
 router.route('/')
   .get(Verify.verifyAdmin, function (req, res, next)
   {
-    User.find({}, function (err, user){
+    User.find({})
+    .populate({ path: 'files', options: { sort: { 'lastActivity': -1 } }})
+    .exec( function (err, user){
       if (err) throw err
       res.json(user)
     })

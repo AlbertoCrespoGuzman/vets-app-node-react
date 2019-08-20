@@ -9,10 +9,13 @@ var File = new Schema({
     displayName: { 
         type:String
     },
-    url: {
-      type: String,
-      default: ''
+    awsKey: {
+      type: String
     },
+    tmp: {
+        type: String,
+        default: '/tmp/'
+      },
     type:   {
         type: String,
         default: 'pdf'
@@ -29,9 +32,17 @@ var File = new Schema({
         type : mongoose.Schema.ObjectId,
         ref: 'User'
     },
-    enabled:{
+    commentsEnabled:{
         type: Boolean,
-        default: true
+        default: false
+    },
+    adminNoReadCommentsCount:{
+        type: Number,
+        default: 0
+    },
+    customerNoReadCommentsCount: {
+      type: Number,
+      default: 0
     },
     read:{
         type: Boolean,
@@ -40,6 +51,10 @@ var File = new Schema({
     lastRead:{
         type:Date
       },
+      comments: [{
+        type : mongoose.Schema.ObjectId,
+        ref: 'Comment'
+    }],
 });
 
 module.exports = mongoose.model('File', File);
