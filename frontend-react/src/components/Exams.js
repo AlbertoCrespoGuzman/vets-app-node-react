@@ -26,8 +26,18 @@ class Exams extends Component {
             currentDialog: null
         }
         this.removeDialog = this.removeDialog.bind(this)
+        this.updateFile = this.updateFile.bind(this)
     }
-    
+    updateFile(fileUpdated){
+        console.log('updateFile', JSON.stringify(fileUpdated))
+        for(var i=0;i<this.props.exams.length;i++){
+            if(this.props.exams[i]._id === fileUpdated._id){
+                this.props.exams[i] = fileUpdated
+                console.log('coinciden! intento cambiar! despues del cambio...', this.props.exams[i])
+            }
+        }
+        this.setState({})
+    }
     componentDidMount(){
         this.props.loadExams()
     }
@@ -102,7 +112,7 @@ class Exams extends Component {
                                         tooltip: rowData.commentsEnabled ? 'Mensagens' : '',
                                         onClick: (event, rowData) => {
                                             this.setState({
-                                                currentDialog: <ChatDialog file={rowData} removeDialog={this.removeDialog}/>
+                                                currentDialog: <ChatDialog updateFile={this.updateFile} file={rowData} removeDialog={this.removeDialog}/>
                                             })
                                         },
                                         disabled: !rowData.commentsEnabled ,

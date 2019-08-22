@@ -26,8 +26,18 @@ class AdminExams extends Component {
 
         }
         this.removeDialog = this.removeDialog.bind(this)
+        this.updateFile = this.updateFile.bind(this)
     }
-    
+    updateFile(fileUpdated){
+        console.log('updateFile', JSON.stringify(fileUpdated))
+        for(var i=0;i<this.props.adminExams.length;i++){
+            if(this.props.adminExams[i]._id === fileUpdated._id){
+                this.props.adminExams[i] = fileUpdated
+                console.log('coinciden! intento cambiar! despues del cambio...', this.props.adminExams[i])
+            }
+        }
+        this.setState({})
+    }
     componentDidMount(){
         this.props.loadAdminExams()
     }
@@ -102,7 +112,7 @@ class AdminExams extends Component {
                                 tooltip: rowData.commentsEnabled ? 'Mensagens' : '',
                                 onClick: (event, rowData) => {
                                     this.setState({
-                                        currentDialog: <ChatDialog file={rowData} removeDialog={this.removeDialog}/>
+                                        currentDialog: <ChatDialog updateFile={this.updateFile} file={rowData} removeDialog={this.removeDialog}/>
                                     })
                                 },
                                 disabled: !rowData.commentsEnabled ,
@@ -236,19 +246,21 @@ function convertDateMin(date){
  }
 const columns = [
 { title: 'Nome', field: 'displayName' },
+{ title: 'Subido', 
+  field: 'lastActivity',
+  type: 'datetime', 
+  render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMin(rowData.lastActivity) }</div></Tooltip> },
 { title: 'Usuário', field: 'user.completename' },
-{ title: 'Tipo', field: 'type' },
+//{ title: 'Tipo', field: 'type' },
 { title: 'Lido', field: 'read', type: 'boolean' },
-{ title: 'Pate-papo ativo', field: 'commentsEnabled', type: 'boolean' },
-{ title: 'Mensagens Não lidas', field: 'adminNoReadCommentsCount'},
+
 { title: 'Arquivo lido', 
   field: 'lastRead',
   type: 'datetime', 
   render: rowData => <Tooltip title={convertDateMax(rowData.lastRead)}><div> {convertDateMin(rowData.lastRead) }</div></Tooltip> },
-{ title: 'Data subida', 
-  field: 'lastActivity',
-  type: 'datetime', 
-  render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMax(rowData.lastActivity) }</div></Tooltip> },
+  { title: 'Mensagens', field: 'commentsEnabled', type: 'boolean' },
+  { title: 'Msgs Não lidas', field: 'adminNoReadCommentsCount'},
+
 ]
 const mapStateToProps = (state) => {
     return {

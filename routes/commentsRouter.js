@@ -81,14 +81,68 @@ router.route('/read/:commentId')
                             customerNoReadCommentsCount++
                         }
                     })
-                    File.findOneAndUpdate({ id: comment.file}, {adminNoReadCommentsCount, customerNoReadCommentsCount }, options)
+                    File.findOneAndUpdate({ _id: comment.file}, {adminNoReadCommentsCount, customerNoReadCommentsCount }, options)
                     .exec(function (err, fileSaved) {
                         return res.status(200).send(fileSaved)
                     })
                 })
         })
     })
+router.route('/read/file/:fileId')
+    .patch(Verify.verifyOrdinaryUser, function (req, res, next){
+    Verify.getUsernameFromToken(req.headers['authorization'])
+        .then(username =>{
+          User.findOne( {username})
+              .exec(function (err, user) {
+                  if (err) next(err)
+                  Comment.find({read: false, file: req.params.fileId})
+                  .populate('receiver')
+                  .exec(function(err, comments){
+                        var commentsRead = []
+                        comments.forEach(comment => {
+                            if(user.admin && comment.receiver.admin){
+                                comment.read = true
+                                commentsRead.push(comment)
+                            }else if(!user.admin && !comment.receiver.admin){
+                                comment.read = true
+                                commentsRead.push(comment)
+                            }
+                        })
+                        const commentPromises = commentsRead.map(commentRead => {
+                            return new Promise((resolve, reject) => {
+                              Comment.findOneAndUpdate({ _id: commentRead._id}, { read: true}, options)
+                              .exec(function (err, commentSaved) {
+                                if (err) {
+                                  reject(err)
+                                }
+                                resolve(commentSaved);
+                              })
+                            })
+                          });
+                          
+                          Promise.all(commentPromises).then((results) => {
+                            if(user.admin){
+                                File.findOneAndUpdate({ _id: req.params.fileId}, {adminNoReadCommentsCount: 0 }, options)
+                                    .exec(function (err, fileSaved) {
+                                        return res.status(200).send(fileSaved)
+                                    })
+                            }else{
+                                File.findOneAndUpdate({ _id: req.params.fileId}, {customerNoReadCommentsCount: 0 }, options)
+                                .populate('user')
+                                .populate('admin')
+                                .exec(function (err, fileSaved) {
+                                    return res.status(200).send(fileSaved)
+                                })
+                            }
+                          }, (err) => {
+                            if (err) next(err)
+                          })
 
+                  })
+          })
+        })
+      })
+  
 
 function sendMobileNotification(){
 

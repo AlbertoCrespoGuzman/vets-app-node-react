@@ -47,26 +47,70 @@ class ChatDialog extends Component {
         this.state = {
             openDialog: true,
             scroll: 'paper',
-            message: ''
+            message: '',
+            noReadMessageTag: false,
+            noReadSendToServer: false
         }
         this.renderMessage = this.renderMessage.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.handleMessageChange = this.handleMessageChange.bind(this)
         this.postMessage = this.postMessage.bind(this)
         this.messagesEndRef = React.createRef() 
+        this.messagesNoReadRef = React.createRef() 
+        this.messagesList = React.createRef()
     }
     componentDidMount(){
         this.props.loadChatDialogExams(this.props.file._id)
+        
+        
     }
     componentWillReceiveProps(newProps){
-        setTimeout(()=>{
-            this.messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
-        }, 1000)
+        setTimeout(()=> {
+            console.log("document.getElementById('messages-container')",document.getElementById('messages-container'))
+            if(this.messagesNoReadRef && this.messagesNoReadRef.current){
+                if(document.getElementById('messages-container')){
+                    document.getElementById('messages-container').addEventListener('scroll', this.trackScrolling, false)
+                }
+                
+            }else{
+                if(this.messagesEndRef && this.messagesEndRef.current)
+                this.messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
+            }
+            
+        }, 1500)
         
+    }
+    isBottom(element) {
+        if(element){
+            return element.scrollHeight - element.scrollTop === element.clientHeight;
+        }
+        
+      }
+      
+      componentWillUnmount() {
+          if(document.getElementById('messages-container')){
+            document.getElementById('messages-container').removeEventListener('scroll', this.trackScrolling);
+          }
+        this.setState({
+            noReadMessageTag: false
+        })
+      }
+      
+      trackScrolling = () => {
+        const wrappedElement = document.getElementById('messages-container');
+        console.log('scrooling')
+        if (this.isBottom(wrappedElement)) {
+            if(this.state.noReadMessageTag && !this.state.noReadSendToServer) this.postMessagesRead()
+
+            if(document.getElementById('messages-container')){
+                document.getElementById('messages-container').addEventListener('scroll', this.trackScrolling, false)
+            }
+        }
     }
     handleClose(){
         this.setState({
-            openDialog: false
+            openDialog: false,
+            noReadMessageTag: false
         })
         this.props.removeDialog()
     }
@@ -75,11 +119,36 @@ class ChatDialog extends Component {
             message: e.target.value
         })
     }
+    postMessagesRead(){
+        console.log('postMessagesRead')
+        axios.patch(process.env.REACT_APP_API_HOST + '/api/comments/read/file/' + this.props.file._id, {})
+                .then(file => {
+                    this.setState({
+                        noReadSendToServer: true
+                    })
+                    if(file && file.data){
+                        this.props.updateFile(file.data)
+                    }
+                    
+                })
+                .catch(err => {
+                    console.log('error trying to update as read messages')
+                })
+    }
     renderMessage(comment, index){
         const { classes } = this.props
+        
         return (
 
           <div key={comment._id}  >
+          {!this.state.noReadMessageTag && !comment.read && comment.sender._id != this.props.auth.user._id && (
+              <ListItem  style={{width: '100%'}} ref={this.messagesNoReadRef}>
+              <Card style={{marginLeft: 'auto', marginRight: 'auto', background: blue[10]}}>
+                      <span style={{fontSize: 10, marginTop: -5, marginLeft:5, marginRight: 5}}>Mensagens não lidas</span>
+                  
+              </Card>
+              </ListItem>
+          )}
             <Grow 
                 in={true}
                 style={{ transformOrigin: '0 0 0' }}
@@ -115,7 +184,7 @@ class ChatDialog extends Component {
                             </IconButton>
                         )
                 }
-                <Card >
+                <Card style={{background: comment.sender.admin ? blue[50] : 'white'}}>
                     <CardContent>
                         <div><span style={{fontSize:11, float: 'left',marginRight:10}}>{comment.sender.completename}</span>   <span  style={{fontSize:10, float: 'left', color: 'gray'}}>{convertDate(comment.sentTime) }</span></div>
                         <Typography variant="body2"  component="p" style={{marginTop: 20}}>
@@ -126,6 +195,7 @@ class ChatDialog extends Component {
                 </span>
                 </ListItem>
             </Grow>
+            {!this.state.noReadMessageTag && !comment.read && comment.sender._id != this.props.auth.user._id && (this.state.noReadMessageTag = true)}
           </div>
         )
     }
@@ -167,14 +237,12 @@ class ChatDialog extends Component {
                     <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                    <DialogContent dividers={this.state.scroll === 'paper'} style={{background: '#eee'}}>
-                        <DialogContentText style={{minHeight:320}}>
-                        <List style={{width:'100%', minHeight: 310, margin:10,}}>
+                    <DialogContent dividers={this.state.scroll === 'paper'} style={{background: '#eee'}} id="messages-container">
+                        <List style={{width:'100%', minHeight: 310, margin:10,}} ref={this.messagesList}>
                                 {this.props.comments.map(this.renderMessage)}
-                                <div ref={this.messagesEndRef} />
+                                <ListItem ref={this.messagesEndRef} onBlur={()=>{ console.log('focused')}}/>
                         </List>
                         
-                        </DialogContentText>
                     </DialogContent>
                     <DialogActions style={{paddingLeft:25, paddingRight: 25, }}>
                                 <TextField
@@ -196,7 +264,6 @@ class ChatDialog extends Component {
     }
 }
 ChatDialog.propTypes = {
-    logoutUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 }
 function convertDate(date){
