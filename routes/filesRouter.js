@@ -38,6 +38,7 @@ router.route('/')
             File.find({})
                 .sort({lastActivity:-1})
                 .populate('user')
+                .populate('admin')
                 .exec(function(err, files){
                     if (err) throw err
                     res.json(files)
@@ -51,6 +52,7 @@ router.route('/')
                         File.find({user: user._id})
                             .sort({lastActivity:-1})
                             .populate('user')
+                            .populate('admin')
                             .exec(function(err, files){
                                 if (err) throw err
                                 res.json(files)
@@ -79,6 +81,7 @@ router.route('/')
                     allFields.file = file_
                     allFields.userId = req.body.userId
                     allFields.size = req.body.size
+                    allFields.adminId = req.body.adminId
                     allFields.tmp = '/tmp/'
                     allFields.type = file_.originalname.split('.').length > 1 ? file_.originalname.split('.')[file_.originalname.split('.').length -1] : ''
                     allFields.displayName = req.body.displayName
@@ -90,6 +93,7 @@ router.route('/')
                 allFields.file = file_
                 allFields.userId = req.body.userId
                 allFields.size = req.body.size
+                allFields.adminId = req.body.adminId
                 allFields.tmp = '/tmp/'
                 allFields.type = file_.originalname.split('.').length > 1 ? file_.originalname.split('.')[file_.originalname.split('.').length -1] : ''
                 allFields.displayName = req.body.displayName
@@ -122,6 +126,8 @@ router.route('/')
                         commentsEnabled : allFields.commentsEnabled,
                 //        size: allFields.size,
                         user: allFields.userId,
+                        admin: allFields.adminId
+
         
                     })
                     console.log('ei', fileDB)

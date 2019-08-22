@@ -16,20 +16,26 @@ import Badge from '@material-ui/core/Badge'
 import MailIcon from '@material-ui/icons/Mail'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import dotenv from 'dotenv'
-import ReactDOM from "react-dom"
 dotenv.config()
 
 class AdminExams extends Component {
     
     constructor(props){
         super(props)
-    
+        this.state= {
+
+        }
+        this.removeDialog = this.removeDialog.bind(this)
     }
     
     componentDidMount(){
         this.props.loadAdminExams()
     }
-
+    removeDialog(){
+        this.setState({
+            currentDialog: null
+        })
+    }
     render() {
         return (
             <div style={{marginLeft:10, marginTop: 40, width:'100%', height:'100%'}}>
@@ -95,12 +101,9 @@ class AdminExams extends Component {
                                 icon: rowData.commentsEnabled ?  (rowData.adminNoReadCommentsCount === 0 || !rowData.adminNoReadCommentsCount ? badgeEmailNoMessages : (rowData.adminNoReadCommentsCount === 1 ? badgeEmail1Messages : (rowData.adminNoReadCommentsCount === 2 ? badgeEmail2Messages : (rowData.adminNoReadCommentsCount === 3 ? badgeEmail3Messages : badgeEmailMoreThan3Messages)))) : '',
                                 tooltip: rowData.commentsEnabled ? 'Mensagens' : '',
                                 onClick: (event, rowData) => {
-                                    console.log('onclick')
-                                    const container = document.createElement("div");
-                                        document.body.appendChild(container);
-                                        ReactDOM.render(<ChatDialog file={rowData} />, container)
-                                    
-                                    this.setState({})
+                                    this.setState({
+                                        currentDialog: <ChatDialog file={rowData} removeDialog={this.removeDialog}/>
+                                    })
                                 },
                                 disabled: !rowData.commentsEnabled ,
                                 
@@ -184,6 +187,9 @@ class AdminExams extends Component {
              </Grid>
              </Grow>
              )}
+             <div>
+                {this.state.currentDialog}
+            </div>
             </div>
         );
     }

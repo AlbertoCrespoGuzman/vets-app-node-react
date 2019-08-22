@@ -33,6 +33,7 @@ import Typography from '@material-ui/core/Typography'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import axios from 'axios'
 import dotenv from 'dotenv'
+import PropTypes from 'prop-types'
 dotenv.config()
 
 class AddAdminExams extends Component {
@@ -61,7 +62,6 @@ class AddAdminExams extends Component {
     }
     componentDidMount(){
         this.props.loadUsers()
-        
     }
     handledisplayName(e){
         this.setState({
@@ -178,7 +178,7 @@ class AddAdminExams extends Component {
     renderUploadFile(){
         return (
             <Card >
-                <Upload data={this.state} triggerUploadedFinished={this.triggerUploadedFinished}/>
+                <Upload data={this.state} triggerUploadedFinished={this.triggerUploadedFinished} admin={this.props.auth.user}/>
             </Card>
         )
     }
@@ -333,12 +333,15 @@ class AddAdminExams extends Component {
         );
     }
 }
-
+AddAdminExams.propTypes = {
+    auth: PropTypes.object.isRequired
+}
 const mapStateToProps = (state) => {
     return {
         isFetchingUsers: state.users.isFetching,
         users: state.users.data,
-        error: state.users.error
+        error: state.users.error,
+        auth: state.auth
     }
 }
 

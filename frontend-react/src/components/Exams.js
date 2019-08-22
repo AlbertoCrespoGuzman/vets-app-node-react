@@ -10,21 +10,32 @@ import Moment from 'moment'
 import Tooltip from '@material-ui/core/Tooltip'
 import axios from 'axios'
 import Grow from '@material-ui/core/Grow'
+import Badge from '@material-ui/core/Badge'
+import MailIcon from '@material-ui/icons/Mail'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import dotenv from 'dotenv'
+import ChatDialog from './ChatDialog'
+
 dotenv.config()
 
 class Exams extends Component {
     
     constructor(props){
         super(props)
-    
+        this.state = {
+            currentDialog: null
+        }
+        this.removeDialog = this.removeDialog.bind(this)
     }
     
     componentDidMount(){
         this.props.loadExams()
     }
-
+    removeDialog(){
+        this.setState({
+            currentDialog: null
+        })
+    }
     render() {
         return (
             <div style={{marginLeft:10, marginTop: 40, width:'100%', height:'100%'}}>
@@ -86,21 +97,17 @@ class Exams extends Component {
                                         });
                                     }
                                     },
-                                    {
-                                        icon: 'remove_red_eye',
-                                        tooltip: 'BatePapo',
+                                    rowData => ({
+                                        icon: rowData.commentsEnabled ?  (rowData.customerNoReadCommentsCount === 0 || !rowData.customerNoReadCommentsCount ? badgeEmailNoMessages : (rowData.customerNoReadCommentsCount === 1 ? badgeEmail1Messages : (rowData.customerNoReadCommentsCount === 2 ? badgeEmail2Messages : (rowData.customerNoReadCommentsCount === 3 ? badgeEmail3Messages : badgeEmailMoreThan3Messages)))) : '',
+                                        tooltip: rowData.commentsEnabled ? 'Mensagens' : '',
                                         onClick: (event, rowData) => {
-                                        axios(process.env.REACT_APP_API_HOST + '/api/comments/' + rowData._id, {
-                                                method: 'GET'
+                                            this.setState({
+                                                currentDialog: <ChatDialog file={rowData} removeDialog={this.removeDialog}/>
                                             })
-                                            .then(response => {
-                                                console.log('response comments', response)
-                                            })
-                                            .catch(error => {
-                                                console.log(error);
-                                            });
-                                        } 
-                                    }
+                                        },
+                                        disabled: !rowData.commentsEnabled ,
+                                        
+                                      })
                                 ]}
                                 
                                 options={{
@@ -146,12 +153,42 @@ class Exams extends Component {
                                 />
                             </Grid>
                     </Grid>
+                    
              </Grow>
              )}
+             <div>
+                        {this.state.currentDialog}
+                    </div>
             </div>
         );
     }
 }
+const badgeEmailNoMessages = () => 
+ (
+    <Badge  color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmail1Messages = () => (
+    <Badge  badgeContent={1} color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmail2Messages = () => (
+    <Badge  badgeContent={2} color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmail3Messages = () => (
+    <Badge  badgeContent={3} color="primary">
+          <MailIcon />
+        </Badge>
+  )
+  const badgeEmailMoreThan3Messages = () => (
+    <Badge  badgeContent="+3" color="primary">
+          <MailIcon />
+        </Badge>
+  )
 function convertDateMin(date){
     return  Moment(date).format('DD/MM/YY')
  }

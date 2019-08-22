@@ -32,6 +32,10 @@ var File = new Schema({
         type : mongoose.Schema.ObjectId,
         ref: 'User'
     },
+    admin: {
+      type : mongoose.Schema.ObjectId,
+      ref: 'User'
+    },
     commentsEnabled:{
         type: Boolean,
         default: false

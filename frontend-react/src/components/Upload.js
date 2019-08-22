@@ -62,8 +62,9 @@ class Upload extends Component {
         data.append('userId', this.props.data.userId)
         data.append('displayName', this.props.data.displayName)
         data.append('commentsEnabled', this.props.data.commentsEnabled)
+        data.append('adminId', this.props.admin._id)
         data.append('file', file)
-   //     data.append('size', file.size)
+        data.append('size', file.size)
    console.log('fileee', JSON.stringify(file))
         for (var key of data.entries()) {
           console.log(key[0] + ', ' + key[1]);

@@ -57,13 +57,11 @@ router.route('/file/:fileId')
                   path: 'receiver'
               }]
         })
-    .exec(function (err, user){
-      if(err) res.code(500).json(err)
-        res.json(user)
-    })
-          .exec( function(err, user){
-              return res.status(200).send(fileSaved)
-          })
+        .exec(function (err, file){
+        if(err) res.code(500).json(err)
+            res.status(200).send(file.comments)
+        })
+          
     })
 
 
