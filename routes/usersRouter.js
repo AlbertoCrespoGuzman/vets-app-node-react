@@ -57,6 +57,9 @@ router.route('/')
            user.address = req.body.address
            user.cpf = req.body.cpf
            user.completename = req.body.completename
+           user.phone = req.body.phone
+           user.crmv = req.body.crmv ? req.body.crmv : user.crmv
+           user.technicalSupport = req.body.technicalSupport ? req.body.technicalSupport : user.technicalSupport
            req.setLocale(user.lang)
   
           user.save(function (err) {
@@ -94,6 +97,9 @@ router.route('/')
                 user.address = req.body.address
                 user.cpf = req.body.cpf
                 user.completename = req.body.completename
+                user.phone = req.body.phone
+                user.crmv = req.body.crmv
+                user.technicalSupport = req.body.technicalSupport
               //  req.setLocale(user.lang)
 
                 user.save(function (err) {
@@ -206,7 +212,10 @@ router.route('/register')
                                             vet: false,
                                             cpf: req.body.cpf,
                                             completename : req.body.completename,
-                                            address: req.body.address
+                                            address: req.body.address,
+                                            phone: req.body.phone,
+                                            technicalSupport: req.body.technicalSupport,
+                                            crmv:  req.body.crmv
                                             }),
                                             generatedPassword, function(err, user) {
 

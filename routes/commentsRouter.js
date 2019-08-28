@@ -39,6 +39,7 @@ router.route('/file/:fileId')
                 File.findOneAndUpdate( { _id: commentSaved.file }, { adminNoReadCommentsCount, customerNoReadCommentsCount, "$push": { "comments": commentSaved._id } }, options)
                 .exec( function(err, fileSaved){
                     sendMobileNotification()
+                    console.log('File saved with new comment added...', JSON.stringify(fileSaved))
                     return res.status(200).send(fileSaved)
                 })
             })
@@ -123,6 +124,8 @@ router.route('/read/file/:fileId')
                           Promise.all(commentPromises).then((results) => {
                             if(user.admin){
                                 File.findOneAndUpdate({ _id: req.params.fileId}, {adminNoReadCommentsCount: 0 }, options)
+                                    .populate('user')
+                                    .populate('admin')
                                     .exec(function (err, fileSaved) {
                                         return res.status(200).send(fileSaved)
                                     })

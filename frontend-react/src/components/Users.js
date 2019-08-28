@@ -11,6 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import axios from 'axios'
 import Grow from '@material-ui/core/Grow'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Button from '@material-ui/core/Button'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -18,6 +19,9 @@ class Users extends Component {
     
     constructor(props){
         super(props)
+        this.state = {
+            collapse: true
+        }
     }
     
     componentDidMount(){
@@ -45,7 +49,7 @@ class Users extends Component {
                 style={{ transformOrigin: '0 0 0' }}
                 {...(!this.props.isFetching ? { timeout: 1000 } : {})}
                 >
-               <Grid
+                <Grid
                     container
                     spacing={0}
                     direction="column"
@@ -55,15 +59,18 @@ class Users extends Component {
                 >
                 
                     <Grid item xs={12}>
+                    <div style={{flex: 1, alignContent: 'center', margin: 10}}><Button onClick={()=>{ this.setState({ collapse: !this.state.collapse})}}>{this.state.collapse ? 'Ver todas Colunas' :  'Ocultar Colunas'}</Button></div>
+               
                     <MaterialTable
                         title="Usuários"
-                        columns={columns}
+                        columns={!this.state.collapse ? columns : collapsedColumns}
                         data={this.props.users}
                         editable={{
 
                             onRowUpdate: (newData, oldData) =>
                                 new Promise((resolve, reject) => {
-                                    axios.patch(process.env.REACT_APP_API_HOST + '/api/users/' + oldData._id, newData)
+                                    if(!this.state.collapse){
+                                        axios.patch(process.env.REACT_APP_API_HOST + '/api/users/' + oldData._id, newData)
                                         .then(res => {
                                             this.props.loadUsers()
                                             resolve()
@@ -71,6 +78,11 @@ class Users extends Component {
                                        .catch(err => {
                                             reject()
                                        })
+                                    }else{
+                                        alert('Habilite todas as colunas para realizar essa ação')
+                                        resolve()
+                                    }
+                                    
                                 }),
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
@@ -235,20 +247,37 @@ function convertDateMin(date){
 const columns = [
 { title: 'E-mail', field: 'username' },
 { title: 'Nome', field: 'completename' },
+{
+    title: 'Tipo',
+    field: 'type',
+    lookup: { 1: 'Cliente', 2: 'Clínica', 3: 'Veterinário', 4: 'Admin' },
+},
 { title: 'CPF/CNPJ', field: 'cpf' },
 { title: 'Endereço',
-  field: 'address',
-  render: rowData => <Tooltip title={rowData.address ? rowData.address : 'Sem Endereço definido'} placement="top"><div> {( rowData.address && rowData.address.length > 5) ? (rowData.address.substring(0,5) + '...') : rowData.address} </div></Tooltip>  },
+  field: 'address' },
+ // render: rowData => <Tooltip title={rowData.address ? rowData.address : 'Sem Endereço definido'} placement="top"><div> {( rowData.address && rowData.address.length > 5) ? (rowData.address.substring(0,5) + '...') : rowData.address} </div></Tooltip>  },
 { title: 'Atividade', 
   field: 'lastActivity',
   type: 'datetime', 
   render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMin(rowData.lastActivity) }</div></Tooltip> },
-{
-  title: 'Tipo',
-  field: 'type',
-  lookup: { 1: 'Cliente', 2: 'Clínica', 3: 'Veterinário', 4: 'Admin' },
-},]
-
+{ title: 'Fone', field: 'phone' },
+{ title: 'Responsável  Tecnico', field: 'technicalSupport' },
+{ title: 'CRMV', field: 'crmv' },
+]
+const collapsedColumns = [
+    { title: 'Nome', field: 'completename' },
+    {
+        title: 'Tipo',
+        field: 'type',
+        lookup: { 1: 'Cliente', 2: 'Clínica', 3: 'Veterinário', 4: 'Admin' },
+    },
+    
+    { title: 'Atividade', 
+      field: 'lastActivity',
+      type: 'datetime', 
+      render: rowData => <Tooltip title={convertDateMax(rowData.lastActivity)}><div> {convertDateMax(rowData.lastActivity) }</div></Tooltip> },
+   
+    ]
 
 const columnsFiles = [
     { title: 'Nome', field: 'displayName' },

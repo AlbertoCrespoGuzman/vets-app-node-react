@@ -157,24 +157,27 @@ router.route('/:fileId')
         File.deleteOne({ _id: req.params.fileId })
             .exec(function(err, files){
                 if (err) throw err
-                User.findOneAndUpdate( { _id: file.user }, { "$pull": { "files": req.params.fileId } }, options)
-					    .exec( function(err, user){
-                            if (err) throw err
-                            if(process.env.AWS_ENABLED){
-                                var params = {  Bucket: process.env.AWS_BUCKET_NAME, Key: file.awsKey };
-                                s3.deleteObject(params, function(err, data) {
-                                if (err) console.log(err, err.stack);  // error
-                                else     return res.status(200).send({success: true})            // deleted
-                                });
-                            }else{
-                                try {
-                                    fs.unlinkSync(path.resolve('.' + file.tmp +  file.displayName +  '.' + file.type ))
-                                  } catch(err) {
-                                    console.error(err)
-                                  }
-                            }
-                            
-            })
+                Comment.deleteMany({file: req.params.fileId})
+                    .exec(function(err, result){
+                        if (err) throw err
+                        User.findOneAndUpdate( { _id: file.user }, { "$pull": { "files": req.params.fileId } }, options)
+                                        .exec( function(err, user){
+                                            if (err) throw err
+                                            if(process.env.AWS_ENABLED){
+                                                var params = {  Bucket: process.env.AWS_BUCKET_NAME, Key: file.awsKey };
+                                                s3.deleteObject(params, function(err, data) {
+                                                if (err) console.log(err, err.stack);  // error
+                                                else     return res.status(200).send({success: true})            // deleted
+                                                });
+                                            }else{
+                                                try {
+                                                    fs.unlinkSync(path.resolve('.' + file.tmp +  file.displayName +  '.' + file.type ))
+                                                } catch(err) {
+                                                    console.error(err)
+                                                }
+                                            }
+                            })
+                    })
         })
     })
   })

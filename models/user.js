@@ -50,6 +50,18 @@ var User = new Schema({
     address: { 
         type:String
     },
+    technicalSupport:{
+      type: String,
+      default: ''
+    },
+    phone:{
+      type: String,
+      default: ''
+    },
+    crmv:{
+      type: String,
+      default: ''
+    },
     files: [{
         type : mongoose.Schema.ObjectId,
         ref: 'File'

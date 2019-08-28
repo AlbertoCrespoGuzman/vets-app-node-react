@@ -29,8 +29,8 @@ import Moment from 'moment'
 import Card from  '@material-ui/core/Card'
 import CardHeader from  '@material-ui/core/CardHeader'
 import CardContent from  '@material-ui/core/CardContent'
-
 dotenv.config()
+
 const styles = theme => ({
     title: {
       color: 'red',
@@ -38,9 +38,6 @@ const styles = theme => ({
   });
 
 class ChatDialog extends Component {
-
-    
-    
     constructor(props){
         super(props)
         
@@ -49,22 +46,86 @@ class ChatDialog extends Component {
             scroll: 'paper',
             message: '',
             noReadMessageTag: false,
-            noReadSendToServer: false
+            noReadSendToServer: false,
+            maxChatRefresh: 10,
+            refreshIntervalTime: 15000,
+            chatRefreshInterval: false,
+            currentChatRefresh: 0
         }
         this.renderMessage = this.renderMessage.bind(this)
         this.handleClose = this.handleClose.bind(this)
         this.handleMessageChange = this.handleMessageChange.bind(this)
         this.postMessage = this.postMessage.bind(this)
+        this.getMessages = this.getMessages.bind(this)
         this.messagesEndRef = React.createRef() 
         this.messagesNoReadRef = React.createRef() 
         this.messagesList = React.createRef()
     }
+    
     componentDidMount(){
-        this.props.loadChatDialogExams(this.props.file._id)
-        
-        
+            this.props.loadChatDialogExams(this.props.file._id)
     }
+    componentDidUpdate() {
+        if(this.messagesNoReadRef && this.messagesNoReadRef.current){
+            if(document.getElementById('messages-container')){
+                document.getElementById('messages-container').addEventListener('scroll', this.trackScrolling, false)
+                this.messagesNoReadRef.current.scrollIntoView({behavior: 'smooth'})
+                if(this.props && this.props.comments && this.props.comments && this.props.comments.length < 4 
+                    && !this.state.noReadSendToServer){
+                    this.postMessagesRead()
+                }
+            }
+            
+        }else{
+            if(this.messagesEndRef && this.messagesEndRef.current)
+            this.messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
+        }
+        if(!this.state.chatRefreshInterval){
+            this.state.chatRefreshInterval = setInterval(this.getMessages, this.state.refreshIntervalTime);
+        }
+      }
+      getMessages(){
+          console.log('getMessages!')
+        axios.get(process.env.REACT_APP_API_HOST + '/api/comments/file/' + this.props.file._id)
+        .then((data) => {
+            var comments = data.data
+            if(comments && comments.length > this.props.comments.length){
+                var commentsToAdd = []
+                comments.forEach(comment => {
+                    var exists = false
+                    this.props.comments.forEach(commentProp => {
+                        if(comment._id === commentProp._id) exists = true
+                    })
+                    if(!exists) commentsToAdd.push(comment)
+                })
+                commentsToAdd.forEach(comment => {
+                    this.props.comments.push(comment)
+                })
+                
+                this.state.noReadMessageTag = false
+                this.state.noReadSendToServer = false
+            }
+            this.setState({
+                currentChatRefresh: this.state.currentChatRefresh ++
+            })
+            if(this.state.currentChatRefresh >= this.state.maxChatRefresh){
+                clearInterval(this.state.chatRefreshInterval)
+                this.setState({
+                    chatRefreshInterval: false
+                })
+                console.log('clearInterval because -> this.state.currentChatRefresh >= this.state.maxChatRefresh')
+            }
+        })
+        .catch((error) => {
+            clearInterval(this.state.chatRefreshInterval)
+            this.setState({
+                chatRefreshInterval: false
+            })
+            console.log('clearInterval because ERROR', JSON.stringify(error))
+        })
+      }
     componentWillReceiveProps(newProps){
+        /*
         setTimeout(()=> {
             console.log("document.getElementById('messages-container')",document.getElementById('messages-container'))
             if(this.messagesNoReadRef && this.messagesNoReadRef.current){
@@ -78,22 +139,27 @@ class ChatDialog extends Component {
             }
             
         }, 1500)
-        
+        */
     }
     isBottom(element) {
         if(element){
-            return element.scrollHeight - element.scrollTop === element.clientHeight;
+            console.log( 'element.clientHeight', element.clientHeight)
+            console.log( 'element.scrollHeight - element.scrollTop', element.scrollHeight - element.scrollTop)
+            return Math.abs((element.scrollHeight - element.scrollTop)  - element.clientHeight) < 60;
+        }else{
+            console.log('in the scrolling element doesnt exist !!!!!!!')
         }
-        
       }
       
       componentWillUnmount() {
           if(document.getElementById('messages-container')){
             document.getElementById('messages-container').removeEventListener('scroll', this.trackScrolling);
           }
-        this.setState({
-            noReadMessageTag: false
-        })
+          clearInterval(this.state.chatRefreshInterval)
+            this.setState({
+                chatRefreshInterval: false
+            })
+            console.log('clearInterval because UNMOUNT')
       }
       
       trackScrolling = () => {
@@ -171,10 +237,7 @@ class ChatDialog extends Component {
                 {!comment.sender.admin && 
                         (
                             <IconButton style={{float: comment.sender._id === this.props.auth.user._id ? 'left' : 'right'}} onClick={()=>{ 
-                                                                                                                                console.log('comment.sender._id', comment.sender._id)
-                                                                                                                                console.log('this.props.auth.user._id', this.props.auth.user._id)
-                                                                                                                                
-                                                                                                                                }}>
+                                                                                                                                    }}>
                                 <Avatar style={{color: '#fff',backgroundColor: deepOrange[500]}}>
                                 {comment.sender.completename 
                                 && comment.sender.completename.length
@@ -202,22 +265,24 @@ class ChatDialog extends Component {
 
     
     postMessage(){
-        const comment = {
-            message: this.state.message,
-            file: this.props.file._id,
-            sender: this.props.auth.user._id,
-            receiver: this.props.auth.user._id === this.props.file.user._id ? this.props.file.admin._id : this.props.file.user._id,
+        if(this.state.message && this.state.message.length > 0){
+            const comment = {
+                message: this.state.message,
+                file: this.props.file._id,
+                sender: this.props.auth.user._id,
+                receiver: this.props.auth.user._id === this.props.file.user._id ? this.props.file.admin._id : this.props.file.user._id,
+            }
+            this.setState({
+                message: ''
+            })
+            axios.post(process.env.REACT_APP_API_HOST + '/api/comments/file/' + this.props.file._id, comment)
+                    .then(res => {
+                        this.props.loadChatDialogExams(this.props.file._id)
+                    })
+                    .catch(err => {
+                        alert('error')
+                    })
         }
-        this.setState({
-            message: ''
-        })
-        axios.post(process.env.REACT_APP_API_HOST + '/api/comments/file/' + this.props.file._id, comment)
-                .then(res => {
-                    this.props.loadChatDialogExams(this.props.file._id)
-                })
-                .catch(err => {
-                    alert('error')
-                })
     }
     render() { 
         return (
@@ -239,7 +304,8 @@ class ChatDialog extends Component {
                 </DialogTitle>
                     <DialogContent dividers={this.state.scroll === 'paper'} style={{background: '#eee'}} id="messages-container">
                         <List style={{width:'100%', minHeight: 310, margin:10,}} ref={this.messagesList}>
-                                {this.props.comments.map(this.renderMessage)}
+                                {(this.state.noReadMessageTag = false)}
+                                {this.props.comments.map(this.renderMessage) }
                                 <ListItem ref={this.messagesEndRef} onBlur={()=>{ console.log('focused')}}/>
                         </List>
                         

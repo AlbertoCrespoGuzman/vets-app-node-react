@@ -29,6 +29,9 @@ class Register extends Component {
             completename: '',
             cpf: '',
             address: '',
+            crmv: '',
+            technicalSupport: '',
+            phone: '',
     //        password: '',
     //        confirmPassword: '',
             errors: {},
@@ -58,8 +61,9 @@ class Register extends Component {
             completename: this.state.completename,
             cpf: this.state.cpf,
             address: this.state.address,
-            password: this.state.password,
-            confirmPassword: this.state.confirmPassword
+            phone: this.state.phone,
+            crmv: this.state.crmv,
+            technicalSupport: this.state.technicalSupport
         }
         this.setState({
             isFetching: true
@@ -154,7 +158,7 @@ class Register extends Component {
                         <MenuItem value={3}>Veterinário</MenuItem>
                         <MenuItem value={4}>Administrador</MenuItem>
                         </Select>
-                        {errors.type && (<FormHelperText id="type-text">{errors.type}</FormHelperText>)}
+                        {errors.type && (<FormHelperText id="type-text" style={{color: 'red'}}>{errors.type}</FormHelperText>)}
                     </FormControl>
                         <FormControl className={classes.formControl} fullWidth={true} margin={PropTypes.margin}>
                             <InputLabel htmlFor="username">E-mail</InputLabel>
@@ -165,10 +169,9 @@ class Register extends Component {
                             name="username"
                             onChange={this.handleInputChange}
                             aria-describedby="username-text"
-                            onChange={ this.handleInputChange }
                             value={ this.state.username }
                             />
-                            {errors.username && (<FormHelperText id="username-text">{errors.username}</FormHelperText>)}
+                            {errors.username && (<FormHelperText id="username-text" style={{color: 'red'}}>{errors.username}</FormHelperText>)}
                         </FormControl>
                         <FormControl className={classes.formControl} fullWidth={true} >
                             <InputLabel htmlFor="completename">Nome Completo</InputLabel>
@@ -179,10 +182,9 @@ class Register extends Component {
                             name="completename"
                             onChange={this.handleInputChange}
                             aria-describedby="completename-text"
-                            onChange={ this.handleInputChange }
                             value={ this.state.completename }
                             />
-                            {errors.completename && (<FormHelperText id="completename-text">{errors.completename}</FormHelperText>)}
+                            {errors.completename && (<FormHelperText id="completename-text" style={{color: 'red'}}>{errors.completename}</FormHelperText>)}
                         </FormControl>
                         <FormControl className={classes.formControl} fullWidth={true} >
                             <InputLabel htmlFor="cpf">CPF/CNPJ</InputLabel>
@@ -193,26 +195,69 @@ class Register extends Component {
                             name="cpf"
                             onChange={this.handleInputChange}
                             aria-describedby="cpf-text"
-                            onChange={ this.handleInputChange }
                             value={ this.state.cpf }
                             />
-                            {errors.cpf && (<FormHelperText id="cpf-text">{errors.cpf}</FormHelperText>)}
+                            {errors.cpf && (<FormHelperText id="cpf-text" style={{color: 'red'}}>{errors.cpf}</FormHelperText>)}
                         </FormControl>
+                        {this.state.type != 3 && (
+                            <FormControl className={classes.formControl} fullWidth={true} >
+                                <InputLabel htmlFor="address">Endereço</InputLabel>
+                                <Input
+                                type="text"
+                                id="address"
+                                value={ this.state.address }
+                                name="address"
+                                onChange={this.handleInputChange}
+                                aria-describedby="address-text"
+                                value={ this.state.address }
+                                />
+                                {errors.address && (<FormHelperText id="address-text" style={{color: 'red'}}>{errors.address}</FormHelperText>)}
+                            </FormControl>
+                        )
+                        }
                         <FormControl className={classes.formControl} fullWidth={true} >
-                            <InputLabel htmlFor="address">Endereço</InputLabel>
+                            <InputLabel htmlFor="phone">Telephone de Contato</InputLabel>
                             <Input
                             type="text"
-                            id="address"
-                            value={ this.state.address }
-                            name="address"
+                            id="phone"
+                            value={ this.state.phone }
+                            name="phone"
                             onChange={this.handleInputChange}
-                            aria-describedby="address-text"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.address }
+                            aria-describedby="phone-text"
+                            value={ this.state.phone }
                             />
-                            {errors.address && (<FormHelperText id="address-text">{errors.address}</FormHelperText>)}
+                            {errors.phone && (<FormHelperText id="phone-text" style={{color: 'red'}}>{errors.phone}</FormHelperText>)}
                         </FormControl>
-                       
+                        {(this.state.type == 2 || this.state.type == 3)  && (
+                        <FormControl className={classes.formControl} fullWidth={true} >
+                            <InputLabel htmlFor="crmv">CRMV</InputLabel>
+                            <Input
+                            type="text"
+                            id="crmv"
+                            value={ this.state.crmv }
+                            name="crmv"
+                            onChange={this.handleInputChange}
+                            aria-describedby="crmv-text"
+                            value={ this.state.crmv }
+                            />
+                            {errors.crmv && (<FormHelperText id="crmv-text" style={{color: 'red'}}>{errors.crmv}</FormHelperText>)}
+                        </FormControl>
+                        )}
+                        {this.state.type == 2 && (
+                            <FormControl className={classes.formControl} fullWidth={true} >
+                                <InputLabel htmlFor="technicalSupport">Responsável Tecnico</InputLabel>
+                                <Input
+                                type="text"
+                                id="technicalSupport"
+                                value={ this.state.technicalSupport }
+                                name="technicalSupport"
+                                onChange={this.handleInputChange}
+                                aria-describedby="technicalSupport-text"
+                                value={ this.state.technicalSupport }
+                                />
+                                {errors.technicalSupport && (<FormHelperText id="technicalSupport-text" style={{color: 'red'}}>{errors.technicalSupport}</FormHelperText>)}
+                            </FormControl>
+                        )}
                     <CardActions>
                         {!this.state.isFetching && (<Button fullWidth={true} variant="contained" color="primary" type="submit" >
                             Cadastrar

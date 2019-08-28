@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Upload from './Upload'
 import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import "./css/AdminExams.css"
 import Button from '@material-ui/core/Button'
@@ -13,19 +12,6 @@ import MenuItem from  '@material-ui/core/MenuItem'
 import { connect } from 'react-redux'
 import { loadUsersRequest } from '../actions/actions'
 import TextField from '@material-ui/core/TextField'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Collapse from '@material-ui/core/Collapse'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
-import DraftsIcon from '@material-ui/icons/Drafts'
-import SendIcon from '@material-ui/icons/Send'
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import StarBorder from '@material-ui/icons/StarBorder';
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf'
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -47,7 +33,10 @@ class AddAdminExams extends Component {
             activeStep: 0,
             skipped: new Set(),
             steps : this.getSteps(),
-            showStepper: true
+            showStepper: true,
+            userFilter: '',
+            filteredUsers: [],
+            firstTimeUpdated: false
         }
         
         this.handleSelectedUser = this.handleSelectedUser.bind(this)
@@ -59,6 +48,7 @@ class AddAdminExams extends Component {
         this.handledisplayName = this.handledisplayName.bind(this)
         this.triggerUploadedFinished = this.triggerUploadedFinished.bind(this)
         this.handleSelectedCommentsEnabled = this.handleSelectedCommentsEnabled.bind(this)
+        this.handleUserFilterChange = this.handleUserFilterChange.bind(this)
     }
     componentDidMount(){
         this.props.loadUsers()
@@ -68,7 +58,16 @@ class AddAdminExams extends Component {
             [e.target.name]: e.target.value
         })
     }
-    
+    componentDidUpdate(){
+        if(!this.state.firstTimeUpdated){
+            if(this.props.users && this.props.users.length > 0){
+                this.setState({
+                    firstTimeUpdated: true,
+                    filteredUsers: this.props.users
+                })
+            }
+        }
+    }
     handleSelectedUser(e){
         if(e && e.target.value != 0){
             var userOk = ''
@@ -107,6 +106,18 @@ class AddAdminExams extends Component {
             return 'Passo desconhecido, reiniciar pagina';
         }
     }
+    handleUserFilterChange(e){
+        var tempUsers = []
+        this.props.users.forEach((user)=> {
+            if(user.completename.toLowerCase().includes(e.target.value.toLowerCase())){
+                tempUsers.push(user)
+            }
+        })
+        this.setState({
+            filteredUsers: tempUsers,
+            userFilter: e.target.value
+        })
+    }
     renderSelectUser(){
         return (
             <Card style={{minHeight: 300}}
@@ -125,14 +136,27 @@ class AddAdminExams extends Component {
                         </Grid>
             )}
             { !this.props.isFetchingUsers && (
-            <FormControl fullWidth={true} style={{padding: 50}}>
+                <div>
+                <FormControl style={{marginLeft: 50, marginTop:10}}>
+                        <TextField
+                        label="Filtrar Usuário"
+                        type="text"
+                        id="userFilter"
+                        value={ this.state.userFilter }
+                        name="userFilter"
+                        onChange={this.handleUserFilterChange}
+                        aria-describedby="userFilter-text"
+                        />
+                </FormControl>
+            <FormControl fullWidth={true} style={{paddingLeft: 50, paddingRight:50, paddingTop:10, paddingBottom:10}}>
                     <Select
                     native
+                    variant="outlined"
                     value={this.state.userId}
                     onChange={this.handleSelectedUser}
                     >
                     <option value={0} > Escolher Usuário </option>
-                        {this.props.users.map( (user, index) => {
+                        {this.state.filteredUsers.map( (user, index) => {
                             return (
                                 <option key={user._id} value={user._id}>{user.completename} 
                                 </option>
@@ -141,6 +165,7 @@ class AddAdminExams extends Component {
                     </Select>
                     {this.state.errors && (<FormHelperText id="username-text" style={{color: 'red'}}>{this.state.errors}</FormHelperText>)}
                 </FormControl>
+                </div>
                 )} 
             </Card>
         )
