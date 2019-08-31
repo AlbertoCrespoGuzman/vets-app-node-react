@@ -203,7 +203,7 @@ class ChatDialog extends Component {
     }
     renderMessage(comment, index){
         const { classes } = this.props
-        
+        console.log(comment == null)
         return (
 
           <div key={comment._id}  >
@@ -305,7 +305,7 @@ class ChatDialog extends Component {
                     <DialogContent dividers={this.state.scroll === 'paper'} style={{background: '#eee'}} id="messages-container">
                         <List style={{width:'100%', minHeight: 310, margin:10,}} ref={this.messagesList}>
                                 {(this.state.noReadMessageTag = false)}
-                                {this.props.comments.map(this.renderMessage) }
+                                {this.props.comments && this.props.comments.length > 0 && this.props.comments.map(this.renderMessage) }
                                 <ListItem ref={this.messagesEndRef} onBlur={()=>{ console.log('focused')}}/>
                         </List>
                         
@@ -350,6 +350,3 @@ const mapDispatchToProps = (dispatch) => {
     }
 } 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatDialog)
-
-
-
