@@ -154,14 +154,14 @@ class Upload extends Component {
     render() {
       return (
         <div className={styles.Upload} style={{padding: 20}}>
-          <div className={styles.Content}>
+          <div style={{display: 'flex', flexDirection: 'row', paddingTop: '16px', boxSizing: 'border-box', width: '100%'}}>
             <div>
               <Dropzone
                 onFilesAdded={this.onFilesAdded}
                 disabled={this.state.uploading || this.state.successfullUploaded}
               />
             </div>
-            <div className={styles.Files}>
+            <div style={{marginLeft: 32, alignItems: 'flex-start', justifyItems: 'flex-start', flex: 1,overflowY: 'auto'}}>
               <List>
                     <ListItem >
                     <PersonIcon style={{float: 'left', color: '#2a2a2a', marginRight: 5}}/>
@@ -198,7 +198,8 @@ class Upload extends Component {
               })}
             </div>
           </div>
-          <div className={styles.Actions}>{this.renderActions()}</div>
+          <div style={{display: 'flex', flex: 1, width: '100%', alignItems: 'flex-end' , flexDirection: 'column', marginTop: 32}}>
+            {this.renderActions()}</div>
         </div>
       );
     }

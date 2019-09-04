@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styles from "./css/Dropzone.css";
 import CloudUpload from '@material-ui/icons/CloudUpload'
 
 class Dropzone extends Component {
@@ -60,17 +59,16 @@ class Dropzone extends Component {
 
   render() {
     return (
-      <div
-        className={`Dropzone ${this.state.hightlight ? "Highlight" : ""}`}
+      <div 
+        style={{height: 200,width: 200, backgroundColor: '#fff', border: '2px dashed rgb(187, 186, 186)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',flexDirection: 'column', fontSize: 16,  backgroundColor: this.state.hightlight ? 'rgb(157, 216, 255)' : '' , cursor: this.props.disabled ? "default" : "pointer"}}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
         onDrop={this.onDrop}
         onClick={this.openFileDialog}
-        style={{ cursor: this.props.disabled ? "default" : "pointer" }}
       >
         <input
           ref={this.fileInputRef}
-          className={styles.FileInput}
+          style={{display: 'none'}}
           type="file"
           accept="application/pdf"
           onChange={this.onFilesAdded}
