@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./css/Dropzone.css";
+import styles from "./css/Dropzone.css";
 import CloudUpload from '@material-ui/icons/CloudUpload'
 
 class Dropzone extends Component {
@@ -70,7 +70,7 @@ class Dropzone extends Component {
       >
         <input
           ref={this.fileInputRef}
-          className="FileInput"
+          className={styles.FileInput}
           type="file"
           accept="application/pdf"
           onChange={this.onFilesAdded}

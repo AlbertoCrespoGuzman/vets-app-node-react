@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './css/Upload.css'
+import styles from './css/Upload.css'
 import Dropzone from './Dropzone'
 import Progress from "./Progress";
 import CheckCircle from '@material-ui/icons/CheckCircle'
@@ -31,6 +31,7 @@ class Upload extends Component {
     }
     componentDidMount(){
       console.log(this.props)
+      console.log(JSON.stringify(styles))
     }
     onFilesAdded(files) {
       this.setState(prevState => ({
@@ -111,7 +112,7 @@ class Upload extends Component {
       console.log('renderProgress', uploadProgress)
       if (this.state.uploading || this.state.successfullUploaded) {
         return (
-          <div className="ProgressWrapper">
+          <div className={styles.ProgressWrapper}>
             <Progress progress={uploadProgress ? uploadProgress.percentage : 0} style={{float: 'right'}}/>
             <CheckCircle
               
@@ -152,15 +153,15 @@ class Upload extends Component {
   
     render() {
       return (
-        <div className="Upload" style={{padding: 20}}>
-          <div className="Content">
+        <div className={styles.Upload} style={{padding: 20}}>
+          <div className={styles.Content}>
             <div>
               <Dropzone
                 onFilesAdded={this.onFilesAdded}
                 disabled={this.state.uploading || this.state.successfullUploaded}
               />
             </div>
-            <div className="Files">
+            <div className={styles.Files}>
               <List>
                     <ListItem >
                     <PersonIcon style={{float: 'left', color: '#2a2a2a', marginRight: 5}}/>
@@ -179,7 +180,7 @@ class Upload extends Component {
                   </List>
               {this.state.files.map(file => {
                 return (
-                  <div key={file.name} className="Row">
+                  <div key={file.name} className={styles.Row}>
                   <List>
                     <ListItem >
                     <PdfIcon style={{float: 'left', color: '#2a2a2a', marginRight: 5}}/>
@@ -197,7 +198,7 @@ class Upload extends Component {
               })}
             </div>
           </div>
-          <div className="Actions">{this.renderActions()}</div>
+          <div className={styles.Actions}>{this.renderActions()}</div>
         </div>
       );
     }
