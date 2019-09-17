@@ -62,6 +62,14 @@ var User = new Schema({
       type: String,
       default: ''
     },
+    android_token:{
+      type: String,
+      default: ''
+    },
+    iphone_token:{
+      type: String,
+      default: ''
+    },
     files: [{
         type : mongoose.Schema.ObjectId,
         ref: 'File'

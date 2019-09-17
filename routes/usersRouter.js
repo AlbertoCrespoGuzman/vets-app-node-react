@@ -114,7 +114,10 @@ router.route('/')
   })
 
   router.post('/login', function (req, res, next) {
-    
+    let android_token = req.body.android_token
+    let iphone_token = req.body.iphone_token
+    console.log('android_token', android_token)
+
     passport.authenticate('local', function (err, user, info) {
           if (err) {
             return next(err);
@@ -147,18 +150,22 @@ router.route('/')
               
   
                 var iduser = user._id;
-                
-                res.status(200).json({
-                  status: req.__("LOGIN_SUCCESSFULL"),
-                  success: true,
-                  token: token,
-                  iduser: iduser,
-                  admin: user.admin,
-                  vet: user.vet,
-                  client: user.client,
-                  clinic: user.clinic,
-                  lang: user.lang
-                });
+                User.findOneAndUpdate({_id: iduser}, {android_token: android_token, iphone_token: iphone_token}, options)
+                    .exec(function (err, ussser){
+                      if(err) res.code(500).json(err)
+                        res.status(200).json({
+                        status: req.__("LOGIN_SUCCESSFULL"),
+                        success: true,
+                        token: token,
+                        iduser: iduser,
+                        admin: user.admin,
+                        vet: user.vet,
+                        client: user.client,
+                        clinic: user.clinic,
+                        lang: user.lang
+                      })
+                    })
+               
           });
     })(req, res, next);
   });
