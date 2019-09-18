@@ -7,21 +7,11 @@ var i18n = require("i18n")
 const User = require('../models/user')
 const File = require('../models/file')
 const Comment = require('../models/comment')
+const pushNotifications = require('./../utils/pushNotifications')
 
 router.use(bodyParser.json())
 router.use(i18n.init)
 
-
-
-
-var admin = require("firebase-admin");
-
-var serviceAccount = require("./../utils/manifest-alpha-152719-firebase-adminsdk-1r3e0-1c89c45af9.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://manifest-alpha-152719.firebaseio.com"
-});
 
 
 options = { upsert: true, new: true, setDefaultsOnInsert: true };
@@ -51,7 +41,7 @@ router.route('/file/:fileId')
                 })
                 File.findOneAndUpdate( { _id: commentSaved.file }, { adminNoReadCommentsCount, customerNoReadCommentsCount, "$push": { "comments": commentSaved._id } }, options)
                 .exec( function(err, fileSaved){
-                    sendMobileNotification(commentSaved)
+                    pushNotifications.sendMobileNotification(commentSaved)
                     console.log('File saved with new comment added...', JSON.stringify(fileSaved))
                     return res.status(200).send(fileSaved)
                 })
@@ -160,36 +150,5 @@ router.route('/read/file/:fileId')
       })
   
 
-function sendMobileNotification(comment){
-    console.log('sendMobileNotification')
-    File.findOne({_id: comment.file})
-        .exec( function(err, user){
-            if (err) throw err
-            
-            if(comment.receiver.android_token && comment.receiver.android_token.length > 5){
-                
-                
-                var message = {
-                    notification: {
-                    title: 'Parapeti - Mesangem Recebida',
-                    body: 'Recebeu uma mensagem referente ao exame ' + file.displayName + '.' 
-                    },
-                    data: {
-                        screen: 'exams'
-                    },
-                    token: user.android_token
-                }
 
-                admin.messaging().send(message)
-                    .then((response) => {
-                    console.log('Successfully sent message:', response);
-                    })
-                    .catch((error) => {
-                    console.log('Error sending message:', error);
-                    });
-            }else{
-                console.log('no android token...')
-            }
-        })
-}
   module.exports = router

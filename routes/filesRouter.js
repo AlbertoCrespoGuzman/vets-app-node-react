@@ -15,6 +15,7 @@ const AwsStorage = require('./../utils/aws-storage')
 const fs = require('fs')
 const AWS = require('aws-sdk')
 fsAsync = require('fs').promises
+const pushNotifications = require('./../utils/pushNotifications')
 
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -30,15 +31,6 @@ AWS.config.update({
 
 var s3 = new AWS.S3()
 
-
-var admin = require("firebase-admin");
-
-var serviceAccount = require("./../utils/manifest-alpha-152719-firebase-adminsdk-1r3e0-1c89c45af9.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://manifest-alpha-152719.firebaseio.com"
-});
 
 
 
@@ -150,7 +142,7 @@ router.route('/')
                         }
                         User.findOneAndUpdate( { _id: fileSaved.user }, { "$push": { "files": fileSaved._id } }, options)
 					    .exec( function(err, user){
-                            sendPushNotificationForFileToCustomer(fileSaved)
+                            pushNotifications.sendPushNotificationForFileToCustomer(fileSaved)
                             return res.status(200).send(fileSaved)
                         })
                     })
@@ -260,38 +252,6 @@ router.route('/:fileId')
             }
         })
 })
-function sendPushNotificationForFileToCustomer(file){
-    console.log('sendPushNotificationForFileToCustomer')
-    User.findOne({_id: file.user})
-    .exec( function(err, user){
-        if (err) throw err
-        
-        if(user.android_token && user.android_token.length > 5){
-            var message = {
-                notification: {
-                title: 'Parapeti - Exame pronto',
-                body: 'Seu exame ' + file.displayName + ' encontra-se disponível.'
-                },
-                data: {
-                    screen: 'exams'
-                },
-                token: user.android_token
-            }
 
-            admin.messaging().send(message)
-                .then((response) => {
-                console.log('Successfully sent message:', response);
-                })
-                .catch((error) => {
-                console.log('Error sending message:', error);
-                });
-        }else{
-            console.log('no android token...')
-        }
-
-
-            
-    })
-}
 
   module.exports = router
