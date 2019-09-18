@@ -261,6 +261,7 @@ router.route('/:fileId')
         })
 })
 function sendPushNotificationForFileToCustomer(file){
+    console.log('sendPushNotificationForFileToCustomer')
     User.findOne({_id: file.user})
     .exec( function(err, user){
         if (err) throw err
@@ -284,6 +285,8 @@ function sendPushNotificationForFileToCustomer(file){
                 .catch((error) => {
                 console.log('Error sending message:', error);
                 });
+        }else{
+            console.log('no android token...')
         }
 
 
