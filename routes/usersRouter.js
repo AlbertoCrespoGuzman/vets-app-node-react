@@ -169,7 +169,19 @@ router.route('/')
           });
     })(req, res, next);
   });
-  
+  router.route('/logout')
+  .post(Verify.verifyOrdinaryUser, function (req, res, next) {
+    Verify.getUsernameFromToken(req.headers['authorization'])
+    .then(username =>{
+        User.findOneAndUpdate( {username}, {android_token: '', iphone_token: '' })
+            .exec(function (err, user) {
+            if (err) next(err)
+              res.status(200).json({
+                status: 'Bye!'
+              })
+          })
+        })
+  })
 router.route('/register')
 
     .post(Verify.verifyAdmin, [
@@ -591,12 +603,12 @@ router.route('/register-admin')
       });
 
 
-router.get('/logout', function (req, res) {
+/*router.get('/logout', function (req, res) {
   req.logout();
   res.status(200).json({
     status: 'Bye!'
   });
-});
+}); */
 router.get('/facebook', passport.authenticate('facebook'),
   function(req, res){});
 
