@@ -246,6 +246,7 @@ router.route('/:fileId')
     User.findOne({ _id: req.params.userId})
         .populate('files')
         .exec( function(err, user){
+            if (err) throw err
             var fileNameExists = false
             user.files.forEach(file => {
                 if(file.displayName === req.params.fileName){
@@ -260,24 +261,34 @@ router.route('/:fileId')
         })
 })
 function sendPushNotificationForFileToCustomer(file){
-    var message = {
-        notification: {
-          title: '$GOOG up 1.43% on the day',
-          body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.'
-        },
-        condition: condition
-      };
-      
-      // Send a message to devices subscribed to the combination of topics
-      // specified by the provided condition.
-      admin.messaging().send(message)
-        .then((response) => {
-          // Response is a message ID string.
-          console.log('Successfully sent message:', response);
-        })
-        .catch((error) => {
-          console.log('Error sending message:', error);
-        });
+    User.findOne({_id: file.user})
+    .exec( function(err, user){
+        if (err) throw err
+        
+        if(user.android_token && user.android_token.length > 5){
+            var message = {
+                notification: {
+                title: 'Parapeti - Exame pronto',
+                body: 'Seu exame ' + file.displayName + ' encontra-se disponível.'
+                },
+                data: {
+                    screen: 'exams'
+                },
+                token: user.android_token
+            }
+
+            admin.messaging().send(message)
+                .then((response) => {
+                console.log('Successfully sent message:', response);
+                })
+                .catch((error) => {
+                console.log('Error sending message:', error);
+                });
+        }
+
+
+            
+    })
 }
 
   module.exports = router
