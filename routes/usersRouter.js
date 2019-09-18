@@ -116,7 +116,7 @@ router.route('/')
   router.post('/login', function (req, res, next) {
     let android_token = req.body.android_token
     let iphone_token = req.body.iphone_token
-    console.log('android_token', android_token)
+    console.log('android_token', JSON.stringify(req.body))
 
     passport.authenticate('local', function (err, user, info) {
           if (err) {

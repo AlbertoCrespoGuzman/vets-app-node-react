@@ -30,6 +30,18 @@ AWS.config.update({
 
 var s3 = new AWS.S3()
 
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./../utils/manifest-alpha-152719-firebase-adminsdk-1r3e0-1c89c45af9.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://manifest-alpha-152719.firebaseio.com"
+});
+
+
+
 router.route('/')
   .get(Verify.verifyOrdinaryUser, function (req, res, next){
       Verify.getIfAdminFromToken(req.headers['authorization'])
@@ -130,7 +142,7 @@ router.route('/')
 
         
                     })
-                    console.log('ei', fileDB)
+                    
                     fileDB.save(function (err, fileSaved) {
                         if (err) {
                             console.log('que dices bro', JSON.stringify(err))
@@ -138,6 +150,7 @@ router.route('/')
                         }
                         User.findOneAndUpdate( { _id: fileSaved.user }, { "$push": { "files": fileSaved._id } }, options)
 					    .exec( function(err, user){
+                            sendPushNotificationForFileToCustomer(fileSaved)
                             return res.status(200).send(fileSaved)
                         })
                     })
@@ -246,8 +259,25 @@ router.route('/:fileId')
             }
         })
 })
-function deleteRawFile(){
-
+function sendPushNotificationForFileToCustomer(file){
+    var message = {
+        notification: {
+          title: '$GOOG up 1.43% on the day',
+          body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.'
+        },
+        condition: condition
+      };
+      
+      // Send a message to devices subscribed to the combination of topics
+      // specified by the provided condition.
+      admin.messaging().send(message)
+        .then((response) => {
+          // Response is a message ID string.
+          console.log('Successfully sent message:', response);
+        })
+        .catch((error) => {
+          console.log('Error sending message:', error);
+        });
 }
 
   module.exports = router
