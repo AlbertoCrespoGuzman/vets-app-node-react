@@ -55,7 +55,7 @@ exports.sendMobileNotification = (comment) => {
     User.findOne({_id: comment.receiver})
     .exec( function(err, receiver){
             File.findOne({_id: comment.file})
-                .exec( function(err, user){
+                .exec( function(err, file){
                     if (err) throw err
                     
                     if(receiver.android_token && receiver.android_token.length > 5){
