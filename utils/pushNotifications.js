@@ -51,7 +51,7 @@ exports.sendPushNotificationForFileToCustomer = (file) => {
 
 
 exports.sendMobileNotification = (comment) => {
-    console.log('sendMobileNotification')
+    console.log('sendMobileNotification', comment.receiver)
     File.findOne({_id: comment.file})
         .exec( function(err, user){
             if (err) throw err
