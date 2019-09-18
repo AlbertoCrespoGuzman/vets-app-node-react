@@ -175,7 +175,10 @@ router.route('/')
     .then(username =>{
         User.findOneAndUpdate( {username}, {android_token: '', iphone_token: '' })
             .exec(function (err, user) {
-            if (err) next(err)
+            if (err){
+                console.log(JSON.stringify(err))
+                next(err)
+              }
               res.status(200).json({
                 status: 'Bye!'
               })
