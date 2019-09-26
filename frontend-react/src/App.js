@@ -18,7 +18,9 @@ import { makeStyles,createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import ForgotPassword from './components/ForgotPassword'
 import ResetPassword from './components/ResetPassword'
-
+import Partners from './components/Partners'
+import AdminExams from './components/AdminExams'
+import AddAdminExams from './components/AddAdminExams'
 if(localStorage.jwtToken) {
   setAuthToken(localStorage.jwtToken);
   const decoded = jwt_decode(localStorage.jwtToken);
@@ -58,11 +60,18 @@ function App() {
         <Router>
             <div>
               <Navbar />
-                <Route exact path="/" component={ Home } />
-                <div className="">
+                <div style={{marginLeft:80}}>
                   <Route exact path="/login" component={ Login } />
+                  <Route exact path="/" component={ Home } />
+                  <Route exact path="/partners" component={ Partners } />
                   <Route exact path="/forgot_password" component={ ForgotPassword } />
                   <Route exact path="/reset_password" component={ ResetPassword } />
+                  <Route exact path="/users" component={ Users } />
+                  <Route exact path="/profile" component={ Profile } />
+                  <Route exact path="/exams" component={ Exams } />
+                  <Route exact path="/add_admin_exams" component = { AddAdminExams } />
+                  <Route exact path="/admin_exams" component={ AdminExams } />
+                  <Route exact path="/register" component={ Register } />
                 </div>
             </div>
           </Router>

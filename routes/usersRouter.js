@@ -3,6 +3,8 @@ var bodyParser = require('body-parser')
 var router = express.Router()
 var passport = require('passport')
 var User = require('../models/user')
+var File = require('../models/file')
+var Comment = require('../models/comment')
 var Verify = require('../security/verify')
 var nodemailer = require('nodemailer')
 var path = require('path');
@@ -12,6 +14,9 @@ var async = require('async')
 var crypto = require("crypto")
 require('dotenv').config()
 var generator = require('generate-password')
+var Comment  = require('../models/comment')
+const AWS = require('aws-sdk')
+
 
 i18n.configure({
     locales:[ 'pt'],
@@ -34,6 +39,15 @@ const { sanitizeBody } = require('express-validator/filter');
 router.use(bodyParser.json());
 router.use(cookieParser());
 router.use(i18n.init)
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+})
+
+
+var s3 = new AWS.S3()
+
 
 router.route('/')
   .get(Verify.verifyAdmin, function (req, res, next)
@@ -69,8 +83,42 @@ router.route('/')
           })
       })
   })
-
-
+  .delete(Verify.verifyAdmin, function (req, res, next) {
+    console.log(req.body)
+    Verify.getUsernameFromToken(req.headers['authorization'])
+      .then(username =>{
+        User.findOne( {username})
+            .exec(function (err, user) {
+                if (err) next(err)
+                user.comparingPassword(req.body.password, user.password)
+                .then(result => {
+                  File.find({ $or:[{user: req.params.userId}, {admin: req.params.userId }] })
+                      .exec(function(err, files){
+                              if (err) throw err
+                              
+                              File.deleteMany({ $or:[{user: req.params.userId}, {admin: req.params.userId }] })
+                                  .exec(function(err, result){
+                                      if (err) throw err
+                                      Promise.all(files.map(file => deleteCommentsInOneFile(file)))
+                                        .then(d => {
+                                          User.deleteOne({_id: req.params.userId})
+                                            .exec(function(err, result){
+                                              if (err) throw err
+                                              res.status(200).json(result)
+                                            })
+                                        })
+                                        .catch(err => {
+                                          res.status(400).send({ msg: err });
+                                        })
+                                  })
+                      })
+                })
+                .catch(err => {
+                  console.log('comparingPassword ERROR', err)
+                })
+              })
+        })
+  })
   router.route('/me')
     .get(Verify.verifyOrdinaryUser, function (req, res, next) {
         Verify.getUsernameFromToken(req.headers['authorization'])
@@ -758,5 +806,21 @@ router.route('/details/:userId')
                     })
             })
     })
-    
+
+function deleteCommentsInOneFile(file){
+    var params = {  Bucket: process.env.AWS_BUCKET_NAME, Key: file.awsKey }
+
+    return new Promise(function(resolve, reject){
+    Comment.deleteMany({ file: file._id })
+          .exec(function (err, result){
+            if(err) reject(err)
+            
+            s3.deleteObject(params, function(err, data) {
+                if (err) reject(err)
+                
+                resolve(true)
+            })
+    })
+  })
+}
 module.exports = router;

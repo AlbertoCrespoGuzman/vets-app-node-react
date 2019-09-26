@@ -122,6 +122,16 @@ User.methods.comparePassword = function(candidatePassword, cb) {
     cb(null, isMatch)
   })
 }
+User.methods.comparingPassword = function(candidatePassword, userPassword) {
+  return new Promise(function(resolve, reject){
+      console.log('candidatePassword', candidatePassword)
+      console.log('userPassword', userPassword)
+      bcrypt.compare(candidatePassword, userPassword, function(err, isMatch) {
+        if (err) reject(err) 
+        resolve(isMatch)
+      })
+    })
+}
 User.plugin(passportLocalMongoose)
 
 module.exports = mongoose.model('User', User)

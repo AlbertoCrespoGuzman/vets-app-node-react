@@ -20,7 +20,8 @@ class Users extends Component {
     constructor(props){
         super(props)
         this.state = {
-            collapse: true
+            collapse: true,
+            isFetchingForDeleting: false
         }
     }
     
@@ -31,7 +32,7 @@ class Users extends Component {
     render() {
         return (
             <div style={{marginLeft:10, marginTop: 40, width:'100%', height:'100%'}}>
-            {this.props.isFetching && (
+            {this.props.isFetching || this.state.isFetchingForDeleting && (
                             <Grid
                             container
                             spacing={0}
@@ -45,7 +46,7 @@ class Users extends Component {
                         )}
                {!this.props.isFetching && (
                <Grow
-                in={!this.props.isFetching}
+                in={!this.props.isFetching && !this.state.isFetchingForDeleting }
                 style={{ transformOrigin: '0 0 0' }}
                 {...(!this.props.isFetching ? { timeout: 1000 } : {})}
                 >
@@ -88,7 +89,35 @@ class Users extends Component {
                                 new Promise((resolve, reject) => {
                                     setTimeout(() => {
                                         {
-                                            alert('opção não habilitada')
+                                            var password = prompt('Tem certeza que está querendo deletar o usuário ' + oldData.completename + '? Serão eliminados todos os exames e bate-papos desse usuário. Se quiser prosseguir com a eliminação deste usuário por favor, digite a sua senha de administrador:')
+                                            if(password != null && password && password.length > 0){
+                                                this.setState({
+                                                    isFetchingForDeleting: true
+                                                })
+                                                axios.delete(process.env.REACT_APP_API_HOST + '/api/users/' + oldData._id, {data: {password}})
+                                                            .then(res => {
+                                                                
+                                                                setTimeout(()=>{
+                                                                    this.setState({
+                                                                        isFetchingForDeleting: false
+                                                                    })
+                                                                    window.location.reload()
+                                                                }, 5000)
+                                                                
+                                                                resolve(res)
+                                                                
+                                                            })
+                                                            .catch(err => {
+                                                               
+                                                                setTimeout(()=>{
+                                                                    this.setState({
+                                                                        isFetchingForDeleting: false
+                                                                    })
+                                                                    window.location.reload()    
+                                                                }, 5000)
+                                                                reject(err)
+                                                            })
+                                            }
                                         }
                                         resolve();
                                     }, 1000);

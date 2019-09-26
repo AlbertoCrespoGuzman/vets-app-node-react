@@ -114,7 +114,6 @@ export default function MiniDrawer(props) {
     <div className={classes.root}>
     
       <CssBaseline />
-      <Router>
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -229,13 +228,6 @@ export default function MiniDrawer(props) {
             </div>
         )}
       </Drawer>
-      <Route exact path="/users" component={ Users } />
-      <Route exact path="/profile" component={ Profile } />
-      <Route exact path="/exams" component={ Exams } />
-      <Route exact path="/add_admin_exams" component = { AddAdminExams } />
-      <Route exact path="/admin_exams" component={ AdminExams } />
-      <Route exact path="/register" component={ Register } />
-    </Router>
       </div>
   );
 }

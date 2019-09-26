@@ -148,6 +148,20 @@ class AdminExams extends Component {
                                 }
                         ]}
                         editable={{
+                            onRowUpdate: (newData, oldData) =>
+                                new Promise((resolve, reject) => {
+                                        console.log('newData', newData)
+                                        
+                                        axios.patch(process.env.REACT_APP_API_HOST + '/api/files/' + oldData._id, newData)
+                                        .then(res => {
+                                            this.props.loadAdminExams()
+                                            resolve()
+                                        })
+                                       .catch(err => {
+                                            reject()
+                                       })
+                                      
+                                    }),
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
                                     axios.delete(process.env.REACT_APP_API_HOST + '/api/files/' + oldData._id)

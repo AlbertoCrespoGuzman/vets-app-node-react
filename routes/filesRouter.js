@@ -232,6 +232,23 @@ router.route('/:fileId')
             })
         })
   })
+  .patch(Verify.verifyOrdinaryUser, function (req, res, next) {
+    File.findById(req.params.fileId)
+        .exec(function (err, file) {
+        if (err) next(err)
+          
+        
+         file.displayName = req.body.displayName
+         file.commentsEnabled = req.body.commentsEnabled
+         
+
+         file.save(function (err) {
+            if (err) { return res.status(500).send({ msg: err.message }); }
+            res.status(200).json(file)
+            //res.redirect('/#/login/' + req.__("EMAIL_ACCOUNT_VERIFIED_SUCCESSFULLY"))
+        })
+    })
+})
   router.route('/:fileName/user/:userId' )
   .get(Verify.verifyOrdinaryUser, function (req, res, next){
       

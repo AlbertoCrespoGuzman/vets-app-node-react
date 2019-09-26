@@ -14,10 +14,13 @@ const filesRouter = require('./routes/filesRouter')
 const reactRouter = require('./routes/reactRouter')
 const usersRouter = require('./routes/usersRouter')
 const commentsRouter = require('./routes/commentsRouter')
+const databaseBackup = require('./utils/database-backup')
+
 const app = express()
 require('dotenv').config()
 const i18n = require("i18n")
 var cors = require('cors')
+const cronJob = require('cron').CronJob
 
 const User = require('./models/user')
 
@@ -61,9 +64,18 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
                     });
               }
            });
+           databaseBackup.collectionsBackup()
     }).catch(err => {
       console.error(err)
     })
+ 
+ 
+   var databaseBackupJob = new cronJob({
+      cronTime: '0 3 */1 * *',  //“At 03:00 on every day-of-month.”
+      onTick: function(){
+        databaseBackup.collectionsBackup()
+  }})
+  databaseBackupJob.start()
 
     app.use(passport.initialize());
     //passport.use(new LocalStrategy(User.authenticate()));
@@ -153,7 +165,9 @@ app.all('*', function(req, res, next){
 app.listen(`${process.env.PORT}`, function(){
   console.info('Server listening on port ' + this.address().port)
 })
-//app.listen(`${process.env.PORT}`, `${process.env.HOST}`)
-//console.log(`Running on http://${process.env.HOST}:${process.env.PORT}`)
+
+
+
+
 
 module.exports = app

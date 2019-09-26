@@ -93,7 +93,7 @@ const classes = makeStyles(theme => ({
   }))
 
 class Navbar extends Component {
-    
+  
     render() {
        
         const {isAuthenticated, user} = this.props.auth;   
@@ -105,8 +105,15 @@ class Navbar extends Component {
      ''
         )
       const guestLinks = (
-        <div className={classes.sectionDesktop}  style={{ position: 'absolute', right: '0'}}>
-            <Button component={ Link } color="inherit" to="/login" style={{ marginRight:30}}>Consulte seu exame</Button>
+        <div style={{margin:'auto'}}>
+    
+              <Button style={{marginLeft: -40, marginRight: 40}} component={ Link } color="inherit" to="/#about-us" >Sobre nós</Button>
+              <Button style={{marginLeft: 40, marginRight: 40}} component={ Link } color="inherit" to="/#exams" >Exames</Button>
+              <Button style={{marginLeft: 40, marginRight: 40}} component={ Link } color="inherit" to="/#contact" >Contato</Button>
+              <Button style={{marginLeft: 40, marginRight: 40}} component={ Link } color="inherit" to="/partners" >Parceiros</Button>
+              <Button style={{position: 'absolute', right: 10}} component={ Link } color="inherit" to="/login" >Consulte seu exame</Button>
+ 
+          
         </div>
       )
       
