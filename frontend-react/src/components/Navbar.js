@@ -107,11 +107,12 @@ class Navbar extends Component {
       const guestLinks = (
         <div style={{margin:'auto'}}>
     
-              <Button style={{marginLeft: -40, marginRight: 40}} component={ Link } color="inherit" to="/#about-us" >Sobre nós</Button>
-              <Button style={{marginLeft: 40, marginRight: 40}} component={ Link } color="inherit" to="/#exams" >Exames</Button>
-              <Button style={{marginLeft: 40, marginRight: 40}} component={ Link } color="inherit" to="/#contact" >Contato</Button>
-              <Button style={{marginLeft: 40, marginRight: 40}} component={ Link } color="inherit" to="/partners" >Parceiros</Button>
-              <Button style={{position: 'absolute', right: 10}} component={ Link } color="inherit" to="/login" >Consulte seu exame</Button>
+              <Button style={{marginLeft: -40, marginRight: 40, textTransform: 'none', fontSize: 20 }} component={ Link } color="inherit" to="/#about-us" >Sobre nós</Button>
+              <Button style={{marginLeft: 40, marginRight: 40, textTransform: 'none', fontSize: 20 }} component={ Link } color="inherit" to="/#exams" >Exames</Button>
+              <Button style={{marginLeft: 40, marginRight: 40, textTransform: 'none', fontSize: 20 }} component={ Link } color="inherit" to="/partners" >Parceiros</Button>
+              <Button style={{marginLeft: 40, marginRight: 40, textTransform: 'none', fontSize: 20 }}  component={ Link } color="inherit" to="/#contact" >Contato</Button>
+              
+              <Button style={{position: 'absolute', right: 10, textTransform: 'none', fontSize: 20 }} component={ Link } color="inherit" to="/login" >Consulte seu exame</Button>
  
           
         </div>
@@ -122,12 +123,12 @@ class Navbar extends Component {
             <CssBaseline />
                 <AppBar position="fixed" className={clsx(classes.appBar, {
                         [classes.appBarShift]: false,
-                        })}>
+                        })} style={{padding: 15}}>
                     <Toolbar>
                     
-                    <Typography variant="h6" className={classes.title} >
+                  <Typography variant="h6" className={classes.title} >
                         Vets
-                    </Typography>
+                    </Typography>  
                     <div />
 
                         {isAuthenticated ? authLinks : guestLinks}

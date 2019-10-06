@@ -35,10 +35,17 @@ if(localStorage.jwtToken) {
 
 function App() {
   const [theme, setTheme] = useState({
+    typography: {
+      fontFamily: "Open Sans",
+      fontSize: 14,
+      fontWeightLight: 100,
+      fontWeightRegular: 400,
+      fontWeightMedium: 500
+     },
     palette: {
       type: "light",
       primary: {
-        main: '#13aa52'
+        main: '#018AC0'
       },
       secondary: {
         main: '#E33E7F'
@@ -60,7 +67,7 @@ function App() {
         <Router>
             <div>
               <Navbar />
-                <div style={{marginLeft:80}}>
+                <div style={{marginLeft:0}}>
                   <Route exact path="/login" component={ Login } />
                   <Route exact path="/" component={ Home } />
                   <Route exact path="/partners" component={ Partners } />
