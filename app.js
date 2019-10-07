@@ -9,7 +9,7 @@ const fs = require('fs')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const shell = require('shelljs')
-const apiRouter = require('./routes/apiRouter')
+const statusRouter = require('./routes/statusRouter')
 const filesRouter = require('./routes/filesRouter')
 const reactRouter = require('./routes/reactRouter')
 const usersRouter = require('./routes/usersRouter')
@@ -117,7 +117,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/comments', commentsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/files', filesRouter)
-app.use('/status', apiRouter)
+app.use('/status', statusRouter)
 app.use('/', reactRouter)
 
 
