@@ -117,7 +117,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/comments', commentsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/files', filesRouter)
-app.use('/api', apiRouter)
+app.use('/status', apiRouter)
 app.use('/', reactRouter)
 
 
