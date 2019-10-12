@@ -142,7 +142,7 @@ class Profile extends Component {
     }
     render() {
         return (
-            <div style={{marginTop: 80, marginLeft: 30, width: '100%', height: '100%', flex: 1, justifyContent: 'center', alignContent:'center'}}>
+            <div style={{marginTop:120, marginLeft:80, width: '100%', height: '100%', flex: 1, justifyContent: 'center', alignContent:'center'}}>
                <Typography>
                    Meu Perfil
                </Typography>

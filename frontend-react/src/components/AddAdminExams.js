@@ -290,7 +290,7 @@ class AddAdminExams extends Component {
       }
     render() {
         return (
-            <div style={{width: '80%',margin: 40, marginTop:100}}>
+            <div style={{width: '80%',margin: 40, marginTop:120, marginLeft:80}}>
                 { this.state.showStepper && 
                 ( 
                     <div>

@@ -119,6 +119,7 @@ export default function MiniDrawer(props) {
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
+        style={{padding: 15, }}
       >
         <Toolbar>
           <IconButton
@@ -132,9 +133,7 @@ export default function MiniDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Vets
-          </Typography>
+          <img src='/img/logo_white.png' height={80}/>
           <div className={classes.sectionDesktop} style={{ position: 'absolute', right: '0', top: 15, marginRight:50}}>
             {props.user.completename}
             </div>
@@ -144,6 +143,7 @@ export default function MiniDrawer(props) {
         </Toolbar>
       </AppBar>
       <Drawer
+      
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -157,7 +157,7 @@ export default function MiniDrawer(props) {
         }}
         open={open}
       >
-        <div className={classes.toolbar}>
+        <div className={classes.toolbar}style={{padding: 30, }}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>

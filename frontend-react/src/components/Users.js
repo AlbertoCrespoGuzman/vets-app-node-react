@@ -31,7 +31,7 @@ class Users extends Component {
 
     render() {
         return (
-            <div style={{marginLeft:10, marginTop: 40, width:'100%', height:'100%'}}>
+            <div style={{marginLeft:70, marginTop: 60, width:'100%', height:'100%'}}>
             {this.props.isFetching || this.state.isFetchingForDeleting && (
                             <Grid
                             container

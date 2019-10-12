@@ -48,7 +48,7 @@ class Exams extends Component {
     }
     render() {
         return (
-            <div style={{marginLeft:10, marginTop: 40, width:'100%', height:'100%'}}>
+            <div style={{marginTop:120, marginLeft:80, width:'100%', height:'100%'}}>
             {this.props.isFetching && (
                             <Grid
                             container

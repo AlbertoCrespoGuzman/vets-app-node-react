@@ -216,7 +216,7 @@ class Navbar extends Component {
 
               <Button style={{marginLeft: -40, marginRight: 40, textTransform: 'none', fontSize: 20, color: '#0188FE' }} component={ Link } color="inherit" to="/#about-us" >Sobre nós</Button>
               <Button style={{marginLeft: 40, marginRight: 40, textTransform: 'none', fontSize: 20, color: '#0188FE' }} component={ Link } color="inherit" to="/#exams" >Exames</Button>
-              <Button style={{marginLeft: 40, marginRight: 40, textTransform: 'none', fontSize: 20, color: '#0188FE' }} component={ Link } color="inherit" to="/partners" >Parceiros</Button>
+              <Button style={{marginLeft: 40, marginRight: 40, textTransform: 'none', fontSize: 20, color: '#0188FE' }} component={ Link } color="inherit" to="/#partners" >Parceiros</Button>
               <Button style={{marginLeft: 40, marginRight: 40, textTransform: 'none', fontSize: 20, color: '#0188FE' }}  component={ Link } color="inherit" to="/#contact" >Contato</Button>
               
         </div>
@@ -229,7 +229,7 @@ class Navbar extends Component {
                         [classes.appBarShift]: false,
                         })} style={{padding: 15, backgroundColor: 'white'}}>
                     <Toolbar>
-                    <img src='/img/logo_blue.png' />
+                    <img src='/img/logo_blue.png' height={80}/>
                   
                     <div />
                         <div  />
