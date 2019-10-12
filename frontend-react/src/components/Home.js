@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Slider from 'react-animated-slider';
 import 'react-animated-slider/build/horizontal.css';
 import './css/carousel.css'
+import Link from '@material-ui/core/Link';
 
 class Home extends Component {
     constructor(props){
@@ -48,33 +49,20 @@ class Home extends Component {
                 description:
                 'SEU EXAME',
                 button: 'CONSULTA',
-                image: 'https://i.imgur.com/ZXBtVw7.jpg',
-                user: 'Luan Gjokaj',
-                userProfile: 'https://i.imgur.com/JSW6mEk.png'
+                image: '/img/carousel1.jpg'
             },
             {
-                title: 'Tortor Dapibus Commodo Aenean Quam',
+                title: 'CONSULTE',
                 description:
-                'Nullam id dolor id nibh ultricies vehicula ut id elit. Cras mattis consectetur purus sit amet fermentum. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec sed odio dui.',
-                button: 'Discover',
-                image: 'https://i.imgur.com/DCdBXcq.jpg',
-                user: 'Erich Behrens',
-                userProfile: 'https://i.imgur.com/0Clfnu7.png'
-            },
-            {
-                title: 'Phasellus volutpat metus',
-                description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Duis mollis, est non commodo luctus, nisi erat porttitor ligula.',
-                button: 'Buy now',
-                image: 'https://i.imgur.com/DvmN8Hx.jpg',
-                user: 'Bruno Vizovskyy',
-                userProfile: 'https://i.imgur.com/4KeKvtH.png'
+                'SEU EXAME',
+                button: 'CONSULTA',
+                image: '/img/carousel2.jpg'
             }
         ];
 
         return (
             <div>
-               <div  style={{backgroundColor: 'yellow', marginTop:90}}>
+               <div  style={{marginTop:90}}>
                     <Slider className="slider-wrapper" >
                             {content.map((item, index) => (
                                 <div
@@ -83,18 +71,17 @@ class Home extends Component {
                                     style={{ background: `url('${item.image}') no-repeat center center` }}
                                 >
                                     <div className="inner" style={{textAlign: 'right'}}>
-                                        <div fontWeight='fontWeightLight' style={{fontWeight: '300 !important', fontSize: 50, lineHeight:0.7, color: 'white'}}>{item.title}</div>
-                                        <div fontWeight='fontWeightMedium' style={{fontWeight: 'bold', fontSize: 50, color: 'white'}}>{item.description}</div>
-                                        <button>{item.button} &nbsp;&nbsp;&nbsp; <i style={{fontWeight: 'light'}} class="fas fa-angle-right"></i></button>
+                                        <div className="carousel-title" >{item.title}</div>
+                                        <div className="carousel-description">{item.description}</div>
+                                        <a href="/login" className="button" >{item.button} &nbsp;&nbsp;&nbsp; <i style={{fontWeight: 'light'}} className="fas fa-angle-right"></i></a>
                                     </div>
                                     
                                 </div>
                             ))}
                         </Slider>
                 </div>
-                <div ref={this.aboutUsRef} style={{backgroundColor: 'green',minHeight:500 , marginTop:100}}>
-                    this is about us
-                </div>
+                <div ref={this.aboutUsRef} style={{backgroundColor: 'green',minHeight:500}}>
+                   </div>            
                 <div ref={this.examsRef} style={{backgroundColor: 'pink',minHeight:500 , marginTop:100}}>
                     this is Exams
                 </div>

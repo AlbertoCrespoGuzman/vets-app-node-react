@@ -1,0 +1,17 @@
+.navbar-desktop {
+    display: none;
+}
+.navbar-mobile {
+    display: flex;
+    color: '#0188FE';
+}
+
+@media (min-width:960px){
+    .navbar-desktop {
+        display: flex;
+    }
+    .navbar-mobile {
+        display: none;
+        color: '#0188FE';
+    }
+}

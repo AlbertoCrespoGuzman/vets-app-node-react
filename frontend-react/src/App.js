@@ -45,10 +45,10 @@ function App() {
     palette: {
       type: "light",
       primary: {
-        main: '#018AC0'
+        main: '#0188FE'
       },
       secondary: {
-        main: '#E33E7F'
+        main: '#F7F8F9'
       },
       accent: {
         main: '#E33E7F'
@@ -66,7 +66,7 @@ function App() {
         <CssBaseline />
         <Router>
             <div>
-              <Navbar />
+              <Navbar theme={muiTheme}/>
                 <div style={{marginLeft:0}}>
                   <Route exact path="/login" component={ Login } />
                   <Route exact path="/" component={ Home } />

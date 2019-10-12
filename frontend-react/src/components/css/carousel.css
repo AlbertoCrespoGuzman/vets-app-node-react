@@ -1,5 +1,19 @@
 
-button {
+.carousel-title {
+   font-weight: 100;
+   font-size: 50px;
+    color: white;
+}
+
+.carousel-description {
+   font-weight: 700;
+    font-size: 50px;
+    line-height:0.7;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.button {
   -webkit-appearance: none;
           appearance: none;
   -webkit-filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.1));
@@ -18,13 +32,13 @@ button {
   font-weight: 250;
   font-size: 20px;
   cursor: cursor;
+  margin-top:10px;
+  text-decoration: none !important;
 }
 
-button:hover {
+.button:hover {
   color: #018AC0;
   background: #FFFFFF;
-  -webkit-filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
-          filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
 }
 
 .wrapper {
@@ -45,12 +59,12 @@ button:hover {
 
 .slider-wrapper {
   position: relative;
-  height: 70vh;
+  height: 90vh;
   overflow: hidden;
 }
 
 .slide {
-  height: 70vh;
+  height: 90vh;
   background-size: cover !important;
 }
 
