@@ -72,6 +72,7 @@ class Dropzone extends Component {
           type="file"
           accept="application/pdf"
           onChange={this.onFilesAdded}
+          multiple
         />
         <CloudUpload
           

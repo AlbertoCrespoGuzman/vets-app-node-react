@@ -78,6 +78,9 @@ router.route('/')
   
   .post(Verify.verifyAdmin, function (req, res, next){
       
+    if(req.body.files && req.body.files.length > 0){
+        console.log('FILES !!', req.body.files)
+    }else{
         var allFields = { }
 
         var storage = multer.diskStorage({
@@ -88,7 +91,7 @@ router.route('/')
                     allFields.adminId = req.body.adminId
                     allFields.tmp = '/tmp/'
                     allFields.type = file_.originalname.split('.').length > 1 ? file_.originalname.split('.')[file_.originalname.split('.').length -1] : ''
-                    allFields.displayName = req.body.displayName
+                    allFields.displayName = req.body.displayName && req.body.displayName.length > 0 ? req.body.displayName : file_.originalname.split('.')[0]
                     allFields.commentsEnabled = (req.body.commentsEnabled == "true")
                     console.log(JSON.stringify(allFields))
                 cb(null, path.resolve('tmp'))
@@ -100,10 +103,16 @@ router.route('/')
                 allFields.adminId = req.body.adminId
                 allFields.tmp = '/tmp/'
                 allFields.type = file_.originalname.split('.').length > 1 ? file_.originalname.split('.')[file_.originalname.split('.').length -1] : ''
-                allFields.displayName = req.body.displayName
+                allFields.displayName = req.body.displayName && req.body.displayName.length > 0 ? req.body.displayName : file_.originalname
                 allFields.commentsEnabled = (req.body.commentsEnabled == "true")
-                cb(null, allFields.displayName  && allFields.displayName.length > 0 
-                                ? (allFields.displayName  + '.' + allFields.type) : file_.originalname )
+                if(allFields.displayName && allFields.displayName.length > 0 && allFields.displayName.split('.').length > 1){
+                    cb(null, allFields.displayName  && allFields.displayName.length > 0 
+                      ?  (allFields.displayName /*  + '.' + allFields.type */) : file_.originalname )
+                }else{
+                    cb(null, allFields.displayName  && allFields.displayName.length > 0
+                        ? (allFields.displayName  + '.' + allFields.type) : file_.originalname )
+                }
+                
             }
         })
         var upload = multer({ storage: storage }).single('file')
@@ -154,6 +163,8 @@ router.route('/')
                 })
                 
             })
+    }
+        
 })
 router.route('/:fileId')
   .delete(Verify.verifyAdmin, function (req, res, next){

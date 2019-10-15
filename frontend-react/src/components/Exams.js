@@ -56,7 +56,7 @@ class Exams extends Component {
                             direction="column"
                             alignItems="center"
                             justify="center"
-                            style={{flex:1, marginTop:100,justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}
+                            style={{flex:1, marginTop:150,justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}
                           >
                                 <CircularProgress />
                             </Grid>
@@ -97,7 +97,11 @@ class Exams extends Component {
                                             {type: 'application/pdf'});
                                             const fileURL = URL.createObjectURL(file);
                                             var anchor = document.createElement("a");
-                                            anchor.download = rowData.displayName + '.' + rowData.type;
+                                            if(rowData.displayName && rowData.displayName.split('.').length < 2){
+                                                anchor.download = rowData.displayName + '.' + rowData.type;
+                                            }else{
+                                                anchor.download = rowData.displayName
+                                            }
                                             anchor.href = fileURL;
                                             anchor.click()
                                         //    window.open(fileURL);
@@ -122,7 +126,7 @@ class Exams extends Component {
                                 
                                 options={{
                                     actionsColumnIndex: -1,
-                                    exportButton: true,
+                                    exportButton: false,
                                     exportFileName: 'Lista de Exames',
                                     rowStyle: rowData => {
                                         if(rowData.read) {

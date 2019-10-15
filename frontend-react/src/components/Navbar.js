@@ -229,8 +229,9 @@ class Navbar extends Component {
                         [classes.appBarShift]: false,
                         })} style={{padding: 15, backgroundColor: 'white'}}>
                     <Toolbar>
-                    <img src='/img/logo_blue.png' height={80}/>
-                  
+                     <a href="/" >
+                        <img src='/img/logo_blue.png' height={80}/>
+                    </a>
                     <div />
                         <div  />
                             <div className={"navbar-desktop"} style={{

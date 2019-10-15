@@ -110,6 +110,17 @@ export default function MiniDrawer(props) {
   function onLogout() {
     props.logoutUser(props.history)
   }
+  function showUserType() {
+    if(props.user.admin){
+      return 'Admin: '
+    }else if(props.user.vet){
+      return 'Veterinário: '
+    }else if(props.user.clinic){
+      return 'Clínica: '
+    }else{
+      return 'Usuário: '
+    }
+  }
   return (
     <div className={classes.root}>
     
@@ -135,7 +146,7 @@ export default function MiniDrawer(props) {
           </IconButton>
           <img src='/img/logo_white.png' height={80}/>
           <div className={classes.sectionDesktop} style={{ position: 'absolute', right: '0', top: 15, marginRight:50}}>
-            {props.user.completename}
+          {showUserType() + props.user.completename}
             </div>
             <div className={classes.sectionDesktop} style={{ fontSize: 10, position: 'absolute', right: '0',top:38, marginRight:50}}>
             {props.user.username}

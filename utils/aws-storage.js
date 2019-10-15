@@ -20,8 +20,11 @@ exports.saveFileInAWS = function (allFields){
             .exec(function(err, user){
                 if (err) throw err
                 
-            var filePath = path.resolve('tmp') + '/' + (allFields.displayName && allFields.displayName.length > 0 ? allFields.displayName : allFields.file.originalname) + '.' + allFields.type 
-            var AWSfilePath = user.username + '/' + (allFields.displayName && allFields.displayName.length > 0 ? allFields.displayName : allFields.file.originalname) + '.' + allFields.type 
+                if(allFields.displayName && allFields.displayName.length > 0 && allFields.displayName.indexOf(allFields.type) === -1){
+                    allFields.displayName = allFields.displayName + '.' + allFields.type
+                }
+            var filePath = path.resolve('tmp') + '/' + (allFields.displayName && allFields.displayName.length > 0 ? allFields.displayName : allFields.file.originalname) /* + '.' + allFields.type */
+            var AWSfilePath = user.username + '/' + (allFields.displayName && allFields.displayName.length > 0 ? allFields.displayName : allFields.file.originalname) /* + '.' + allFields.type */
             var params = {
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Body : fs.createReadStream(filePath),
@@ -34,8 +37,14 @@ exports.saveFileInAWS = function (allFields){
                 }
                 if (data) {
                   try {
-                    fs.unlinkSync(path.resolve('.' + allFields.tmp +  allFields.displayName +  '.' + allFields.type ))
-                    resolve(AWSfilePath)
+                    if(allFields.displayName.split('.').length > 1){
+                      fs.unlinkSync(path.resolve('.' + allFields.tmp +  allFields.displayName ))
+                      resolve(AWSfilePath)
+                    }else{
+                      fs.unlinkSync(path.resolve('.' + allFields.tmp +  allFields.displayName +  '.' + allFields.type ))
+                      resolve(AWSfilePath)
+                    }
+                    
                   } catch(err) {
                     console.error(err)
                   }

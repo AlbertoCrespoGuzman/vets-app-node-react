@@ -56,55 +56,60 @@ class Upload extends Component {
     }
   
     sendRequest(file) {
-      return new Promise((resolve, reject) => {
-        
+      
+        return new Promise((resolve, reject) => {
+            
+      
+          const data = new FormData()
+          data.append('userId', this.props.data.userId)
+          data.append('displayName', this.props.data.displayName)
+          data.append('commentsEnabled', this.props.data.commentsEnabled)
+          data.append('adminId', this.props.admin._id)
+          data.append('file', file)
+          data.append('files', this.state.files)
+          data.append('size', file.size)
+        console.log('fileee', JSON.stringify(file))
+          for (var key of data.entries()) {
+            console.log(key[0] + ', ' + key[1]);
+        }
+          const ttthis = this
+          axios({
+              method: 'post',
+              url: process.env.REACT_APP_API_HOST + '/api/files',
+              data: data,
+              config: { headers: {'Content-Type': 'multipart/form-data' }},
+              onUploadProgress: ProgressEvent => {
+                    if(ProgressEvent.loaded === ProgressEvent.total*100){
+                      const copy = { ...this.state.uploadProgress };
+                      copy[file.name] = { state: "done", percentage: 100 };
+                      this.setState({ uploadProgress: copy })
+                    }else{
+                      const copy = { ...this.state.uploadProgress };
+                      copy[file.name] = {
+                        state: "pending",
+                        percentage: (ProgressEvent.loaded / ProgressEvent.total) * 100
+                      };
+                      this.setState({ uploadProgress: copy });
+                    }
+                }
+              })
+              .then(function (response) {
+                  const copy = { ...ttthis.state.uploadProgress };
+                  copy[file.name] = { state: "done", percentage: 100 };
+                  ttthis.setState({ uploadProgress: copy })
+                  ttthis.props.triggerUploadedFinished()
+                  console.log(response);
+              })
+              .catch(function (response) {
+                  //handle error
+                  console.log(JSON.stringify(response.response))
+              });
   
-        const data = new FormData()
-        data.append('userId', this.props.data.userId)
-        data.append('displayName', this.props.data.displayName)
-        data.append('commentsEnabled', this.props.data.commentsEnabled)
-        data.append('adminId', this.props.admin._id)
-        data.append('file', file)
-        data.append('size', file.size)
-   console.log('fileee', JSON.stringify(file))
-        for (var key of data.entries()) {
-          console.log(key[0] + ', ' + key[1]);
-      }
-        const ttthis = this
-        axios({
-            method: 'post',
-            url: process.env.REACT_APP_API_HOST + '/api/files',
-            data: data,
-            config: { headers: {'Content-Type': 'multipart/form-data' }},
-            onUploadProgress: ProgressEvent => {
-                  if(ProgressEvent.loaded === ProgressEvent.total*100){
-                    const copy = { ...this.state.uploadProgress };
-                    copy[file.name] = { state: "done", percentage: 100 };
-                    this.setState({ uploadProgress: copy })
-                  }else{
-                    const copy = { ...this.state.uploadProgress };
-                    copy[file.name] = {
-                      state: "pending",
-                      percentage: (ProgressEvent.loaded / ProgressEvent.total) * 100
-                    };
-                    this.setState({ uploadProgress: copy });
-                  }
-              }
-            })
-            .then(function (response) {
-                const copy = { ...ttthis.state.uploadProgress };
-                copy[file.name] = { state: "done", percentage: 100 };
-                ttthis.setState({ uploadProgress: copy })
-                ttthis.props.triggerUploadedFinished()
-                console.log(response);
-            })
-            .catch(function (response) {
-                //handle error
-                console.log(JSON.stringify(response.response))
-            });
+  
+        });
+      
 
 
-      });
     }
   
     renderProgress(file) {
@@ -181,7 +186,7 @@ class Upload extends Component {
               {this.state.files.map(file => {
                 return (
                   <div key={file.name} className={styles.Row}>
-                  <List>
+                  
                     <ListItem >
                     <PdfIcon style={{float: 'left', color: '#2a2a2a', marginRight: 5}}/>
                     <Typography 
@@ -189,7 +194,6 @@ class Upload extends Component {
                         {file.name}
                     </Typography>
                       </ListItem>
-                  </List>
                    
                     < br/>
                     {this.renderProgress(file)}

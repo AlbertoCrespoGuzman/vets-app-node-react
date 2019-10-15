@@ -89,7 +89,7 @@ class Login extends Component {
                         <CardContent>
                         <Typography 
                                 className={classes.title} color="textSecondary" gutterBottom>
-                            Vets
+                            Parapeti
                         </Typography>
                         <Typography 
                                 variant="h5" component="h2">
