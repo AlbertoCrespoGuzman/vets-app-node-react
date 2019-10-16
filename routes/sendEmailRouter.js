@@ -23,7 +23,7 @@ router.route('/')
                     if (err) { 
                         return res.status(500).send({ msg: 'error sendMail->' + err.message }); 
                     }
-                    res.status(200).send({ msg: req.__("EMAIL_VERIFICATION_SENT", user.username)});
+                    res.status(200).send({ msg: 'ok'});
                 });
             }else{
                 res.status(500).send({ msg: 'error sendMail '}); 
