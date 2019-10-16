@@ -504,7 +504,7 @@ class Home extends Component {
                                                     </Grid>
                                             )}
                                             {!this.state.isSending && this.state.sent && (
-                                            <p style={{color:'green'}}>Mensagem enviada com sucesso. Em breve contataremos com você </p>
+                                            <p style={{color:'green'}}>Mensagem enviada com sucesso. Em breve entraremos em contato </p>
                                             )}
                                         </center>
                                     </div>
