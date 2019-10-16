@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({ service: process.env.MAIL_SERVICE
 
 
 router.route('/')
-  .post(function (req, res, next){
+  .post(function (req, res, next){ 
             if(req.body && req.body.name && req.body.email && 
                 req.body.message && req.body.phone && req.body.address){
                 var mailOptions = { from: process.env.MAIL_USER, 
