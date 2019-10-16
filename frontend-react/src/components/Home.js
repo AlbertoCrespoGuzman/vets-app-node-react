@@ -488,7 +488,7 @@ class Home extends Component {
                                             </p>
                                             )}
                                         <center>
-                                            {!this.state.isSending && (
+                                            {!this.state.isSending && !this.state.sent && (
                                             <button onClick={()=> { this.sendEmail() } } className="button" disabled={this.state.sent}>ENVIAR </button>
                                             )}
                                             {this.state.isSending && (
@@ -502,6 +502,9 @@ class Home extends Component {
                                                     >
                                                         <CircularProgress />
                                                     </Grid>
+                                            )}
+                                            {!this.state.isSending && this.state.sent && (
+                                            <p style={{color:'green'}}>Mensagem enviada com sucesso. Em breve contataremos com você </p>
                                             )}
                                         </center>
                                     </div>
