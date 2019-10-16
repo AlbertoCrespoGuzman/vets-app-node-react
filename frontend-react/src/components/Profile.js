@@ -182,7 +182,6 @@ class Profile extends Component {
                                     name="username"
                                     onChange={this.handleInputChange}
                                     aria-describedby="username-text"
-                                    onChange={ this.handleInputChange }
                                     value={ this.props.profile.username }
                                     disabled={true}
                                     />
@@ -227,7 +226,52 @@ class Profile extends Component {
                                     />
                                     {this.props.error.address && (<FormHelperText id="address-text">{this.props.error.address}</FormHelperText>)}
                                 </FormControl>
-                            
+                                {!this.props.profile.vet && (
+                                    <FormControl className={classes.formControl} fullWidth={true} >
+                                        <InputLabel htmlFor="address">Endereço</InputLabel>
+                                        <Input
+                                        type="text"
+                                        id="address"
+                                        name="address"
+                                        aria-describedby="address-text"
+                                        onChange={ this.handleInputChange }
+                                        value={ this.props.profile.address }
+                                        disabled={!this.state.isEditing}
+                                        />
+                                        {this.props.error.address && (<FormHelperText id="address-text">{this.props.error.address}</FormHelperText>)}
+                                    </FormControl>
+                                )}
+                                { (this.props.profile.vet || this.props.profile.clinic) && (
+                                
+                                    <FormControl className={classes.formControl} fullWidth={true} >
+                                        <InputLabel htmlFor="cmrv">CMRV</InputLabel>
+                                        <Input
+                                        type="text"
+                                        id="cmrv"
+                                        name="cmrv"
+                                        aria-describedby="cmrv-text"
+                                        onChange={ this.handleInputChange }
+                                        value={ this.props.profile.cmrv }
+                                        disabled={!this.state.isEditing}
+                                        />
+                                        {this.props.error.cmrv && (<FormHelperText id="cmrv-text">{this.props.error.cmrv}</FormHelperText>)}
+                                    </FormControl>
+                                )}
+                                {this.props.profile.clinic && (
+                                    <FormControl className={classes.formControl} fullWidth={true} >
+                                        <InputLabel htmlFor="technicalSupport">Responsável Técnico</InputLabel>
+                                        <Input
+                                        type="text"
+                                        id="technicalSupport"
+                                        name="technicalSupport"
+                                        aria-describedby="technicalSupport-text"
+                                        onChange={ this.handleInputChange }
+                                        value={ this.props.profile.address }
+                                        disabled={!this.state.isEditing}
+                                        />
+                                        {this.props.error.technicalSupport && (<FormHelperText id="address-text">{this.props.error.technicalSupport}</FormHelperText>)}
+                                    </FormControl>
+                                )}
                             <CardActions>
                                 {!this.state.isSaving && !this.state.isEditing && 
                                     (<Button 

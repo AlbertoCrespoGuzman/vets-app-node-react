@@ -13,6 +13,7 @@ const statusRouter = require('./routes/statusRouter')
 const filesRouter = require('./routes/filesRouter')
 const reactRouter = require('./routes/reactRouter')
 const usersRouter = require('./routes/usersRouter')
+const sendEmailRouter = require('./routes/sendEmailRouter')
 const commentsRouter = require('./routes/commentsRouter')
 const databaseBackup = require('./utils/database-backup')
 
@@ -117,6 +118,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/comments', commentsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/files', filesRouter)
+app.use('/api/send_email', sendEmailRouter)
 app.use('/status', statusRouter)
 app.use('/', reactRouter)
 

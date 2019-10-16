@@ -4,6 +4,7 @@ import 'react-animated-slider/build/horizontal.css';
 import './css/carousel.css'
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress' 
 import Paper from '@material-ui/core/Paper';
 import FindReplace from '@material-ui/icons/FindReplace'
 import Pets from '@material-ui/icons/Pets'
@@ -11,7 +12,11 @@ import Done from '@material-ui/icons/Done'
 import Visibility from '@material-ui/icons/Visibility'
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
+import axios from 'axios'
+import dotenv from 'dotenv'
+dotenv.config()
+
 
 class Home extends Component {
     constructor(props){
@@ -20,8 +25,20 @@ class Home extends Component {
         this.examsRef = React.createRef()
         this.partnersRef = React.createRef()
         this.contactRef = React.createRef()
-        
+        this.sendEmail = this.sendEmail.bind(this)
         this.scrollIfNecessary =this.scrollIfNecessary.bind(this)
+        this.state = {
+            isSending: false,
+            sent: false,
+            name: '',
+            email: '',
+            phone: '',
+            address: '',
+            message: '',
+            errors: { }
+        }
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.sendEmail = this.sendEmail.bind(this)
     }
     
     componentDidMount(){
@@ -69,6 +86,95 @@ class Home extends Component {
                 behavior: 'smooth',
                 block: 'start',
               });
+        }
+    }
+    handleInputChange(e) {
+        const varName = e.target.name
+        
+        this.setState({
+            [varName]: e.target.value
+        })
+    }
+    sendEmail(){
+        console.log(this.state)
+        let ok = true
+        this.state.errors = {}
+
+        if(!this.state.email 
+            || this.state.email.length < 6 
+            || !this.state.email.includes('@')
+            || !this.state.email.includes('.')
+            || this.state.email.includes(',')
+            || this.state.email.includes('<')
+            || this.state.email.includes('script')
+            || this.state.email.includes('>')){
+                ok = false
+                this.state.errors['email'] = 'O email é incorreto'
+            }
+        if(!this.state.name 
+            || this.state.name.length < 3 
+            || this.state.name.includes(',')
+            || this.state.name.includes('<')
+            || this.state.name.includes('script')
+            || this.state.name.includes('>')){
+                ok = false
+                this.state.errors['name'] = 'O nome é incorreto'
+            }
+        if(!this.state.phone 
+            || this.state.phone.length < 3 
+            || this.state.phone.includes(',')
+            || this.state.phone.includes('<')
+            || this.state.phone.includes('script')
+            || this.state.phone.includes('>')){
+                ok = false
+                this.state.errors['phone'] = 'O telephone é incorreto'
+            }
+        if(!this.state.message 
+            || this.state.message.length < 3 
+            || this.state.message.includes('<')
+            || this.state.message.includes('script')
+            || this.state.message.includes('>')){
+                ok = false
+                this.state.errors['message'] = 'A mensagem é muito curta ou tem carateres não permitidos'
+            }
+        if(!this.state.address 
+            || this.state.address.length < 3 
+            || this.state.address.includes('<')
+            || this.state.address.includes('script')
+            || this.state.address.includes('>')){
+                ok = false
+                this.state.errors['address'] = 'O endereço é incorreto'
+            }
+        if(ok){
+            this.setState({
+                isSending: true
+            })
+            axios.post(process.env.REACT_APP_API_HOST + '/api/send_email/', 
+                {   name: this.state.name,
+                    email: this.state.email,
+                    address: this.state.address,
+                    phone: this.state.phone,
+                    message: this.state.message
+                })
+                    .then(res => {
+                        this.setState({
+                            isSending: false,
+                            sent: true
+                        })
+                    })
+                    .catch(err => {
+                        this.setState({
+                            isSending: false
+                        })
+                    if(err && err.response){
+                    this.setState({
+                        errors: JSON.stringify(err.response),
+                        isSending: false
+                    })
+                    }
+                    })
+        }else{
+            this.setState({})
         }
     }
     render() {
@@ -342,15 +448,62 @@ class Home extends Component {
                         <div className="row">
                                 <div  className="col-md-12" style={{padding:50}}>
                                     <div style={{backgroundColor: 'white', borderRadius: 30, padding: 50, margin:100, marginTop:10}}>
-                                        <input style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'Nome completo'} />
+                                        <input style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'Nome completo'} id="name" name="name" value={this.state.name} onChange={this.handleInputChange}/>
+                                        {this.state.errors && this.state.errors.name && (
+                                            <p style={{color: 'red', marginLeft:5}}>
+                                                {this.state.errors.name}
+                                            </p>
+                                            )}
+                                            <div class="row">
+                                                <div class="col-md-6 col-lg-6 col-sm-12">
+                                                    <input style={{width: '100%', marginBottom:20, marginRight:10, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'(85) 9 9999-8888'} id="phone" name="phone" value={this.state.phone} onChange={this.handleInputChange} />
+                                                        {this.state.errors && this.state.errors.phone && (
+                                                            <div style={{color: 'red', marginLeft:5, width: '48%'}}>
+                                                                {this.state.errors.phone}
+                                                            </div>
+                                                            )}
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 col-sm-12">
+                                                <input style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'a@a.com.br'}  id="email" name="email" value={this.state.email} onChange={this.handleInputChange}/>
+                                                    {this.state.errors && this.state.errors.email && (
+                                                        <span style={{color: 'red', marginLeft:5, width: '50%'}}>
+                                                            {this.state.errors.email}
+                                                        </span>
+                                                        )}
+                                                </div>
+                                            </div>
                                         
-                                        <input style={{width: '48%', marginBottom:20, marginRight:10, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'(85) 9 9999-8888'} />
-                                        <input style={{width: '50%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'a@a.com.br'} />
-
-                                        <input style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'Endereço completo (Rua, Número, Bairro)'} />
-                                        <textarea rows={6} style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'Mensagem'}>
+                                        
+                                        <input style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'Endereço completo (Rua, Número, Bairro)'}  id="address" name="address" value={this.state.address} onChange={this.handleInputChange}/>
+                                        {this.state.errors && this.state.errors.address && (
+                                            <p style={{color: 'red', marginLeft:5}}>
+                                                {this.state.errors.address}
+                                            </p>
+                                            )}
+                                        <textarea rows={6} style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'Mensagem'}  id="message" name="message" value={this.state.message} onChange={this.handleInputChange}>
                                         </textarea>
-                                        <center><button onClick={()=> {console.log('sending') } } className="button">ENVIAR </button></center>
+                                        {this.state.errors && this.state.errors.message && (
+                                            <p style={{color: 'red', marginLeft:5}}>
+                                                {this.state.errors.message}
+                                            </p>
+                                            )}
+                                        <center>
+                                            {!this.state.isSending && (
+                                            <button onClick={()=> { this.sendEmail() } } className="button" disabled={this.state.sent}>ENVIAR </button>
+                                            )}
+                                            {this.state.isSending && (
+                                                    <Grid
+                                                    container
+                                                    spacing={0}
+                                                    direction="column"
+                                                    alignItems="center"
+                                                    justify="center"
+                                                    style={{marginTop: 30}}
+                                                    >
+                                                        <CircularProgress />
+                                                    </Grid>
+                                            )}
+                                        </center>
                                     </div>
                                 </div>
                                 
@@ -385,7 +538,7 @@ class Home extends Component {
                                     <div className="col-md-12">
                                         <div style={{fontSize:25, marginTop:50, marginBottom:20}}><strong>CONTATO</strong></div>
                                         <div style={{marginTop:10}}>+55 85 9999-9999</div>
-                                        <div style={{marginTop:10}}>atendimento@parapeti.com</div>
+                                        <div style={{marginTop:10}}>parapeticontato@gmail.com</div>
                                         <div style={{marginTop:10}}>Rua xxxxx, 000 - Fortaleza, CE.</div>
                                         <div style={{marginTop:10}}>CEP: 00000-000</div>
                                         
