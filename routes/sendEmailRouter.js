@@ -17,7 +17,7 @@ router.route('/')
                 var mailOptions = { from: process.env.MAIL_USER, 
                                 to: process.env.MAIL_USER, 
                                 subject: req.body.name + ' enviou email', 
-                                html: 'Email recebido desde o site. Dados do cliente: < /br> Nome: ' + req.body.name + '</br> Telephone: '+ req.body.phone + '</br> Endereço: '+ req.body.address + '</br> Email de contato: '+ req.body.email + '</br> Messagem: '+ req.body.message  
+                                html: 'Email recebido desde o site. "\n Dados do cliente:"\n Nome: ' + req.body.name + '."\n Telephone: '+ req.body.phone + '."\n Endereço: '+ req.body.address + '."\n Email de contato: '+ req.body.email + '."\n Messagem: '+ req.body.message  
                             }
                 transporter.sendMail(mailOptions, function (err) {
                     if (err) { 
