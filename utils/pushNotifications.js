@@ -6,11 +6,11 @@ const Comment = require('../models/comment')
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./../utils/parapeti-lab-firebase-adminsdk-s9wtj-e8885c635e.json");
+var serviceAccount = require("./../utils/manifest-alpha-152719-firebase-adminsdk-1r3e0-1c89c45af9.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://parapeti-lab.firebaseio.com"
+  databaseURL: "https://manifest-alpha-152719.firebaseio.com"
 });
 
 
