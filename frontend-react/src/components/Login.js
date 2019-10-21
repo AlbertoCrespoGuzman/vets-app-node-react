@@ -32,6 +32,9 @@ class Login extends Component {
     }
     
     handleInputChange(e) {
+        if(e.target.name === 'username'){
+            e.target.value = e.target.value.toLowerCase()
+        }
         this.setState({
             [e.target.name]: e.target.value
         })
@@ -105,7 +108,7 @@ class Login extends Component {
                                 name="username"
                                 onChange={this.handleInputChange}
                                 aria-describedby="username-text"
-                                onChange={ this.handleInputChange }
+                                style={{textTransform:'lowercase'}}
                                 value={ this.state.username }
                                 />
                                 {errors.username && (<FormHelperText id="username-text" style={{color: 'red'}}>{errors.username}</FormHelperText>)}
@@ -119,7 +122,6 @@ class Login extends Component {
                                 name="password"
                                 onChange={this.handleInputChange}
                                 aria-describedby="password-text"
-                                onChange={ this.handleInputChange }
                                 value={ this.state.password }
                                 />
                                 {errors.password && (<FormHelperText id="password-text" style={{color: 'red'}}>{errors.password}</FormHelperText>)}

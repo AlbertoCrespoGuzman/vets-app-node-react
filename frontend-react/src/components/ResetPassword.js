@@ -87,7 +87,7 @@ export default class ResetPassword extends Component {
                         <CardContent>
                         <Typography 
                                color="textSecondary" gutterBottom>
-                            Vets
+                            Parapeti
                         </Typography>
                         <Typography 
                                 variant="h5" component="h2">
