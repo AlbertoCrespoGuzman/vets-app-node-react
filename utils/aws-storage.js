@@ -145,7 +145,7 @@ exports.removeDatabaseFilesMoreThanOneWeek = (files) =>{
 
               var a = moment([new Date().getFullYear(), new Date().getMonth(), new Date().getDate()]);
               var b = moment([fileDateYear, fileDateMonth, fileDateDay])
-              if(Math.abs(a.diff(b, 'days')) >= 7 || Math.abs(a.diff(b, 'years')) > 0 || Math.abs(a.diff(b, 'months')) > 0){
+              if(Math.abs(a.diff(b, 'days')) >= 7){
                 filesMoreThanOneWeek.push(file)
               }
         }
