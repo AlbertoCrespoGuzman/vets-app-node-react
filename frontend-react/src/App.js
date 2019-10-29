@@ -67,7 +67,7 @@ function App() {
         <Router>
             <div>
               <Navbar theme={muiTheme}/>
-                <div style={{marginLeft:0}}>
+                <div style={{marginLeft:0, marginRight:0}}>
                   <Route exact path="/login" component={ Login } />
                   <Route exact path="/" component={ Home } />
                   <Route exact path="/partners" component={ Partners } />

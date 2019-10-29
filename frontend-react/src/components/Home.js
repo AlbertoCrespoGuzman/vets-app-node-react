@@ -15,6 +15,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 import axios from 'axios'
 import dotenv from 'dotenv'
+import {
+    BrowserView,
+    MobileView,
+    isBrowser,
+    isMobile
+  } from "react-device-detect";
+
 dotenv.config()
 
 
@@ -205,7 +212,7 @@ class Home extends Component {
             }
         ];
         return (
-            <div>
+            <div style={{width:'100%'}}>
                <div  style={{marginTop:90}}>
                     <Slider className="slider-wrapper" >
                             {content.map((item, index) => (
@@ -224,21 +231,22 @@ class Home extends Component {
                         </Slider>
                 </div>
                 <div ref={this.aboutUsRef} style={{minHeight:400}}>
-                <Grid  xs={12} container
-                        direction="row"
-                        justify="center"
-                        alignItems="center"
+                <div  class="row"
                         style={{backgroundColor: '#0188FE'}}>
                    
-                        <Grid xs={6}
-                        justify="center"
-                        alignItems="center" style={{padding:180, backgroundColor: '#FFFFFF'}}>
-                                <img src='/img/logo_blue.png' height={150} style={{margin:0,
-                                display: 'block',
-                                maxWidth: '100%',
-                                maxHeight: '100%'}} />
-                        </Grid>
-                        <Grid  xs={6} style={{backgroundColor: '#0188FE', 
+                        <div 
+                        className="col-md-6 col-lg-6 col-sm-12 col-xs-12"
+                        style={isMobile ? 
+                                {margin: 'auto',  backgroundColor: '#FFFFFF',minHeight:400} : {padding:180, backgroundColor: '#FFFFFF',minHeight:400}}>
+                                <img src='/img/logo_blue.png' height={150} 
+                                style={
+                                    isMobile ?
+                                    {margin:'auto', marginTop:110, display: 'block', maxWidth: '100%', maxHeight: '100%'}
+                                   : {margin:0, display: 'block', maxWidth: '100%', maxHeight: '100%'}} />
+                        </div>
+                        <div  
+                        className="col-md-6 col-lg-6 col-sm-12 col-xs-12"
+                        style={{backgroundColor: '#0188FE', 
                                 display: 'block',
                                 width: '100%',
                                 height: '100%', paddingLeft:20, paddingRight:20}}>
@@ -247,12 +255,12 @@ class Home extends Component {
                                 display: 'block',
                                 width: '100%',
                                 height: '100%', textAlign:'center',marginTop:0,  fontSize: 20, color: 'white'}}>
-                                <div style={{marginTop:20}}>
+                                <div style={{marginTop:100}}>
                                 <span className="carousel-title" >SOBRE &nbsp;</span>
                                 <span className="carousel-description" style={{marginBottom: 20}}><strong>NÓS</strong></span>
                                 </div>
                                 < br/>
-                                    <div >
+                                    <div style={isMobile ? {margin:40} : {margin:'auto'}}>
                                         Lorem ipsum dolor sit amet, consectetur
                                         adipiscing elit, sed do eiusmod tempor
                                         incididunt ut labore et dolore magna
@@ -264,19 +272,16 @@ class Home extends Component {
                                         fugiat nulla pariatur.
                                     </div>
                                 </div>
-                        </Grid>
-                </Grid>
+                        </div>
+                </div>
                    </div>            
                 <div  >
-                <Grid  xs={12} container
-                        direction="row"
-                        justify="center"
-                        alignItems="center"
+                <div   className="row"
                         style={{backgroundColor: '#FFFFFF'}}>
                        
-                       <Grid xs={4}
-                                justify="center"
-                                alignItems="center" container style={{padding:70, backgroundColor: '#FFFFFF', color: '#0188FE'}}>
+                       <div 
+                       className="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+                       style={{padding:70, backgroundColor: '#FFFFFF', color: '#0188FE'}}>
                                 <div class="row">
                                         <div className="col-md-2">
                                             <FindReplace   style={{fontSize:30, marginTop:5}}/>
@@ -305,11 +310,11 @@ class Home extends Component {
                                                 
                                         </div>
                                         </div>
-                                </Grid>
-                                <Grid xs={4}
-                                justify="center"
-                                alignItems="center" container style={{padding:70, backgroundColor: '#FFFFFF', color: '#0188FE'}}>
-                                <div class="row">
+                                </div>
+                        <div
+                        className="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+                        style={{padding:70, backgroundColor: '#FFFFFF', color: '#0188FE'}}>
+                        <div class="row">
                                         <div className="col-md-2">
                                             <Visibility   style={{fontSize:30, marginTop:5}}/>
                                         </div>
@@ -337,10 +342,10 @@ class Home extends Component {
                                                 
                                         </div>
                                         </div>
-                                </Grid>
-                                <Grid xs={4}
-                                justify="center"
-                                alignItems="center" container style={{padding:70,paddingTop:40, backgroundColor: '#FFFFFF', color: '#0188FE'}}>
+                        </div>
+                        <div 
+                        className="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+                        style={{padding:70,backgroundColor: '#FFFFFF', color: '#0188FE'}}>
                                     <div class="row" >
                                         <div className="col-md-2">
                                             <Pets   style={{fontSize:30, marginTop:5}}/>
@@ -362,9 +367,9 @@ class Home extends Component {
                                                 
                                         </div>
                                     </div>
-                                </Grid>
+                        </div>
                                 
-                   </Grid>
+                   </div>
                 </div>
                 <div ref={this.examsRef} >
                 <Slider className="slider-wrapper" >
@@ -394,44 +399,44 @@ class Home extends Component {
                                 </div>
                         </div>
                         <div className="row">
-                                <div className="col-md-3" >
+                                <div className="col-md-3 col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
                                 </div>
-                                <div className="col-md-3" >
+                                <div className="col-md-3 col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
                                 </div>
-                                <div className="col-md-3" >
+                                <div className="col-md-3 col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
                                 </div>
-                                <div className="col-md-3" >
+                                <div className="col-md-3 col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
                                 </div>
                         </div>
                         <div className="row" style={{marginTop: 20}}>
-                                <div className="col-md-3" >
+                                <div className="col-md-3  col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
                                 </div>
-                                <div className="col-md-3" >
+                                <div className="col-md-3  col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
                                 </div>
-                                <div className="col-md-3" >
+                                <div className="col-md-3  col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
                                 </div>
-                                <div className="col-md-3" >
+                                <div className="col-md-3  col-xs-12 col-sm-12" >
                                     <div style={{textAlign:'center',backgroundColor: '#0188FE', borderRadius:90, padding:30, color: 'white'}}>
                                             Logo
                                     </div>
@@ -446,8 +451,11 @@ class Home extends Component {
                                 </div>
                         </div>
                         <div className="row">
-                                <div  className="col-md-12" style={{padding:50}}>
-                                    <div style={{backgroundColor: 'white', borderRadius: 30, padding: 50, margin:100, marginTop:10}}>
+                                <div  className="col-md-12" style={isMobile ? {padding:0} : {padding:50}}>
+                                    <div 
+                                    style={isMobile ?
+                                        {backgroundColor: 'white', borderRadius: 30, padding: 50, margin:40, marginTop:10}
+                                        : {backgroundColor: 'white', borderRadius: 30, padding: 50, margin:100, marginTop:10}}>
                                         <input style={{width: '100%', marginBottom:20, borderRadius:30, borderWidth:7, borderColor: '#0188FE',padding:10 }} placeholder={'Nome completo'} id="name" name="name" value={this.state.name} onChange={this.handleInputChange}/>
                                         {this.state.errors && this.state.errors.name && (
                                             <p style={{color: 'red', marginLeft:5}}>
@@ -513,8 +521,11 @@ class Home extends Component {
                         </div>
                 </div>
                 <div style={{backgroundColor: 'white'}}>
-                    <div className="row" style={{color:  '#0188FE', fontSize:20, paddingTop:40,paddingBottom:40}}>
-                           <div className="col-md-4">
+                    <div className="row" 
+                    style={isMobile ? 
+                        {color:  '#0188FE',  marginLeft:50, fontSize:20, paddingTop:40,paddingBottom:40}
+                        : {color:  '#0188FE',fontSize:20, paddingTop:40,paddingBottom:40}}>
+                           <div className="col-md-4 col-sm-12 col-xs-12">
                                 <div className="row">
                                     <div className="offset-md-2 col-md-8">
                                         <img src='/img/logo_blue.png'  height={100} />
@@ -535,7 +546,7 @@ class Home extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div class=" offset-md-1 col-md-4">
+                            <div class=" offset-md-1 col-md-4  col-sm-12 col-xs-12">
                                 <div className="row">
                                     
                                     <div className="col-md-12">
@@ -548,7 +559,7 @@ class Home extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3  col-sm-12 col-xs-12">
                                 <div className="row">
                                     
                                     <div className="col-md-12">

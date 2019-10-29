@@ -18,6 +18,6 @@ exports.collectionsBackup = async () => {
     awsStorage.saveDatabaseCollectionInAWS(usersCollectionPath)
     awsStorage.saveDatabaseCollectionInAWS(filesCollectionPath)
     awsStorage.saveDatabaseCollectionInAWS(commentsCollectionPath)
-  //  awsStorage.removeDatabaseFilesMoreThanOneWeek( await awsStorage.getFilesInFolder('database'))
+    awsStorage.removeDatabaseFilesMoreThanOneWeek( await awsStorage.getFilesInFolder('database'))
 
 }
