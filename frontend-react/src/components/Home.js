@@ -69,26 +69,22 @@ class Home extends Component {
     }
     scrollIfNecessary(){
         if(window.location.href.includes('#about-us')){
-            console.log('estoy dentro about us')
             this.aboutUsRef.current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
               });
         }else if(window.location.href.includes('#exams')){
-            console.log('estoy dentro exams')
             this.examsRef.current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
               });
         }else if(window.location.href.includes('#contact')){
-            console.log('estoy dentro contact')
             this.contactRef.current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
               });
         }
         else if(window.location.href.includes('#partners')){
-            console.log('estoy dentro contact')
             this.partnersRef.current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
@@ -199,7 +195,7 @@ class Home extends Component {
                 description:
                 'SEU EXAME',
                 button: 'CONSULTA',
-                image: '/img/carousel2.jpg'
+                image: '/img/carousel1_2.jpg'
             }
         ];
         const content2 = [
@@ -209,6 +205,13 @@ class Home extends Component {
                 'HEMATOLÓGICOS',
                 button: 'AGENDAR',
                 image: '/img/carousel2.jpg'
+            },
+            {
+                title: 'EXAMES',
+                description:
+                'CITOPATOLÓGICOS',
+                button: 'AGENDAR',
+                image: '/img/carousel2_2.jpg'
             }
         ];
         return (
