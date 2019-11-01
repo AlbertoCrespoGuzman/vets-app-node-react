@@ -48,7 +48,7 @@ class AdminExams extends Component {
     }
     render() {
         return (
-            <div style={{marginLeft:20, width:'100%', height:'100%'}}>
+            <div style={{marginLeft:20,marginTop:120, width:'100%', height:'100%'}}>
             {this.props.isFetching && (
                             <Grid
                             container
@@ -182,7 +182,8 @@ class AdminExams extends Component {
                             actionsColumnIndex: -1,
                             exportButton: true,
                             exportFileName: 'Lista de Exames',
-                            exportAllData: true
+                            paging: true,
+                            pageSize: this.props.adminExams.length
                           }}
                           localization={{
                             header: {
@@ -203,6 +204,7 @@ class AdminExams extends Component {
 
                             },
                             pagination: {
+                                
                               labelRowsSelect: 'Filas',
                               labelDisplayedRows: '{count} de {from}-{to} ',
                               firstTooltip: 'Primeira',

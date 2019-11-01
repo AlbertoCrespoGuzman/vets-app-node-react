@@ -2,7 +2,7 @@ var shell = require('shelljs')
 const moment = require('moment')
 const awsStorage = require('./aws-storage')
 require('dotenv').config()
-
+const os = require('os')
 
 exports.collectionsBackup = async () => {
     var dateTime = moment().format('DD-MM-YYYY')
