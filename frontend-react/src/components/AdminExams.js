@@ -181,7 +181,8 @@ class AdminExams extends Component {
                         options={{
                             actionsColumnIndex: -1,
                             exportButton: true,
-                            exportFileName: 'Lista de Exames'
+                            exportFileName: 'Lista de Exames',
+                            exportAllData: true
                           }}
                           localization={{
                             header: {
