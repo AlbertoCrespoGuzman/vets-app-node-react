@@ -12,7 +12,7 @@ import axios from 'axios'
 import Grow from '@material-ui/core/Grow'
 import Badge from '@material-ui/core/Badge'
 import MailIcon from '@material-ui/icons/Mail'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import { CircularProgress, Dialog, DialogTitle, Button }  from '@material-ui/core/'
 import dotenv from 'dotenv'
 import ChatDialog from './ChatDialog'
 
@@ -23,10 +23,12 @@ class Exams extends Component {
     constructor(props){
         super(props)
         this.state = {
-            currentDialog: null
+            currentDialog: null,
+            openErrorDialog: false
         }
         this.removeDialog = this.removeDialog.bind(this)
         this.updateFile = this.updateFile.bind(this)
+        this.onCloseErrorDialog = this.onCloseErrorDialog.bind(this)
     }
     updateFile(fileUpdated){
         console.log('updateFile', JSON.stringify(fileUpdated))
@@ -44,6 +46,11 @@ class Exams extends Component {
     removeDialog(){
         this.setState({
             currentDialog: null
+        })
+    }
+    onCloseErrorDialog() {
+        this.setState({
+            openErrorDialog: false
         })
     }
     render() {
@@ -108,6 +115,11 @@ class Exams extends Component {
                                         })
                                         .catch(error => {
                                             console.log(error);
+                                            this.setState({
+                                                openErrorDialog: true,
+                                                errorTitle: 'O Arquivo não está disponível',
+                                                errorText: 'O arquivo' + rowData.displayName + ' não se encontra disponível no momento. Uma mensagem automática foi enviada para nossos administradores. ' 
+                                            })
                                         });
                                     }
                                     },
@@ -172,7 +184,21 @@ class Exams extends Component {
              )}
              <div>
                         {this.state.currentDialog}
+             </div>
+             <Dialog open={this.state.openErrorDialog} onClose={this.onCloseErrorDialog}>
+                <DialogTitle style={{extAlign: 'center'}}>
+                    {this.state.errorTitle}
+                </DialogTitle>
+                    <div style={{textAlign: 'center', marginBottom: 20}}>
+                        {this.state.errorText}
                     </div>
+                    <Button style={{width:'50%', margin: 10, textAlign:'center',marginLeft:'25%'}} color="primary" onClick={() => {
+                        this.setState({
+                            openErrorDialog: false
+                        })
+                } } >Aceitar
+                </Button>
+             </Dialog>
             </div>
         );
     }

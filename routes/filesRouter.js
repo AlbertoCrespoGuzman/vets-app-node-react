@@ -143,18 +143,30 @@ router.route('/')
 
         
                     })
-                    
-                    fileDB.save(function (err, fileSaved) {
-                        if (err) {
-                            console.log('que dices bro', JSON.stringify(err))
-                            return res.status(500).json(err)
+                    if(process.env.AWS_ENABLED === "true"){
+                        var params = {
+                            Bucket: process.env.AWS_BUCKET_NAME,
+                            Key : awsKeyGot
                         }
-                        User.findOneAndUpdate( { _id: fileSaved.user }, { "$push": { "files": fileSaved._id } }, options)
-					    .exec( function(err, user){
-                            pushNotifications.sendPushNotificationForFileToCustomer(fileSaved)
-                            return res.status(200).send(fileSaved)
-                        })
-                    })
+                        s3.headObject(params, function (err, metadata) {  
+                            if (err && err.code === 'NotFound') {  
+                              // Handle no object on cloud here  
+                              res.status(400).json({ 
+                                    file: allFields.file.originalname
+                                })
+                            } else {  
+                                fileDB.save(function (err, fileSaved) {
+                                    if (err) next(err)
+                                    User.findOneAndUpdate( { _id: fileSaved.user }, { "$push": { "files": fileSaved._id } }, options)
+                                    .exec( function(err, user){
+                                        pushNotifications.sendPushNotificationForFileToCustomer(fileSaved)
+                                        return res.status(200).send(fileSaved)
+                                    })
+                            })
+                            }
+                          })
+                    }
+                    
                     
                 })
                 .catch(err => {
@@ -217,7 +229,16 @@ router.route('/:fileId')
                                         Key : file.awsKey
                                     }
                                     res.contentType('application/' + file.type)
-                                    s3.getObject(params).createReadStream().pipe(res)
+                                    s3.getObject(params)
+                                        .createReadStream()
+                                        .on('error', (e) => {
+                                            console.log('error', e)
+                                            pushNotifications.sendPushNotificationForAdminWhenFilesError(file)
+                                            res.status(400).json(e)
+                                        })
+                                        .pipe(res)
+                                        
+                                   // s3.getObject(params).createReadStream().pipe(res)
                                 }else{
                                     var data =fs.readFileSync(path.resolve('.' + file.tmp + file.displayName + '.' + file.type))
                                     res.contentType('application/' + file.type)

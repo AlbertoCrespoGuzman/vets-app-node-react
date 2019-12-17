@@ -65,7 +65,7 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
                     });
               }
            });
-           databaseBackup.collectionsBackup()
+       //    databaseBackup.collectionsBackup()
     }).catch(err => {
       console.error(err)
     })

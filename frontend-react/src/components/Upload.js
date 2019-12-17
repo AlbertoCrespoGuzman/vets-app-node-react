@@ -3,7 +3,7 @@ import styles from './css/Upload.css'
 import Dropzone from './Dropzone'
 import Progress from "./Progress";
 import CheckCircle from '@material-ui/icons/CheckCircle'
-import Button from '@material-ui/core/Button'
+import { Button, Dialog, DialogTitle }  from '@material-ui/core/'
 import axios from 'axios'
 import Typography from '@material-ui/core/Typography'
 import PersonIcon from '@material-ui/icons/Person'
@@ -20,7 +20,9 @@ class Upload extends Component {
         files: [],
         uploading: false,
         uploadProgress: {},
-        successfullUploaded: false
+        successfullUploaded: false,
+        openErrorDialog: false
+
       };
   
       this.onFilesAdded = this.onFilesAdded.bind(this);
@@ -28,6 +30,7 @@ class Upload extends Component {
       this.sendRequest = this.sendRequest.bind(this);
       this.renderActions = this.renderActions.bind(this);
       this.sendRequest = this.sendRequest.bind(this)
+      this.onCloseErrorDialog = this.onCloseErrorDialog.bind(this)
     }
     componentDidMount(){
       console.log(this.props)
@@ -102,6 +105,11 @@ class Upload extends Component {
               })
               .catch(function (response) {
                   //handle error
+                  ttthis.setState({
+                    openErrorDialog: true,
+                    errorTitle: 'Erro subindo erro a AWS',
+                    errorText: response.response && response.response.data && response.response.data.file  ? 'O arquivo "' + response.response.data.file + '" não foi subido corretamente. Por favor, conferir se ele existe, se for o caso, deletar ele e fazer upload do mesmo de novo. No caso que tenha efetuado um upload de multiplos arquivos ao mesmo tempo, conferir que todos estão funcionando corretamente. Obrigado' : 'Erro subindo arquivos, por favor conferir os mesmos na aba Exames. Obrigado'
+                })
                   console.log(JSON.stringify(response.response))
               });
   
@@ -111,7 +119,11 @@ class Upload extends Component {
 
 
     }
-  
+    onCloseErrorDialog() {
+      this.setState({
+          openErrorDialog: false
+      })
+  }
     renderProgress(file) {
       const uploadProgress = this.state.uploadProgress[file.name];
       console.log('renderProgress', uploadProgress)
@@ -204,6 +216,20 @@ class Upload extends Component {
           </div>
           <div style={{display: 'flex', flex: 1, width: '100%', alignItems: 'flex-end' , flexDirection: 'column', marginTop: 32}}>
             {this.renderActions()}</div>
+            <Dialog open={this.state.openErrorDialog} onClose={this.onCloseErrorDialog}>
+                <DialogTitle style={{extAlign: 'center'}}>
+                    {this.state.errorTitle}
+                </DialogTitle>
+                    <div style={{textAlign: 'center', marginBottom: 20, margin:10}}>
+                        {this.state.errorText}
+                    </div>
+                    <Button style={{width:'50%', margin: 10, textAlign:'center',marginLeft:'25%'}} color="primary" onClick={() => {
+                        this.setState({
+                            openErrorDialog: false
+                        })
+                } } >Aceitar
+                </Button>
+             </Dialog>
         </div>
       );
     }

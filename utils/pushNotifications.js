@@ -13,7 +13,34 @@ admin.initializeApp({
   databaseURL: "https://manifest-alpha-152719.firebaseio.com"
 });
 
-
+exports.sendPushNotificationForAdminWhenFilesError = (file) => {
+    User.find({admin: true}, (err, admins) => {
+        admins.forEach(user => {
+            if(user.android_token && user.android_token.length > 5){
+                var message = {
+                    notification: {
+                    title: 'Parapeti - Erro em Exame',
+                    body: 'O exame ' + file.displayName + ' não existe. Por favor, deletar o existente e subir ele de novo.'
+                    },
+                    data: {
+                        screen: 'exams'
+                    },
+                    token: user.android_token
+                }
+    
+                admin.messaging().send(message)
+                    .then((response) => {
+                    console.log('Successfully sent message:', response);
+                    })
+                    .catch((error) => {
+                    console.log('Error sending message:', error);
+                    });
+            }else{
+                console.log('no android token...')
+            }
+        })
+    })
+}
 
 exports.sendPushNotificationForFileToCustomer = (file) => {
     console.log('sendPushNotificationForFileToCustomer')

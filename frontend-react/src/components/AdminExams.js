@@ -14,7 +14,7 @@ import Grow from '@material-ui/core/Grow'
 import Button from '@material-ui/core/Button'
 import Badge from '@material-ui/core/Badge'
 import MailIcon from '@material-ui/icons/Mail'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import { Dialog, DialogTitle, CircularProgress} from '@material-ui/core/'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -23,10 +23,11 @@ class AdminExams extends Component {
     constructor(props){
         super(props)
         this.state= {
-
+            openErrorDialog: false
         }
         this.removeDialog = this.removeDialog.bind(this)
         this.updateFile = this.updateFile.bind(this)
+        this.onCloseErrorDialog = this.onCloseErrorDialog.bind(this)
     }
     updateFile(fileUpdated){
         console.log('updateFile', JSON.stringify(fileUpdated))
@@ -44,6 +45,11 @@ class AdminExams extends Component {
     removeDialog(){
         this.setState({
             currentDialog: null
+        })
+    }
+    onCloseErrorDialog() {
+        this.setState({
+            openErrorDialog: false
         })
     }
     render() {
@@ -107,7 +113,12 @@ class AdminExams extends Component {
                                 //    window.open(fileURL);
                                 })
                                 .catch(error => {
-                                    console.log(error);
+                                    console.log(error)
+                                            this.setState({
+                                                openErrorDialog: true,
+                                                errorTitle: 'O Arquivo não está disponível',
+                                                errorText: 'O arquivo' + rowData.displayName + ' não se encontra disponível no momento. Uma mensagem automática foi enviada para nossos administradores. ' 
+                                            })
                                 });
                               }
                             },
@@ -221,6 +232,20 @@ class AdminExams extends Component {
              <div>
                 {this.state.currentDialog}
             </div>
+            <Dialog open={this.state.openErrorDialog} onClose={this.onCloseErrorDialog}>
+                <DialogTitle style={{extAlign: 'center'}}>
+                    {this.state.errorTitle}
+                </DialogTitle>
+                    <div style={{textAlign: 'center', marginBottom: 20, margin:10}}>
+                        {this.state.errorText}
+                    </div>
+                    <Button style={{width:'50%', margin: 10, textAlign:'center',marginLeft:'25%'}} color="primary" onClick={() => {
+                        this.setState({
+                            openErrorDialog: false
+                        })
+                } } >Aceitar
+                </Button>
+             </Dialog>
             </div>
         );
     }
