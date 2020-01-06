@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
-
+var mongoosePaginate = require('mongoose-paginate')
 
 var File = new Schema({
     originalName: {
@@ -60,5 +60,7 @@ var File = new Schema({
         ref: 'Comment'
     }],
 });
+
+File.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('File', File);

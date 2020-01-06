@@ -19,6 +19,7 @@ import GroupIcon from '@material-ui/icons/Group'
 import ContactMailIcon from '@material-ui/icons/ContactMail'
 import ExistToAppIcon from '@material-ui/icons/ExitToApp'
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf'
+import CloudDownload from '@material-ui/icons/CloudDownload'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import PersonAddIcon from '@material-ui/icons/PersonAdd'
 
@@ -196,6 +197,10 @@ export default function MiniDrawer(props) {
                     <ListItem button component={ Link } color="inherit" to="/admin_exams" >
                         <ListItemIcon><PictureAsPdfIcon /></ListItemIcon>
                         <ListItemText primary='Exames'/>
+                    </ListItem>
+                    <ListItem button component={ Link } color="inherit" to="/admin_exams_filters" >
+                        <ListItemIcon><CloudDownload /></ListItemIcon>
+                        <ListItemText primary='Filtro'/>
                     </ListItem>
                 </List>
                 <Divider />

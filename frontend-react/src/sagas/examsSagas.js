@@ -5,9 +5,9 @@ dotenv.config()
 
 function *getExams(axios, actions){
     
-    const dados = yield axios.get(process.env.REACT_APP_API_HOST + '/api/files/')
+    const dados = yield axios.get(process.env.REACT_APP_API_HOST + '/api/files//pages/' + actions.numPage)
         console.log(dados.data)
-        yield put(loadExamsSuccess(dados.data))
+        yield put(loadExamsSuccess(dados.data.docs, dados.data.pages, dados.data.total))
     
 }
 export default getExams

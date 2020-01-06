@@ -21,6 +21,8 @@ import ResetPassword from './components/ResetPassword'
 import Partners from './components/Partners'
 import AdminExams from './components/AdminExams'
 import AddAdminExams from './components/AddAdminExams'
+import AdminExamsFilter from './components/AdminExamsFilter'
+
 if(localStorage.jwtToken) {
   setAuthToken(localStorage.jwtToken);
   const decoded = jwt_decode(localStorage.jwtToken);
@@ -79,6 +81,7 @@ function App() {
                   <Route exact path="/add_admin_exams" component = { AddAdminExams } />
                   <Route exact path="/admin_exams" component={ AdminExams } />
                   <Route exact path="/register" component={ Register } />
+                  <Route exact path="/admin_exams_filters" component={ AdminExamsFilter } />
                 </div>
             </div>
           </Router>

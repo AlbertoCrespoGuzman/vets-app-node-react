@@ -23,26 +23,32 @@ export const loadProfileSuccess = (data) => {
     }   
 }
 
-export const loadAdminExamsRequest = () => {
+export const loadAdminExamsRequest = (numPage) => {
     return {
-        type : 'LOAD_ADMIN_EXAMS_REQUEST'
+        type : 'LOAD_ADMIN_EXAMS_REQUEST',
+        numPage
     }
 }
-export const loadAdminExamsSuccess = (data) => {
+export const loadAdminExamsSuccess = (data, pages, total) => {
     return {
         type : 'LOAD_ADMIN_EXAMS_SUCCESS',
-        data
+        data,
+        pages,
+        total
     }   
 }
-export const loadExamsRequest = () => {
+export const loadExamsRequest = (numPage) => {
     return {
-        type : 'LOAD_EXAMS_REQUEST'
+        type : 'LOAD_EXAMS_REQUEST',
+        numPage
     }
 }
-export const loadExamsSuccess = (data) => {
+export const loadExamsSuccess = (data, pages, total) => {
     return {
         type : 'LOAD_EXAMS_SUCCESS',
-        data
+        data,
+        pages,
+        total
     }   
 }
 export const loadChatDialogRequest = (file_id) => {

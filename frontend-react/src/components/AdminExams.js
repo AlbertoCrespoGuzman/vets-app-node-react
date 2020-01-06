@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import ChatDialog from './ChatDialog'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
-import Card from '@material-ui/core/Grid'
-import CardContent from '@material-ui/core/Grid'
 import MaterialTable from 'material-table'
 import Moment from 'moment'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -14,7 +12,10 @@ import Grow from '@material-ui/core/Grow'
 import Button from '@material-ui/core/Button'
 import Badge from '@material-ui/core/Badge'
 import MailIcon from '@material-ui/icons/Mail'
-import { Dialog, DialogTitle, CircularProgress} from '@material-ui/core/'
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
+import KeyboardTab from '@material-ui/icons/KeyboardTab'
+import { Dialog, DialogTitle, CircularProgress, Fab} from '@material-ui/core/'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -23,7 +24,10 @@ class AdminExams extends Component {
     constructor(props){
         super(props)
         this.state= {
-            openErrorDialog: false
+            openErrorDialog: false,
+            numPage: 1,
+            pages: 1,
+            total: 1
         }
         this.removeDialog = this.removeDialog.bind(this)
         this.updateFile = this.updateFile.bind(this)
@@ -40,7 +44,7 @@ class AdminExams extends Component {
         this.setState({})
     }
     componentDidMount(){
-        this.props.loadAdminExams()
+        this.props.loadAdminExams(this.state.numPage)
     }
     removeDialog(){
         this.setState({
@@ -83,8 +87,40 @@ class AdminExams extends Component {
                 >
                 
                     <Grid item xs={12}>
+                    <div style={{display: 'flex', alignContent: 'center', justifyContent: 'center'  , displayDirection: 'row', borderRadius: 10, background: 'white', padding: 10}}>
+                        <Fab  style={{marginRight: 5}} size="small"  color="secondary" aria-label="Anterior" disabled={this.state.numPage === 1 ? true : false} onClick={ () => {
+                            this.setState({
+                                numPage: this.state.numPage - 1
+                            }, () => {
+                                this.props.loadAdminExams(this.state.numPage)
+                            })
+                        }}>
+                            <KeyboardArrowLeft />
+                        </Fab>
+                        <Typography style={{verticalAlign: 'center', fontSize: 12, marginTop: 10, marginRight: 5 }}>
+                            Página {this.state.numPage} de {this.props.pages} Págs. Total : {this.props.total}
+                        </Typography>
+                        <Fab style={{marginRight: 5}} size="small"  color="secondary" aria-label="Seguinte" disabled={this.state.numPage === this.props.pages ? true : false}  onClick={ () => {
+                            this.setState({
+                                numPage: this.state.numPage + 1
+                            }, () => {
+                                this.props.loadAdminExams(this.state.numPage)
+                            })
+                        }}>
+                            <KeyboardArrowRight />
+                        </Fab>
+                        <Fab style={{marginRight: 5}} size="small"  color="secondary" aria-label="Última" disabled={this.state.numPage === this.props.pages ? true : false}  onClick={ () => {
+                            this.setState({
+                                numPage: this.props.pages
+                            }, () => {
+                                this.props.loadAdminExams(this.state.numPage)
+                            })
+                        }}>
+                            <KeyboardTab />
+                        </Fab>
+                    </div>
                     <MaterialTable
-                        title="Exames"
+                        title="Exames" 
                         columns={columns}
                         data={this.props.adminExams}
                         actions={[
@@ -169,7 +205,7 @@ class AdminExams extends Component {
                                         
                                         axios.patch(process.env.REACT_APP_API_HOST + '/api/files/' + oldData._id, newData)
                                         .then(res => {
-                                            this.props.loadAdminExams()
+                                            this.props.loadAdminExams(this.state.numPage)
                                             resolve()
                                         })
                                        .catch(err => {
@@ -181,7 +217,7 @@ class AdminExams extends Component {
                                 new Promise((resolve, reject) => {
                                     axios.delete(process.env.REACT_APP_API_HOST + '/api/files/' + oldData._id)
                                         .then(res => {
-                                            this.props.loadAdminExams()
+                                            this.props.loadAdminExams(this.state.numPage)
                                             resolve(res)
                                         })
                                         .catch(err => {
@@ -191,10 +227,9 @@ class AdminExams extends Component {
                         }}
                         options={{
                             actionsColumnIndex: -1,
-                            exportButton: true,
+                            exportButton: false,
                             exportFileName: 'Lista de Exames',
-                            paging: true,
-                            pageSize: this.props.adminExams.length
+                            paging: false
                           }}
                           localization={{
                             header: {
@@ -224,7 +259,47 @@ class AdminExams extends Component {
                               lastTooltip: 'Última Página'
                             }
                           }}
+                          onChangePage = {(page) =>{
+                            console.log('onChangePage', page + 1)
+                            this.setState({
+                                numPage: page + 1
+                            }, () => {
+                                this.props.loadAdminExams(this.state.numPage)
+                            })
+                          }}
                         />
+                        <div style={{display: 'flex', alignContent: 'center', justifyContent: 'center'  , displayDirection: 'row', borderRadius: 10, background: 'white', padding: 10}}>
+                        <Fab  style={{marginRight: 5}} size="small"  color="secondary" aria-label="Anterior" disabled={this.state.numPage === 1 ? true : false} onClick={ () => {
+                            this.setState({
+                                numPage: this.state.numPage - 1
+                            }, () => {
+                                this.props.loadAdminExams(this.state.numPage)
+                            })
+                        }}>
+                            <KeyboardArrowLeft />
+                        </Fab>
+                        <Typography style={{verticalAlign: 'center', fontSize: 12, marginTop: 10, marginRight: 5 }}>
+                            Página {this.state.numPage} de {this.props.pages} Págs. Total : {this.props.total}
+                        </Typography>
+                        <Fab style={{marginRight: 5}} size="small"  color="secondary" aria-label="Seguinte" disabled={this.state.numPage === this.props.pages ? true : false}  onClick={ () => {
+                            this.setState({
+                                numPage: this.state.numPage + 1
+                            }, () => {
+                                this.props.loadAdminExams(this.state.numPage)
+                            })
+                        }}>
+                            <KeyboardArrowRight />
+                        </Fab>
+                        <Fab style={{marginRight: 5}} size="small"  color="secondary" aria-label="Última" disabled={this.state.numPage === this.props.pages ? true : false}  onClick={ () => {
+                            this.setState({
+                                numPage: this.props.pages
+                            }, () => {
+                                this.props.loadAdminExams(this.state.numPage)
+                            })
+                        }}>
+                            <KeyboardTab />
+                        </Fab>
+                    </div>
                     </Grid>
              </Grid>
              </Grow>
@@ -312,13 +387,15 @@ const mapStateToProps = (state) => {
     return {
         isFetching: state.adminExams.isFetching,
         adminExams: state.adminExams.data,
+        pages: state.adminExams.pages,
+        total: state.adminExams.total,
         error: state.adminExams.error
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        loadAdminExams: () => dispatch(loadAdminExamsRequest())
+        loadAdminExams: (numPage) => dispatch(loadAdminExamsRequest(numPage))
     }
 } 
 

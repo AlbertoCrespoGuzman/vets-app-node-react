@@ -9,6 +9,7 @@ const adminExams = ( state = INITIAL_STATE, action) => {
         return {
             isFetching: true,
             data: [],
+            numPage: action.numPage,
             error: false
         }
     }
@@ -16,6 +17,8 @@ const adminExams = ( state = INITIAL_STATE, action) => {
         return {
             isFetching: false,
             data: action.data,
+            pages: action.pages,
+            total: action.total,
             error: false,
         }
     }

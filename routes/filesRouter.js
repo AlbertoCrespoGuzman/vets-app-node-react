@@ -16,6 +16,8 @@ const fs = require('fs')
 const AWS = require('aws-sdk')
 fsAsync = require('fs').promises
 const pushNotifications = require('./../utils/pushNotifications')
+const moment = require('moment')
+var ObjectId = require('mongoose').Types.ObjectId
 
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -178,6 +180,77 @@ router.route('/')
     }
         
 })
+
+router.route('/pages/:pageNumber')
+  .get(Verify.verifyOrdinaryUser, function (req, res, next){
+      Verify.getIfAdminFromToken(req.headers['authorization'])
+      .then(isAdmin => {
+        if(isAdmin){
+            File.paginate({},
+                { page: req.params.pageNumber,
+                  limit: 200,
+                  populate: ['user', 'admin'],
+                  lean:     true,
+                  sort: {lastActivity : -1}
+                }, function(err, files) {
+                    if (err) throw err
+                    res.json(files)
+            })
+
+        }else{
+                Verify.getUsernameFromToken(req.headers['authorization'])
+                .then(username => {
+                            
+                    User.findOne({ username })
+                    .exec(function(err, user){
+                        if (err) throw err
+                        File.paginate({user: user._id},
+                            { page: req.params.pageNumber,
+                              limit: 200,
+                              populate: ['user', 'admin'],
+                              lean:     true,
+                              sort: {lastActivity : -1}
+                            }, function(err, files) {
+                                if (err) throw err
+                                res.json(files)
+                        })
+                
+                    })
+                    
+                })
+                .catch(err => {
+                    return res.status(500).json(err)
+                })
+            }
+        
+      })
+      .catch(err => {
+        return res.status(500).json(err)
+      })
+        
+  })
+router.route('/filtering')
+    .get(Verify.verifyAdmin, function (req, res, next){
+        if(req.query.userId && req.query.userId != 0 && req.query.month && req.query.month != ''){
+            File.find({
+                user: new ObjectId(req.query.userId),
+                lastActivity: {
+                    $gte: new Date(new Date(Number(req.query.month.split('/')[1]),Number(req.query.month.split('/')[0]) - 1,1).setHours(00, 00, 00)),
+                    $lt: new Date(new Date(req.query.month.split('/')[1], Number(req.query.month.split('/')[0]), 0).setHours(23, 59, 59))
+                     }
+            })
+            .populate('user')
+            .exec(function(err, files){
+                if (err) {
+                    console.log(err)
+                    throw err
+                }
+                res.json(files)
+            })
+            
+        }
+        
+    })
 router.route('/:fileId')
   .delete(Verify.verifyAdmin, function (req, res, next){
       File.findOne({ _id: req.params.fileId})

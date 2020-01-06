@@ -16,6 +16,8 @@ const exams = ( state = INITIAL_STATE, action) => {
         return {
             isFetching: false,
             data: action.data,
+            pages: action.pages,
+            total: action.total,
             error: false,
         }
     }
