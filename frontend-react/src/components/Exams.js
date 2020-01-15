@@ -219,7 +219,7 @@ class Exams extends Component {
                             this.setState({
                                 numPage: this.state.numPage - 1
                             }, () => {
-                                this.props.loadAdminExams(this.state.numPage)
+                                this.props.loadExams(this.state.numPage)
                             })
                         }}>
                             <KeyboardArrowLeft />
@@ -231,7 +231,7 @@ class Exams extends Component {
                             this.setState({
                                 numPage: this.state.numPage + 1
                             }, () => {
-                                this.props.loadAdminExams(this.state.numPage)
+                                this.props.loadExams(this.state.numPage)
                             })
                         }}>
                             <KeyboardArrowRight />
@@ -240,7 +240,7 @@ class Exams extends Component {
                             this.setState({
                                 numPage: this.props.pages
                             }, () => {
-                                this.props.loadAdminExams(this.state.numPage)
+                                this.props.loadExams(this.state.numPage)
                             })
                         }}>
                             <KeyboardTab />
