@@ -239,9 +239,9 @@ class AddAdminExams extends Component {
                     })
                 })
                 .catch(err => {
-                    
+                    console.log(err)
                     this.setState({
-                        errors: err.response.data.err
+                        errors: 'Este usuário já possui um arquivo com esse mesmo nome.'
                     })
                 })
         }

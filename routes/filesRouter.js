@@ -307,7 +307,7 @@ router.route('/:fileId')
                                         .on('error', (e) => {
                                             console.log('error', e)
                                             pushNotifications.sendPushNotificationForAdminWhenFilesError(file)
-                                            res.status(400).json(e)
+                                            return next(e)
                                         })
                                         .pipe(res)
                                         
@@ -331,7 +331,8 @@ router.route('/:fileId')
                             }
                             }else{
                                 console.log('unauthorized')
-                                res.status(400).send({err: 'Voce não está autorizado para visualizar esse arquivo'})
+                                return next({err: 'Voce não está autorizado para visualizar esse arquivo'})
+                                //res.status(400).send({err: 'Voce não está autorizado para visualizar esse arquivo'})
                             }
                 })
             })
@@ -368,7 +369,8 @@ router.route('/:fileId')
                 }
             })
             if(fileNameExists){
-                res.status(400).send({err: 'Este usuário já possui um arquivo com esse mesmo nome.'})
+                return next(new Error('Este usuário já possui um arquivo com esse mesmo nome.'))
+                //res.status(400).send({err: 'Este usuário já possui um arquivo com esse mesmo nome.'})
             }else{
                 res.json({success: true})
             }
