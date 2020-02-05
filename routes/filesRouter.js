@@ -261,6 +261,7 @@ router.route('/:fileId')
                 Comment.deleteMany({file: req.params.fileId})
                     .exec(function(err, result){
                         if (err) throw err
+                        if(file){
                         User.findOneAndUpdate( { _id: file.user }, { "$pull": { "files": req.params.fileId } }, options)
                                         .exec( function(err, user){
                                             if (err) throw err
@@ -278,6 +279,9 @@ router.route('/:fileId')
                                                 }
                                             }
                             })
+                        }else{
+                            return res.status(200).send({success: false})  
+                        }
                     })
         })
     })
