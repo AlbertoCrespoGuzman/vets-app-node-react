@@ -18,7 +18,7 @@ fi
 if (pgrep -f "$SERVICE2" | wc -l) < 1
 then
     echo "$SERVICE2 is running"
-    > /var/log/log.log
+
 else
     echo "$SERVICE2 stopped"
     cd "$PATH"
@@ -33,7 +33,7 @@ fi
 if (pgrep -f "$SERVICE3" | wc -l) < 3
 then
     echo "$SERVICE3 is running"
-    > /var/log/log.log
+    
 else
     echo "$SERVICE3 stopped"
     cd "$PATH"
