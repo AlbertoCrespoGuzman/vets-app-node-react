@@ -4,7 +4,7 @@ SERVICE="jenkins"
 if systemctl is-active --quiet "$SERVICE" >/dev/null
 then
     echo "$SERVICE is running, let's stop it"
-    service jenkins stop
+    sudo service jenkins stop
     pgrep -x "$SERVICE" >/dev/null && echo "$SERVICE still running" || echo "$SERVICE is stopped successfully"
 else
     echo "$SERVICE stopped"
