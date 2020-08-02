@@ -10,35 +10,16 @@ then
     sudo service jenkins stop
     pgrep -x "$SERVICE" >/dev/null && echo "$SERVICE still running" || echo "$SERVICE is stopped successfully"
     
-    if pgrep -f "$SERVICE2"
-    then 
-        pkill "$SERVICE2"
-    fi
-
-    if pgrep -f "$SERVICE3"
-    then 
-        pkill "$SERVICE3"
-    fi
-
-fi
-
-
-
-if pgrep -x "$SERVICE2" >/dev/null
-then
-    echo "$SERVICE2 is running"
-else
-    echo "$SERVICE2 stopped"
     cd ..
     cd frontend-react
     serve  -s build -l 3000 &
-    # uncomment to start nginx if stopped
-    # systemctl start nginx
-    # mail  
+    sudo iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-ports 3000
+    sudo iptables -t nat -A OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-port 3000
+
 fi
 
 
-if pgrep -x "$SERVICE3" >/dev/null
+if pgrep -f "$SERVICE3" >/dev/null
 then
     echo "$SERVICE3 is running"
 else
@@ -50,5 +31,3 @@ else
     # mail  
 fi
 
-sudo iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-ports 3000
-sudo iptables -t nat -A OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-port 3000
