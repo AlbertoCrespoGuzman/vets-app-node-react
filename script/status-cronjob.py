@@ -4,7 +4,7 @@ output = stream.read()
 
 path = "/home/ubuntu/vets-app-node-react/"
 
-serve_processes = os.popen('pgrep -f serve | wc -l').read()
+serve_processes = int(os.popen('pgrep -f serve | wc -l').read())
 print(serve_processes)
 print('serve_processes')
 if stream.read() == '':   
