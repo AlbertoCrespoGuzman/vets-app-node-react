@@ -1,4 +1,3 @@
 import subprocess
-batcmd="systemctl is-active --quiet jenkins"
-result = subprocess.check_output([batcmd], stderr=subprocess.STDOUT)
-print result
+subprocess.check_output(['systemctl', 'is-active', '--quiet', 'jenkins'])  # All that is technically needed...
+print(subprocess.check_output(['systemctl', 'is-active', '--quiet', 'jenkins']))
