@@ -1,11 +1,25 @@
 #!/bin/bash
 
 SERVICE="jenkins"
+SERVICE2="npx"
+SERVICE3="node"
+
 if systemctl is-active --quiet "$SERVICE" >/dev/null
 then
     echo "$SERVICE is running, let's stop it"
     sudo service jenkins stop
     pgrep -x "$SERVICE" >/dev/null && echo "$SERVICE still running" || echo "$SERVICE is stopped successfully"
+    
+    if pgrep "$SERVICE2"
+    then 
+        pkill "$SERVICE2"
+    fi
+
+    if pgrep "$SERVICE3"
+    then 
+        pkill "$SERVICE3"
+    fi
+    
 else
     echo "$SERVICE stopped"
     node ../app
@@ -15,7 +29,7 @@ else
 fi
 
 
-SERVICE2="npx"
+
 if pgrep -x "$SERVICE2" >/dev/null
 then
     echo "$SERVICE2 is running"
@@ -27,7 +41,7 @@ else
     # mail  
 fi
 
-SERVICE3="node"
+
 if pgrep -x "$SERVICE3" >/dev/null
 then
     echo "$SERVICE3 is running"
