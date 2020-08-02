@@ -16,7 +16,7 @@ fi
 
 
 
-if pgrep -f "$SERVICE2" >/dev/null
+if pgrep -f "$SERVICE2"
 then
     echo "$SERVICE2 is running"
 else
@@ -30,7 +30,7 @@ else
 fi
 
 
-if pgrep -f "$SERVICE3" >/dev/null
+if pgrep -f "$SERVICE3"
 then
     echo "$SERVICE3 is running"
 else
