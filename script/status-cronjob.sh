@@ -1,4 +1,3 @@
-#!/bin/bash
 SERVICE="jenkins"
 SERVICE2="serve"
 SERVICE3="app"
