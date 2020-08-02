@@ -29,6 +29,8 @@ then
     echo "$SERVICE2 is running"
 else
     echo "$SERVICE2 stopped"
+    cd ..
+    cd frontend-react
     serve  -s build -l 3000 &
     # uncomment to start nginx if stopped
     # systemctl start nginx
@@ -41,7 +43,8 @@ then
     echo "$SERVICE3 is running"
 else
     echo "$SERVICE3 stopped"
-    node ../app &
+    cd ..
+    node app &
     # uncomment to start nginx if stopped
     # systemctl start nginx
     # mail  
