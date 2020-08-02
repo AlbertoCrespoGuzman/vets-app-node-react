@@ -1,8 +1,8 @@
 #!/bin/bash
 
 SERVICE="jenkins"
-SERVICE2="npx"
-SERVICE3="node"
+SERVICE2="serve"
+SERVICE3="app"
 
 if systemctl is-active --quiet "$SERVICE" >/dev/null
 then
