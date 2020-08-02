@@ -16,7 +16,7 @@ fi
 
 
 
-if sudo pgrep -f "$SERVICE2" | wc -l < 1
+if (sudo pgrep -f "$SERVICE2" | wc -l) < 1
 then
     echo "$SERVICE2 is running"
     > /var/log/log.log
@@ -31,7 +31,7 @@ else
 fi
 
 
-if pgrep -f "$SERVICE3" | wc -l < 3
+if (sudo pgrep -f "$SERVICE3" | wc -l) < 3
 then
     echo "$SERVICE3 is running"
     > /var/log/log.log
