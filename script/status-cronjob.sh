@@ -21,7 +21,7 @@ then
     echo "$SERVICE2 is running"
 else
     echo "$SERVICE2 stopped"
-    cd $PATH
+    cd "$PATH"
     cd frontend-react
     serve  -s build -l 3000 &
     # uncomment to start nginx if stopped
@@ -35,7 +35,7 @@ then
     echo "$SERVICE3 is running"
 else
     echo "$SERVICE3 stopped"
-    cd $PATH
+    cd "$PATH"
     node app &
     # uncomment to start nginx if stopped
     # systemctl start nginx
