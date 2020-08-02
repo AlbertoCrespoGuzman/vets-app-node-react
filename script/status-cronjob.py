@@ -5,18 +5,16 @@ output = stream.read()
 path = "/home/ubuntu/vets-app-node-react/"
 
 serve_processes = int(os.popen('pgrep -f serve | wc -l').read())
-print(serve_processes)
-print('serve_processes')
-if stream.read() == '':   
-    os.popen('cd '+path).read()
-    os.popen('cd frontend-react').read()
+
+if serve_processes < 1:   
+    os.popen('cd '+path + 'frontend-react/').read()
     os.popen('serve  -s build -l 3000 &').read()
     print('react stopped, starting it')
 else:
     print('react running')
     
-stream = os.popen('pgrep -f app | wc -l')
-if int(stream.read()) < 3:   
+app_processes = int(os.popen('pgrep -f app | wc -l').read())
+if app_processes < 3:   
     os.popen('cd '+path).read()
     os.popen('node app &').read()
     print('server stopped, starting it')
