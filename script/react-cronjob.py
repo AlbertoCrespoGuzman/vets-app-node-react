@@ -1,7 +1,5 @@
 import os
 
-
-
 path = "/home/ubuntu/vets-app-node-react/"
 
 serve_processes = int(os.popen('pgrep -f serve | wc -l').read())
