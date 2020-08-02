@@ -4,9 +4,9 @@ output = stream.read()
 
 path = "/home/ubuntu/vets-app-node-react/"
 
-stream = os.popen('pgrep -f serve | wc -l')
-print('int(stream.read())')
-print(stream.read() == '')
+serve_processes = os.popen('pgrep -f serve | wc -l').read()
+print(serve_processes)
+print('serve_processes')
 if stream.read() == '':   
     os.popen('cd '+path).read()
     os.popen('cd frontend-react').read()
