@@ -10,12 +10,12 @@ then
     sudo service jenkins stop
     pgrep -x "$SERVICE" >/dev/null && echo "$SERVICE still running" || echo "$SERVICE is stopped successfully"
     
-    if pgrep "$SERVICE2"
+    if pgrep -f "$SERVICE2"
     then 
         pkill "$SERVICE2"
     fi
 
-    if pgrep "$SERVICE3"
+    if pgrep -f "$SERVICE3"
     then 
         pkill "$SERVICE3"
     fi
