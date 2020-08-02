@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SERVICE="jenkins"
-if pgrep -x "$SERVICE" >/dev/null
+if systemctl is-active --quiet "$SERVICE" >/dev/null
 then
     echo "$SERVICE is running, let's stop it"
     service jenkins stop
